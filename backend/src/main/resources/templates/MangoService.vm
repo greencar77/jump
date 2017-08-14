@@ -1,0 +1,9 @@
+package templates;
+
+import javax.jws.WebService;
+
+@WebService
+public interface MangoService {
+    int getFive();
+    void sleep(long millis);
+}

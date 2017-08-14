@@ -1,0 +1,7 @@
+package ${package};
+
+import ${domain}.Customer;
+
+public interface SmallService {
+    Customer getCustomer(Integer id);
+}

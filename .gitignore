@@ -1,0 +1,13 @@
+.classpath
+.project
+.settings
+.idea
+*.iml
+notes.txt
+target/
+buffer/
+myjump/
+backend/old_classes/
+backend/generated/
+frontend/
+

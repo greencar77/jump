@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Mar 21, 2013 10:40:09 AM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="kb.appbase.domain.Sunprop" table="SUNPROP" schema="PUBLIC" catalog="APPBASE">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="assigned" />
+        </id>
+        <property name="aaa" type="java.lang.Integer">
+            <column name="AAA" />
+        </property>
+        <property name="bbb" type="string">
+            <column name="BBB" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,24 @@
+package ${package};
+
+import java.util.Date;
+
+public class MangoServiceImpl implements MangoService {
+    public int getFive() {
+        return 5;
+    }
+
+    public void sleep(long millis) {
+        Date start = new Date();
+        System.out.println("sleep start " + millis);
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        Date end = new Date();
+
+        System.out.println("sleep end " + millis + " " + (end.getTime() - start.getTime()) / 1000 + "s");
+    }
+}

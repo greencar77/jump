@@ -1,0 +1,24 @@
+package ${package};
+
+import java.util.List;
+
+import ${domain}.Customer;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+public class SmallServiceImpl implements SmallService {
+    @Autowired
+    private SessionFactory factory;
+
+    @Transactional
+    @Override
+    public Customer getCustomer(Integer id) {
+        return (Customer)factory.getCurrentSession().get(Customer.class, id);
+    }
+}
