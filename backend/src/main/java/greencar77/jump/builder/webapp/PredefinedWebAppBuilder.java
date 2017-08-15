@@ -16,7 +16,6 @@ import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.RestClassFile;
 import greencar77.jump.model.java.classfile.RestMethod;
 import greencar77.jump.model.java.classfile.TemplateClass;
-import greencar77.jump.model.java.maven.PluginPom;
 import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.model.webapp.Container;
 import greencar77.jump.model.webapp.WebAppModel;
@@ -38,7 +37,7 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
         return (WebAppModel) generateModel(specId);
     }
 
-    public WebAppModel buildWebappSimple() {
+    public WebAppModel specWebappSimple() {
         String warFilename = "webappSimple"; //will be used in url
         
         //config project
@@ -63,13 +62,11 @@ java.lang.NoSuchMethodError: com.sun.jersey.core.reflection.ReflectionHelper.get
     }
     
     private void buildAppSimple() {
+        
         Map<String, String> props = new HashMap<>();
         props.put("package", getSpec().getRootPackage());
         ClassFile userClass = new TemplateClass(getSpec().getRootPackage(), "User", "java/webapp/UserPojo.java", props);
         model.getClassFiles().add(userClass);
-
-//        clazz = new TemplateClass(spec.getRootPackage(), "UserResource", "java/webapp/UserResource.java", props);
-//        model.getClassFiles().add(clazz);
         
         RestClassFile restClass = new RestClassFile(getSpec().getRootPackage(), "Alpha");
         restClass.setPath("/alphanode");
@@ -102,6 +99,63 @@ javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A mess
         addDirectDependencies();
     }
     
+    private void buildAppSimpleSpring() {
+        ClassFile configClass = new ClassFile(getSpec().getRootPackage(), "AppConfig");
+        configClass.classAnnotations.add("@Configuration");
+        configClass.imports.add("org.springframework.context.annotation.Configuration");
+        configClass.classAnnotations.add("@EnableWebMvc");
+        configClass.imports.add("org.springframework.web.servlet.config.annotation.EnableWebMvc");
+        configClass.classAnnotations.add("@ComponentScan(basePackages = \"" + getSpec().getRootPackage() + "\")");
+        configClass.imports.add("org.springframework.context.annotation.ComponentScan");
+        model.getClassFiles().add(configClass);
+        
+        ClassFile appInitializer = new ClassFile(getSpec().getRootPackage(), "AppInitializer");
+        appInitializer.classNameTail = "extends AbstractAnnotationConfigDispatcherServletInitializer";
+        appInitializer.imports.add("org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer");
+        //avoid compile error "cannot access ServletException"
+        //https://stackoverflow.com/questions/25220468/spring-security-cannot-access-servletexception
+        model.getPom().getDependencies().add("javax.servlet/javax.servlet-api/3.0.1/provided");
+        appInitializer.getBody().append(code(indent(TAB + TAB,
+                "@Override",
+                "protected Class[] getRootConfigClasses() {",
+                TAB + "return new Class[] { " + configClass.className + ".class };",
+                "}",
+                "",
+                "@Override",
+                "protected Class[] getServletConfigClasses() {",
+                TAB + "return null;",
+                "}",
+                "",
+                "@Override",
+                "protected String[] getServletMappings() {",
+                TAB + "return new String[] { \"/\" };",
+                "}"
+                )));
+        model.getClassFiles().add(appInitializer);
+        
+        Map<String, String> props = new HashMap<>();
+        props.put("package", getSpec().getRootPackage());
+        ClassFile userClass = new TemplateClass(getSpec().getRootPackage(), "User", "java/webapp/UserPojo.java", props);
+        model.getClassFiles().add(userClass);
+        
+        ClassFile controller = new ClassFile(getSpec().getRootPackage(), "CustomerRestController");
+        controller.classAnnotations.add("@RestController");
+        controller.imports.add("org.springframework.web.bind.annotation.RestController");
+        controller.getBody().append(code(indent(TAB,
+                "@GetMapping(\"/customers\")",
+                "public User getCustomers() {",
+                TAB + "User user = new User();",
+                TAB + "user.setFirstName(\"JonFromREST\");",
+                TAB + "user.setLastName(\"DoeFromREST\");",
+                TAB + "return user;",
+                "}"
+                )));
+        controller.imports.add("org.springframework.web.bind.annotation.GetMapping");
+        model.getClassFiles().add(controller);
+        
+        addDirectDependencies();
+    }
+    
     protected void addDirectDependencies() {
         Set<String> absoluteClasses = new HashSet<>();
         
@@ -120,7 +174,7 @@ javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A mess
         }
     }
 
-    public WebAppModel buildWebappFirst() {
+    public WebAppModel specWebappFirst() {
         String rootPackage = "x.y";
         
         //setup business files
@@ -145,7 +199,7 @@ javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A mess
         return model;
     }
     
-    public WebAppModel buildWebappAngular() {
+    public WebAppModel specWebappAngular() {
         String rootPackage = "x.y";
         
         //setup business files
@@ -172,7 +226,8 @@ javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A mess
         return model;
     }
 
-    public WebAppModel buildSpring4RestTomcat() {
+    public WebAppModel specSpring4RestTomcat() {
+        //http://viralpatel.net/blogs/spring-4-mvc-rest-example-json/
         WebAppSpec spec = new WebAppSpec();
         spec.setGroupId("x.y");
         spec.setArtifactId("spring4RestTomcat");
@@ -185,19 +240,8 @@ javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A mess
 
         build();
 
-        //http://viralpatel.net/blogs/spring-4-mvc-rest-example-json/
-        if (getSpec().isServlet3Support()) {
-            //web.xml is not required
-            PluginPom warPlugin = new PluginPom("org.apache.maven.plugins", "maven-war-plugin", "3.1.0");
-            warPlugin.configuration.append(code(indent(TAB + TAB + TAB + TAB + TAB,
-                    "<failOnMissingWebXml>false</failOnMissingWebXml>")));
-            model.getPom().getBuild().addPlugin(warPlugin);
-        } else {
-            //TODO generate web.xml
-        }
+        buildAppSimpleSpring();
 
-        buildAppSimple();
-
-        return model;        
+        return model;
     }
 }

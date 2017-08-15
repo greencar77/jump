@@ -11,6 +11,13 @@ public class ArtifactSolver {
     }
     
     public String getArtifact(String absoluteClass) {
+        if (absoluteClass.startsWith("org.springframework.web.servlet.")) {
+            return "org.springframework/spring-webmvc/4.3.0.RELEASE";
+        }
+        if (absoluteClass.startsWith("org.springframework.context.")) {
+            return "org.springframework/spring-context/4.3.0.RELEASE";
+        }
+        
         if (MAP.containsKey(absoluteClass)) {
             return MAP.get(absoluteClass);
         }

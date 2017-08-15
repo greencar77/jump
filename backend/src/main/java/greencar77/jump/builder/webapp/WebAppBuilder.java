@@ -1,7 +1,11 @@
 package greencar77.jump.builder.webapp;
 
+import static greencar77.jump.generator.CodeManager.code;
+import static greencar77.jump.generator.CodeManager.indent;
+import static greencar77.jump.generator.Generator.TAB;
+
 import greencar77.jump.builder.java.MavenProjBuilder;
-import greencar77.jump.model.java.MavenProjModel;
+import greencar77.jump.model.java.maven.PluginPom;
 import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.model.java.maven.WebDescriptor;
 import greencar77.jump.model.webapp.WebAppModel;
@@ -31,7 +35,18 @@ public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<
         super.build();
         
         model.setTargetContainer(getSpec().getTargetContainer());
-        
+
+        //http://viralpatel.net/blogs/spring-4-mvc-rest-example-json/
+        if (getSpec().isServlet3Support()) {
+            //web.xml is not required
+            PluginPom warPlugin = new PluginPom("org.apache.maven.plugins", "maven-war-plugin", "3.1.0");
+            warPlugin.configuration.append(code(indent(TAB + TAB + TAB + TAB + TAB,
+                    "<failOnMissingWebXml>false</failOnMissingWebXml>")));
+            model.getPom().getBuild().addPlugin(warPlugin);
+        } else {
+            //TODO generate web.xml
+        }
+
         return model;
     }
 

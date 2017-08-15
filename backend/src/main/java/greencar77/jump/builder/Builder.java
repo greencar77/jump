@@ -5,6 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import greencar77.jump.model.Model;
 
 public abstract class Builder<S, M extends Model> {
+    private static final String SPEC_METHOD_PREFIX = "spec";
+    
     private S spec;
 
     public Builder() {}
@@ -17,7 +19,7 @@ public abstract class Builder<S, M extends Model> {
     
     @SuppressWarnings("unchecked")
     protected M generateModel(String specId) {
-        String methodName = "build" + specId.substring(0, 1).toUpperCase() + specId.substring(1);
+        String methodName = SPEC_METHOD_PREFIX + specId.substring(0, 1).toUpperCase() + specId.substring(1);
         Object o;
         try {
             o = this.getClass()

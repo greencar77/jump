@@ -200,11 +200,31 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
         
         return sb;
     }
+    protected StringBuilder generateBody(ClassFile clazz) {
+        return clazz.getBody();
+    }
 
     @Override
     public StringBuilder generate(ClassFile clazz) {
-        // TODO Auto-generated method stub
-        return null;
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("package " + clazz.packageName + ";" + LF);
+        sb.append(LF);
+        
+        if (clazz.imports.size() > 0) {
+            for (String importString: clazz.imports) {
+                sb.append("import " + importString + ";" + LF);            
+            }
+            sb.append(LF);
+        }
+
+        sb.append(generateClassAnnotations(clazz));
+        sb.append("public class " + clazz.className + " " + (clazz.classNameTail == null? "": clazz.classNameTail) + " {" + LF);
+        //sb.append(generateStateBody()); //TODO
+        sb.append(generateBody(clazz));
+        sb.append("}" + LF);
+        
+        return sb;
     }
 
 }
