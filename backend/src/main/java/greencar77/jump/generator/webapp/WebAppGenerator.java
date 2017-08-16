@@ -51,7 +51,17 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
     protected void generateInstructions() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("xcopy /s /Y target\\*.war C:\\<TOMCAT_HOME>\\webapps" + LF);
+        sb.append("assert: " + model.getTargetContainer() + " instance is running" + LF);
+
+        switch (model.getTargetContainer()) {
+            case TOMCAT:
+                sb.append("xcopy /s /Y target\\*.war C:\\<TOMCAT_HOME>\\webapps" + LF);
+                break;
+            case WILDFLY:
+                sb.append("xcopy /s /Y target\\*.war C:\\<WILDFLY_HOME>\\standalone\\deployments" + LF);
+                break;
+            default: throw new IllegalArgumentException(model.getTargetContainer().name());
+        }
 
         if (model.getLocalEndpoints().size() > 0) {
             sb.append(LF);
@@ -60,6 +70,9 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
                 sb.append("http://localhost:" + model.getTargetContainer().getDefaultPort() + "/" + model.getPom().getBuild().finalName + endpoint + LF);
             }
         }
+        sb.append(LF);
+        sb.append("==Restlet==" + LF);
+        sb.append("Create project: " + projectFolder + LF);
 
         saveResource(INSTRUCTIONS_FILENAME, sb.toString().getBytes());
     }

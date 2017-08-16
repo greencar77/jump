@@ -9,7 +9,6 @@ import greencar77.jump.generator.js.StandaloneAngularGenerator;
 import greencar77.jump.generator.webapp.WebAppGenerator;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.js.AngularAppModel;
-import greencar77.jump.spec.java.MavenProjSpec;
 
 
 public class App {
@@ -22,7 +21,8 @@ public class App {
         //predefinedMavenProj("helloSpringBoot");
         //predefinedMavenProj("wsdlClient");
         //predefinedWebApp("webappSimple");
-        predefinedWebApp("spring4RestTomcat");
+        //predefinedWebApp("spring4RestTomcat");
+        predefinedWebApp("spring4RestWildfly");
     }
     
     protected static void predefinedStandalone(String specId) {

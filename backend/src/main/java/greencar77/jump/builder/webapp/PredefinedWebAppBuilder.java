@@ -138,20 +138,23 @@ javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A mess
         ClassFile userClass = new TemplateClass(getSpec().getRootPackage(), "User", "java/webapp/UserPojo.java", props);
         model.getClassFiles().add(userClass);
         
-        ClassFile controller = new ClassFile(getSpec().getRootPackage(), "CustomerRestController");
+        ClassFile controller = new ClassFile(getSpec().getRootPackage(), "UserRestController");
         controller.classAnnotations.add("@RestController");
         controller.imports.add("org.springframework.web.bind.annotation.RestController");
         controller.getBody().append(code(indent(TAB,
-                "@GetMapping(\"/customers\")",
-                "public User getCustomers() {",
+                //"@GetMapping(\"/user\")",
+                "@GetMapping(name = \"/user\", produces = {MediaType.APPLICATION_JSON_VALUE})",
+                "public User getUser() {",
                 TAB + "User user = new User();",
-                TAB + "user.setFirstName(\"JonFromREST\");",
-                TAB + "user.setLastName(\"DoeFromREST\");",
+                TAB + "user.setFirstName(\"Jon\");",
+                TAB + "user.setLastName(\"Doe\");",
                 TAB + "return user;",
                 "}"
                 )));
         controller.imports.add("org.springframework.web.bind.annotation.GetMapping");
-        model.getLocalEndpoints().add("/customers");
+        controller.imports.add("org.springframework.http.MediaType"); //TODO
+        model.getPom().addDependency("com.fasterxml.jackson.core/jackson-databind/2.7.5"); //without this response will be generated in XML
+        model.getLocalEndpoints().add("/user");
         model.getClassFiles().add(controller);
         
         addDirectDependencies();
@@ -235,6 +238,25 @@ javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A mess
         spec.setRootPackage(spec.getGroupId());
         
         spec.setTargetContainer(Container.TOMCAT);
+        spec.setServlet3Support(true);
+
+        setSpec(spec);
+
+        build();
+
+        buildAppSimpleSpring();
+
+        return model;
+    }
+
+    public WebAppModel specSpring4RestWildfly() {
+        //http://viralpatel.net/blogs/spring-4-mvc-rest-example-json/
+        WebAppSpec spec = new WebAppSpec();
+        spec.setGroupId("x.y");
+        spec.setArtifactId("spring4RestWildfly");
+        spec.setRootPackage(spec.getGroupId());
+        
+        spec.setTargetContainer(Container.WILDFLY);
         spec.setServlet3Support(true);
 
         setSpec(spec);

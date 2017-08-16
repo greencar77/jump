@@ -48,16 +48,18 @@ public abstract class Generator<M> {
     private void clean() {
         final File templateFolder = new File(OUTPUT_PATH + projectFolder);
         if (CLEAN_TEMPLATE_CONTENTS_ONLY) {
-            for (File file: templateFolder.listFiles()) {
-                try {
-                    System.out.println("Deleting " + file.getAbsolutePath());
-                    if (file.isDirectory()) {
-                        org.apache.commons.io.FileUtils.deleteDirectory(file);
-                    } else {
-                        file.delete();
+            if (templateFolder.listFiles() != null) {
+                for (File file: templateFolder.listFiles()) {
+                    try {
+                        System.out.println("Deleting " + file.getAbsolutePath());
+                        if (file.isDirectory()) {
+                            org.apache.commons.io.FileUtils.deleteDirectory(file);
+                        } else {
+                            file.delete();
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
                 }
             }
         } else { //remove the whole folder
