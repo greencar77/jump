@@ -31,7 +31,7 @@ public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
     }
 
     @Override
-    public void generate() {
+    protected void generateContent() {
         List<String> localScriptPaths = generateJs();
 
         byte[] index = getIndex(model.getModules().iterator().next(), localScriptPaths); //TODO assume only one module exists        

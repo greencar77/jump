@@ -1,6 +1,7 @@
 package greencar77.jump.generator;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ public abstract class Generator<M> {
     public static final String OUTPUT_PATH = "generated/template/";
     public static final String LF = "\n";
     public static final String TAB = "    "; //\t
+    private static final boolean CLEAN_TEMPLATE_CONTENTS_ONLY = true;  //avoid problem ("java.io.IOException: Unable to delete directory") if folder is opened in a command window
 
     //protected String pathOffset;
     protected String projectFolder;
@@ -37,8 +39,38 @@ public abstract class Generator<M> {
         this.projectFolder = projectFolder;
         this.model = model;
     }*/
+
+    public final void generate() {
+        clean();
+        generateContent();
+    }
     
-    public abstract void generate();
+    private void clean() {
+        final File templateFolder = new File(OUTPUT_PATH + projectFolder);
+        if (CLEAN_TEMPLATE_CONTENTS_ONLY) {
+            for (File file: templateFolder.listFiles()) {
+                try {
+                    System.out.println("Deleting " + file.getAbsolutePath());
+                    if (file.isDirectory()) {
+                        org.apache.commons.io.FileUtils.deleteDirectory(file);
+                    } else {
+                        file.delete();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } else { //remove the whole folder
+            try {
+                System.out.println("Deleting " + templateFolder.getAbsolutePath());
+                org.apache.commons.io.FileUtils.deleteDirectory(templateFolder);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    protected abstract void generateContent();
 
     protected File saveResource(String filename, byte[] content) {
         if (files.contains(filename)) {

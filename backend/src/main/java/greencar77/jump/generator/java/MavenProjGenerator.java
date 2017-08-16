@@ -26,7 +26,7 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     }
 
     @Override
-    public void generate() {
+    protected void generateContent() {
         for (RawFile rawFile: model.getRawFiles()) {
             saveResource(rawFile.getPath(), rawFile.getContent());
         }

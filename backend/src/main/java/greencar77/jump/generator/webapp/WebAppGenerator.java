@@ -10,7 +10,6 @@ import greencar77.jump.model.java.maven.ServletWebDescriptor;
 import greencar77.jump.model.java.maven.WebDescriptor;
 import greencar77.jump.model.js.AngularAppModel;
 import greencar77.jump.model.webapp.WebAppModel;
-import greencar77.jump.spec.webapp.WebAppSpec;
 
 public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
     private static final String WEBAPP_FOLDER = "/src/main/webapp";
@@ -25,7 +24,7 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
     }
 
     @Override
-    public void generate() {
+    protected void generateContent() {
         if (model.getAngularApp() != null) {
             angularAppGenerator = new StandaloneAngularGenerator<>(projectFolder + WEBAPP_FOLDER, model.getAngularApp());
             angularAppGenerator.generate();

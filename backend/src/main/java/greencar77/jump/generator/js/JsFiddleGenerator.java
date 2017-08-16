@@ -13,7 +13,7 @@ public class JsFiddleGenerator extends Generator<AngularAppModel> {
     }
 
     @Override
-    public void generate() {
+    protected void generateContent() {
         byte[] js = getJsContent();
         
         if (singleFile) {
