@@ -4,6 +4,7 @@ import greencar77.jump.model.js.AngularAppModel;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.classfile.RestClassFile;
@@ -13,6 +14,7 @@ public class WebAppModel extends MavenProjModel {
     private Container targetContainer = Container.WILDFLY;    
     private WebDescriptor webDescriptor;
     private Set<RestClassFile> restClasses = new HashSet<>();
+    private Set<String> localEndpoints = new TreeSet<>();
     
     private AngularAppModel angularApp;
 
@@ -42,5 +44,13 @@ public class WebAppModel extends MavenProjModel {
 
     public Set<RestClassFile> getRestClasses() {
         return restClasses;
+    }
+
+    public Set<String> getLocalEndpoints() {
+        return localEndpoints;
+    }
+
+    public void setLocalEndpoints(Set<String> localEndpoints) {
+        this.localEndpoints = localEndpoints;
     }
 }

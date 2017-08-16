@@ -13,6 +13,7 @@ import greencar77.jump.model.webapp.WebAppModel;
 
 public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
     private static final String WEBAPP_FOLDER = "/src/main/webapp";
+    private static final String INSTRUCTIONS_FILENAME = "instructions.txt";
     
     private StandaloneAngularGenerator<AngularAppModel> angularAppGenerator;
     
@@ -43,7 +44,24 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
             generateWebDescriptor();
         }
 
+        generateInstructions();
         mavenBuild();
+    }
+    
+    protected void generateInstructions() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("xcopy /s /Y target\\*.war C:\\<TOMCAT_HOME>\\webapps" + LF);
+
+        if (model.getLocalEndpoints().size() > 0) {
+            sb.append(LF);
+            sb.append("Some endpoints:" + LF);
+            for (String endpoint: model.getLocalEndpoints()) {
+                sb.append("http://localhost:" + model.getTargetContainer().getDefaultPort() + "/" + model.getPom().getBuild().finalName + endpoint + LF);
+            }
+        }
+
+        saveResource(INSTRUCTIONS_FILENAME, sb.toString().getBytes());
     }
 
     public void generateWebDescriptor() {

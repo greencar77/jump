@@ -151,6 +151,7 @@ javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A mess
                 "}"
                 )));
         controller.imports.add("org.springframework.web.bind.annotation.GetMapping");
+        model.getLocalEndpoints().add("/customers");
         model.getClassFiles().add(controller);
         
         addDirectDependencies();

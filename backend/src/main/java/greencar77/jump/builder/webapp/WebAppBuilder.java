@@ -76,8 +76,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
     }
 
     protected void setupWarTomcat() {
-        Pom pom = model.getPom();
-        
+       
         //maven-war-plugin requires web.xml
         WebDescriptor webDescriptor = new WebDescriptor();
         //TODO jersey servlets
