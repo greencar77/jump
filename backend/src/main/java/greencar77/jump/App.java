@@ -22,7 +22,8 @@ public class App {
         //predefinedMavenProj("wsdlClient");
         //predefinedWebApp("webappSimple");
         //predefinedWebApp("spring4RestTomcat");
-        predefinedWebApp("spring4RestWildfly");
+        //predefinedWebApp("spring4RestWildfly");
+        predefinedMavenProj("emptyMavenProject");
     }
     
     protected static void predefinedStandalone(String specId) {
