@@ -216,7 +216,7 @@ javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A mess
         model.getClassFiles().add(clazz);
         
         //Angular app
-        model.setAngularApp(angularAppBuilder.buildTutti());
+        model.setAngularApp(angularAppBuilder.specTutti());
 
         //config project
         Pom pom = new Pom("x.y", "webx");

@@ -6,8 +6,6 @@ import static greencar77.jump.generator.Generator.TAB;
 
 import greencar77.jump.builder.Predefined;
 import greencar77.jump.generator.Generator;
-import greencar77.jump.model.js.AngularAppModel;
-import greencar77.jump.model.js.AngularVersion;
 import greencar77.jump.model.angular.ControlledPage;
 import greencar77.jump.model.angular.Module;
 import greencar77.jump.model.angular.controller.Controller;
@@ -16,8 +14,12 @@ import greencar77.jump.model.angular.html.Br;
 import greencar77.jump.model.angular.html.DomNode;
 import greencar77.jump.model.angular.html.HtmlFragment;
 import greencar77.jump.model.angular.html.Input;
+import greencar77.jump.model.angular.html.MiscNode;
 import greencar77.jump.model.angular.html.NgButton;
 import greencar77.jump.model.angular.html.TemplateHtmlFragment;
+import greencar77.jump.model.js.AngularAppModel;
+import greencar77.jump.model.js.AngularVersion;
+import greencar77.jump.spec.js.AngularAppSpec;
 
 /**
  * Contains hard-coded recipes (Spec object is not used) *
@@ -33,7 +35,12 @@ public class PredefinedAngularAppBuilder extends AngularAppBuilder implements Pr
         return generateModel(specId);
     }
 
-    public AngularAppModel buildTutti() {       
+    public AngularAppModel specTutti() {
+        AngularAppSpec spec = new AngularAppSpec();
+
+        setSpec(spec);
+
+        build();
         
         model.setBootstrapCss(true);
         model.setAngularVersion(AngularVersion.LATEST);
@@ -41,7 +48,15 @@ public class PredefinedAngularAppBuilder extends AngularAppBuilder implements Pr
         model.setBootstrapUi(true);
         model.setTitle("Palette (tutti)");
         
-        Module module = addModule();
+        addModule();
+        buildAppTutti();
+
+        return model;
+    }
+
+    private void buildAppTutti() {
+
+        Module module = model.getModules().iterator().next();
 
         //palette
         addPalette();
@@ -88,10 +103,17 @@ public class PredefinedAngularAppBuilder extends AngularAppBuilder implements Pr
                 ))
                 );
 
-        return model;
+        //tabs
+        ControlledPage tabPage = addControlledPage("tabs", "TabsCtrl");
+        model.setBootstrapUi(true);
+        DomNode tabRoot = tabPage.getHtmlFragment().getRootNode();
+        tabRoot.add(new MiscNode("uib-tabset", null, null, "active=\"active\"")
+                .add(new MiscNode("uib-tab", null, null, "heading=\"Head1\""))
+                .add(new MiscNode("uib-tab", null, null, "heading=\"Head2\""))
+                );
     }
 
-    public AngularAppModel buildInlineTemplating() {
+    public AngularAppModel specInlineTemplating() {
         model.setTitle("Inline templating");
         model.setNgRoute(true);
 
@@ -133,7 +155,7 @@ public class PredefinedAngularAppBuilder extends AngularAppBuilder implements Pr
         return controlledPopup;
     }
 
-    public void buildDirectiveMulti() {
+    public void specDirectiveMulti() {
         
         model.setAngularVersion(AngularVersion.LATEST);
         model.setNgRoute(true);

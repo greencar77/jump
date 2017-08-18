@@ -307,6 +307,9 @@ public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
     
     protected String getAttributes(DomNode node) {
         String result = "";
+        if (node.getRawAttributes() != null) {
+            result += " " + node.getRawAttributes();
+        }
         for (Map.Entry<String, String> entry: node.getAttributes().entrySet()) {
             result += " " + entry.getKey() + "=\"" + entry.getValue() + "\"";
         }
@@ -377,6 +380,15 @@ public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
         sb.append(new String(TEMPLATE_MANAGER.getFilledTemplate("templates/" + controller.getTemplate(), (Map<String, String>) null)));
 
         return sb.toString().getBytes();
+    }
+
+    @Override
+    protected void generateInstructions() {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("\"<CHROME_HOME>\\chrome\" --allow-file-access-from-files <APP_HOME>/" + projectFolder + "/index.html#/" + LF);
+
+        saveResource(INSTRUCTIONS_FILENAME, sb.toString().getBytes());
     }
 
 }

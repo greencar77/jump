@@ -10,6 +10,7 @@ public class DomNode {
     private String clazz;
     private String value;
     private Map<String, String> attributes = new HashMap<>();
+    protected String rawAttributes;
     private List<DomNode> nodes = new ArrayList<DomNode>();
 
     public DomNode(String name, String clazz, String value) {
@@ -58,7 +59,16 @@ public class DomNode {
         return value;
     }
     
-    public void add(DomNode node) {
+    public DomNode add(DomNode node) {
         nodes.add(node);
+        return this;
+    }
+
+    public String getRawAttributes() {
+        return rawAttributes;
+    }
+
+    public void setRawAttributes(String rawAttributes) {
+        this.rawAttributes = rawAttributes;
     }
 }

@@ -13,7 +13,6 @@ import greencar77.jump.model.webapp.WebAppModel;
 
 public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
     private static final String WEBAPP_FOLDER = "/src/main/webapp";
-    private static final String INSTRUCTIONS_FILENAME = "instructions.txt";
     
     private StandaloneAngularGenerator<AngularAppModel> angularAppGenerator;
     
@@ -44,10 +43,10 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
             generateWebDescriptor();
         }
 
-        generateInstructions();
         mavenBuild();
     }
     
+    @Override
     protected void generateInstructions() {
         StringBuilder sb = new StringBuilder();
 

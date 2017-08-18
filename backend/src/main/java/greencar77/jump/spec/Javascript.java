@@ -2,6 +2,8 @@ package greencar77.jump.spec;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import greencar77.jump.spec.js.AngularSource;
+
 @JsonIgnoreProperties(ignoreUnknown = true) //TODO remove
 public class Javascript {
     private Boolean angular;

@@ -36,4 +36,10 @@ public class JsFiddleGenerator extends Generator<AngularAppModel> {
         return sb.toString().getBytes();
     }
 
+    @Override
+    protected void generateInstructions() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

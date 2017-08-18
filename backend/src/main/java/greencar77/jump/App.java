@@ -16,14 +16,14 @@ public class App {
     public static void main(String[] args) {
         //SpecLib.modal();
         
-        //predefinedStandalone("tutti");
+        predefinedStandalone("tutti");
         //predefinedPlunker("inlineTemplating");
         //predefinedMavenProj("helloSpringBoot");
         //predefinedMavenProj("wsdlClient");
         //predefinedWebApp("webappSimple");
         //predefinedWebApp("spring4RestTomcat");
         //predefinedWebApp("spring4RestWildfly");
-        predefinedMavenProj("emptyMavenProject");
+        //predefinedMavenProj("emptyMavenProject");
     }
     
     protected static void predefinedStandalone(String specId) {

@@ -17,6 +17,7 @@ public abstract class Generator<M> {
     public static final String LF = "\n";
     public static final String TAB = "    "; //\t
     private static final boolean CLEAN_TEMPLATE_CONTENTS_ONLY = true;  //avoid problem ("java.io.IOException: Unable to delete directory") if folder is opened in a command window
+    protected static final String INSTRUCTIONS_FILENAME = "instructions.txt";
 
     //protected String pathOffset;
     protected String projectFolder;
@@ -43,8 +44,11 @@ public abstract class Generator<M> {
     public final void generate() {
         clean();
         generateContent();
+        generateInstructions();
     }
-    
+
+    protected abstract void generateInstructions();
+
     private void clean() {
         final File templateFolder = new File(OUTPUT_PATH + projectFolder);
         if (CLEAN_TEMPLATE_CONTENTS_ONLY) {

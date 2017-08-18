@@ -227,4 +227,9 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
         return sb;
     }
 
+    @Override
+    protected void generateInstructions() {
+        //TODO
+    }
+
 }

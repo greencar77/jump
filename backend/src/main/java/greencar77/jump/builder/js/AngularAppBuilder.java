@@ -10,7 +10,7 @@ import greencar77.jump.model.angular.controller.Controller;
 import greencar77.jump.model.angular.controller.TemplateController;
 import greencar77.jump.model.angular.html.HtmlFragment;
 import greencar77.jump.model.angular.html.TemplateHtmlFragment;
-import greencar77.jump.spec.AngularAppSpec;
+import greencar77.jump.spec.js.AngularAppSpec;
 
 public class AngularAppBuilder extends Builder<AngularAppSpec, AngularAppModel> {
     

@@ -1,4 +1,4 @@
-package greencar77.jump.spec;
+package greencar77.jump.spec.js;
 
 public enum AngularSource {
     NONE,
