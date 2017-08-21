@@ -2,6 +2,8 @@ package greencar77.jump.generator.webapp;
 
 import java.util.Map;
 
+import org.apache.commons.lang.Validate;
+
 import greencar77.jump.generator.java.MavenProjGenerator;
 import greencar77.jump.generator.js.StandaloneAngularGenerator;
 import greencar77.jump.model.RawFile;
@@ -62,13 +64,19 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
             default: throw new IllegalArgumentException(model.getTargetContainer().name());
         }
 
+        String servletMappingPrefix = model.getServletMappingPrefix() == null? "" : model.getServletMappingPrefix();
         if (model.getLocalEndpoints().size() > 0) {
             sb.append(LF);
             sb.append("Some endpoints:" + LF);
             for (String endpoint: model.getLocalEndpoints()) {
-                sb.append("http://localhost:" + model.getTargetContainer().getDefaultPort() + "/" + model.getPom().getBuild().finalName + endpoint + LF);
+                sb.append("http://localhost:" + model.getTargetContainer().getDefaultPort() + "/" + model.getPom().getBuild().finalName + servletMappingPrefix + endpoint + LF);
             }
         }
+        
+        Validate.notNull(model.getWebFramework());
+        sb.append(LF);
+        sb.append("Web framework: " + model.getWebFramework().getTitle() + LF);
+        
         sb.append(LF);
         sb.append("==Restlet==" + LF);
         sb.append("Create project: " + projectFolder + LF);

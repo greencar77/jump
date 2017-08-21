@@ -3,27 +3,32 @@ package greencar77.jump;
 import greencar77.jump.builder.java.PredefinedMavenProjBuilder;
 import greencar77.jump.builder.js.PredefinedAngularAppBuilder;
 import greencar77.jump.builder.webapp.PredefinedWebAppBuilder;
+import greencar77.jump.builder.webapp.WebAppBuilder;
 import greencar77.jump.generator.java.MavenProjGenerator;
 import greencar77.jump.generator.js.PlunkerAngularGenerator;
 import greencar77.jump.generator.js.StandaloneAngularGenerator;
 import greencar77.jump.generator.webapp.WebAppGenerator;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.js.AngularAppModel;
+import greencar77.jump.model.webapp.Container;
+import greencar77.jump.model.webapp.WebAppModel;
+import greencar77.jump.model.webapp.WebFramework;
+import greencar77.jump.spec.webapp.WebAppSpec;
 
 
 public class App {
     
     public static void main(String[] args) {
-        //SpecLib.modal();
         
-        predefinedStandalone("tutti");
+        //predefinedStandalone("tutti");
         //predefinedPlunker("inlineTemplating");
         //predefinedMavenProj("helloSpringBoot");
         //predefinedMavenProj("wsdlClient");
-        //predefinedWebApp("webappSimple");
+        predefinedWebApp("webappSimpleWildfly");
         //predefinedWebApp("spring4RestTomcat");
         //predefinedWebApp("spring4RestWildfly");
         //predefinedMavenProj("emptyMavenProject");
+        //playground();
     }
     
     protected static void predefinedStandalone(String specId) {
@@ -49,5 +54,19 @@ public class App {
 
     protected static void predefinedWebApp(String specId) {
         new WebAppGenerator(specId, new PredefinedWebAppBuilder().build(specId)).generate();
+    }
+
+    protected static void playground() {
+        WebAppSpec spec = new WebAppSpec();
+        spec.setGroupId("x.y");
+        spec.setArtifactId("aaa"); //will be used as filename and in url
+        spec.setRootPackage(spec.getGroupId());
+        
+        spec.setTargetContainer(Container.WILDFLY);
+        spec.setServlet3Support(false);
+        spec.setWebFramework(WebFramework.JERSEY);
+        spec.setAppGenerator("buildAppSimple");
+
+        new WebAppGenerator("aaa", new WebAppBuilder<WebAppSpec, WebAppModel>(spec).build()).generate();
     }
 }

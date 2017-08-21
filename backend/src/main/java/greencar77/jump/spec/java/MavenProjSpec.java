@@ -6,6 +6,7 @@ public class MavenProjSpec extends Spec {
     private String groupId;
     private String artifactId;
     private String rootPackage = "x.y";
+    private String appGenerator;
 
     public String getRootPackage() {
         return rootPackage;
@@ -29,5 +30,13 @@ public class MavenProjSpec extends Spec {
 
     public void setArtifactId(String artifactId) {
         this.artifactId = artifactId;
+    }
+
+    public String getAppGenerator() {
+        return appGenerator;
+    }
+
+    public void setAppGenerator(String appGenerator) {
+        this.appGenerator = appGenerator;
     }
 }

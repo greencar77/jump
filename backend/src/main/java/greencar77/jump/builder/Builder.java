@@ -1,6 +1,7 @@
 package greencar77.jump.builder;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import greencar77.jump.model.Model;
 
@@ -38,6 +39,36 @@ public abstract class Builder<S, M extends Model> {
         }
         
         return (M) o;
+    }
+    
+    protected void invoke(String methodName) {
+        try {
+            Method m = getMethod(this.getClass(), methodName);
+            if (m == null) {
+                m = getMethod(this.getClass().getSuperclass(), methodName);
+            }
+            m.setAccessible(true);
+            System.out.println("Invoke: " + m.getName());
+            m.invoke(this);
+        } catch (SecurityException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Method getMethod(Class<?> clazz, String methodName) {
+        try {
+            return clazz.getDeclaredMethod(methodName);
+        } catch (NoSuchMethodException e) {
+            return null;
+        } catch (SecurityException e) {
+            return null;
+        }
     }
     
     protected S getSpec() {

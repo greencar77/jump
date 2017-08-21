@@ -15,6 +15,8 @@ public class WebAppModel extends MavenProjModel {
     private WebDescriptor webDescriptor;
     private Set<RestClassFile> restClasses = new HashSet<>();
     private Set<String> localEndpoints = new TreeSet<>();
+    private String servletMappingPrefix;
+    private WebFramework webFramework;
     
     private AngularAppModel angularApp;
 
@@ -52,5 +54,21 @@ public class WebAppModel extends MavenProjModel {
 
     public void setLocalEndpoints(Set<String> localEndpoints) {
         this.localEndpoints = localEndpoints;
+    }
+
+    public String getServletMappingPrefix() {
+        return servletMappingPrefix;
+    }
+
+    public void setServletMappingPrefix(String servletMappingPrefix) {
+        this.servletMappingPrefix = servletMappingPrefix;
+    }
+
+    public WebFramework getWebFramework() {
+        return webFramework;
+    }
+
+    public void setWebFramework(WebFramework webFramework) {
+        this.webFramework = webFramework;
     }
 }
