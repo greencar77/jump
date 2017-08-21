@@ -101,6 +101,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         WebDescriptor webDescriptor = new WebDescriptor();
         //TODO jersey servlets
         webDescriptor.registerServletThirdParty("com.sun.jersey.spi.container.servlet.ServletContainer", "jersey-servlet", "/rest/*", null);
+        model.setServletMappingPrefix("/rest");
         model.getPom().getDependencies().add("com.sun.jersey/jersey-servlet/1.18.1");
         
         model.setWebDescriptor(webDescriptor);

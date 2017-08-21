@@ -56,10 +56,10 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
 
         switch (model.getTargetContainer()) {
             case TOMCAT:
-                sb.append("xcopy /s /Y target\\*.war C:\\<TOMCAT_HOME>\\webapps" + LF);
+                sb.append("xcopy /s /Y target\\*.war <TOMCAT_HOME>\\webapps" + LF);
                 break;
             case WILDFLY:
-                sb.append("xcopy /s /Y target\\*.war C:\\<WILDFLY_HOME>\\standalone\\deployments" + LF);
+                sb.append("xcopy /s /Y target\\*.war <WILDFLY_HOME>\\standalone\\deployments" + LF);
                 break;
             default: throw new IllegalArgumentException(model.getTargetContainer().name());
         }

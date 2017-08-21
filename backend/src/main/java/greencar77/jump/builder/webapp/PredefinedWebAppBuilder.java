@@ -31,19 +31,17 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
     public WebAppModel specWebappSimpleTomcat() {
         WebAppSpec spec = new WebAppSpec();
         spec.setGroupId("x.y");
-        spec.setArtifactId("webx");
+        spec.setArtifactId("webappSimpleTomcat");
         spec.setRootPackage(spec.getGroupId());
         
         spec.setTargetContainer(Container.TOMCAT);
-        spec.setServlet3Support(true);
+        spec.setServlet3Support(false);
+        spec.setWebFramework(WebFramework.JERSEY);
+        spec.setAppGenerator("buildAppSimple");
 
         setSpec(spec);
 
         build();
-        
-        buildAppSimple();
-
-        setupWar();
         
         return model;
     }

@@ -24,11 +24,11 @@ public class App {
         //predefinedPlunker("inlineTemplating");
         //predefinedMavenProj("helloSpringBoot");
         //predefinedMavenProj("wsdlClient");
-        predefinedWebApp("webappSimpleWildfly");
+        //predefinedWebApp("webappSimpleTomcat");
         //predefinedWebApp("spring4RestTomcat");
         //predefinedWebApp("spring4RestWildfly");
         //predefinedMavenProj("emptyMavenProject");
-        //playground();
+        playground();
     }
     
     protected static void predefinedStandalone(String specId) {
@@ -57,9 +57,11 @@ public class App {
     }
 
     protected static void playground() {
+        String projectFolder = "aaa";
+        
         WebAppSpec spec = new WebAppSpec();
         spec.setGroupId("x.y");
-        spec.setArtifactId("aaa"); //will be used as filename and in url
+        spec.setArtifactId(projectFolder); //will be used as filename and in url
         spec.setRootPackage(spec.getGroupId());
         
         spec.setTargetContainer(Container.WILDFLY);
@@ -67,6 +69,6 @@ public class App {
         spec.setWebFramework(WebFramework.JERSEY);
         spec.setAppGenerator("buildAppSimple");
 
-        new WebAppGenerator("aaa", new WebAppBuilder<WebAppSpec, WebAppModel>(spec).build()).generate();
+        new WebAppGenerator(projectFolder, new WebAppBuilder<WebAppSpec, WebAppModel>(spec).build()).generate();
     }
 }
