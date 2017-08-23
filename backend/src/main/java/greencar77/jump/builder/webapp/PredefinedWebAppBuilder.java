@@ -152,4 +152,23 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
 
         return model;
     }
+
+    public WebAppModel specWebappTomcatAuth() {
+        WebAppSpec spec = new WebAppSpec();
+        spec.setGroupId("x.y");
+        spec.setArtifactId("webappTomcatAuth");
+        spec.setRootPackage(spec.getGroupId());
+        
+        spec.setTargetContainer(Container.TOMCAT);
+        spec.setServlet3Support(false);
+        spec.setWebFramework(WebFramework.JERSEY);
+        spec.setAppGenerator("buildAppSimple");
+        spec.setAuthenticate(true);
+
+        setSpec(spec);
+
+        build();
+
+        return model;
+    }
 }

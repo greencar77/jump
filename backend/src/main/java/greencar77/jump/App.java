@@ -28,7 +28,8 @@ public class App {
         //predefinedWebApp("spring4RestTomcat");
         //predefinedWebApp("spring4RestWildfly");
         //predefinedMavenProj("emptyMavenProject");
-        playground();
+        predefinedWebApp("webappTomcatAuth");        
+        //playground();
     }
     
     protected static void predefinedStandalone(String specId) {

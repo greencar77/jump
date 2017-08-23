@@ -9,6 +9,7 @@ public class WebAppSpec extends MavenProjSpec {
     private Container targetContainer = Container.WILDFLY;    
     private boolean servlet3Support;
     private WebFramework webFramework;
+    private boolean authenticate;
 
     public boolean isServlet3Support() {
         return servlet3Support;
@@ -32,5 +33,13 @@ public class WebAppSpec extends MavenProjSpec {
 
     public void setWebFramework(WebFramework webFramework) {
         this.webFramework = webFramework;
+    }
+
+    public boolean isAuthenticate() {
+        return authenticate;
+    }
+
+    public void setAuthenticate(boolean authenticate) {
+        this.authenticate = authenticate;
     }
 }

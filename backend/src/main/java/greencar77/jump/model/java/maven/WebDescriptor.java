@@ -16,6 +16,7 @@ public class WebDescriptor {
     public Set<ServletWebDescriptor> servlets = new HashSet<ServletWebDescriptor>();
     public Set<ServletMappingWebDescriptor> servletMappings = new HashSet<ServletMappingWebDescriptor>();
     public List<String> listeners = new ArrayList<>();
+    private StringBuilder securitySection;
 
     public WebDescriptor() {}
 
@@ -45,6 +46,14 @@ public class WebDescriptor {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public StringBuilder getSecuritySection() {
+        return securitySection;
+    }
+
+    public void setSecuritySection(StringBuilder securitySection) {
+        this.securitySection = securitySection;
     }
 
 }

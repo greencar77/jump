@@ -22,10 +22,15 @@ import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.model.java.maven.WebDescriptor;
 import greencar77.jump.model.webapp.WebAppModel;
 import greencar77.jump.model.webapp.WebFramework;
+import greencar77.jump.model.webapp.auth.AuthRealm;
+import greencar77.jump.model.webapp.auth.Role;
+import greencar77.jump.model.webapp.auth.User;
 import greencar77.jump.spec.java.MavenProjSpec;
 import greencar77.jump.spec.webapp.WebAppSpec;
 
 public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<WebAppSpec, WebAppModel> {
+    
+    private static final String ROLE = "app_edit";
     
     //protected WebAppSpec spec;
     private ArtifactSolver artifactSolver = new ArtifactSolver();
@@ -50,6 +55,10 @@ public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<
         
         model.setTargetContainer(getSpec().getTargetContainer());
         model.setWebFramework(getSpec().getWebFramework());
+        
+        if (getSpec().isAuthenticate()) {
+            setupAuthRealm();
+        }
         
         if (getSpec().getAppGenerator() != null) {
             invoke(getSpec().getAppGenerator());
@@ -103,7 +112,35 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         webDescriptor.registerServletThirdParty("com.sun.jersey.spi.container.servlet.ServletContainer", "jersey-servlet", "/rest/*", null);
         model.setServletMappingPrefix("/rest");
         model.getPom().getDependencies().add("com.sun.jersey/jersey-servlet/1.18.1");
-        
+
+        if (getSpec().isAuthenticate()) {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append(code(indent(TAB,
+                    "<security-constraint>",
+                    TAB + "<web-resource-collection>",
+                    TAB + TAB + "<web-resource-name>Wildcard means whole app requires authentication</web-resource-name>",
+                    TAB + TAB + "<url-pattern>/*</url-pattern>",
+                    TAB + TAB + "<http-method>GET</http-method>",
+                    TAB + TAB + "<http-method>POST</http-method>",
+                    TAB + "</web-resource-collection>",
+                    TAB + "<auth-constraint>",
+                    TAB + TAB + "<role-name>" + ROLE + "</role-name>",
+                    TAB + "</auth-constraint>",
+                    TAB + "<user-data-constraint>",
+                    TAB + TAB + "<transport-guarantee>NONE</transport-guarantee>",
+                    TAB + "</user-data-constraint>",
+                    "</security-constraint>",
+                    "<login-config>",
+                    TAB + "<auth-method>BASIC</auth-method>",
+                    "</login-config>",
+                    "<security-role>",
+                    TAB + "<role-name>" + ROLE + "</role-name>",
+                    "</security-role>"
+                    )));
+            webDescriptor.setSecuritySection(sb);
+        }
+
         model.setWebDescriptor(webDescriptor);
         
         //pom.addDependency("javax.servlet/servlet-api/2.5/provided");
@@ -267,5 +304,23 @@ javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A mess
                 }
             }
         }
+    }
+    
+    private void setupAuthRealm() {
+        AuthRealm realm = new AuthRealm();
+
+        Role readRole = new Role("app_read");
+        Role editRole = new Role(ROLE);
+        realm.getRoles().add(readRole);
+        realm.getRoles().add(editRole);
+
+        User admin = new User("admin", "adminpwd")
+                .addRoles(readRole, editRole);
+        User guest = new User("guest", "guestpwd")
+                .addRoles(readRole);
+        realm.getUsers().add(guest);
+        realm.getUsers().add(admin);
+
+        model.setAuthRealm(realm);
     }
 }

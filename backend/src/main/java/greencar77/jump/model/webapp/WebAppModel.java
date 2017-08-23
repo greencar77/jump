@@ -1,6 +1,7 @@
 package greencar77.jump.model.webapp;
 
 import greencar77.jump.model.js.AngularAppModel;
+import greencar77.jump.model.webapp.auth.AuthRealm;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +18,7 @@ public class WebAppModel extends MavenProjModel {
     private Set<String> localEndpoints = new TreeSet<>();
     private String servletMappingPrefix;
     private WebFramework webFramework;
+    private AuthRealm authRealm;
     
     private AngularAppModel angularApp;
 
@@ -70,5 +72,13 @@ public class WebAppModel extends MavenProjModel {
 
     public void setWebFramework(WebFramework webFramework) {
         this.webFramework = webFramework;
+    }
+
+    public AuthRealm getAuthRealm() {
+        return authRealm;
+    }
+
+    public void setAuthRealm(AuthRealm authRealm) {
+        this.authRealm = authRealm;
     }
 }
