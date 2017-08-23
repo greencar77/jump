@@ -13,7 +13,9 @@ import org.jsoup.helper.Validate;
 
 import greencar77.jump.builder.ValidationException;
 import greencar77.jump.builder.java.ArtifactSolver;
+import greencar77.jump.builder.java.JaxRs;
 import greencar77.jump.builder.java.MavenProjBuilder;
+import greencar77.jump.builder.java.PreferenceConfig;
 import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.RestClassFile;
 import greencar77.jump.model.java.classfile.RestMethod;
@@ -36,7 +38,6 @@ public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<
     private static final String ROLE = "app_edit";
     
     //protected WebAppSpec spec;
-    private ArtifactSolver artifactSolver = new ArtifactSolver();
 
     //Having result object as instance variable relieves us from passing it around in method signatures.
     //This is the most heavily used variable in this builder.
@@ -335,6 +336,12 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
     }
     
     protected void addDirectDependencies() {
+        PreferenceConfig preferenceConfig = new PreferenceConfig();
+        if (getSpec().getJersey() != null && getSpec().getJersey().getJerseyMajorVersion() == JerseyMajorVersion.V2) {
+            preferenceConfig.setJaxRs(JaxRs.V2); //TODO
+        }
+
+        ArtifactSolver artifactSolver = new ArtifactSolver(preferenceConfig);
         Set<String> consolidatedImportedClassList = new HashSet<>();
         
         for (ClassFile clazz: model.getClassFiles()) {
@@ -342,6 +349,9 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         }
         
         for (String absoluteClass: consolidatedImportedClassList) {
+            if (absoluteClass.startsWith(getSpec().getRootPackage())) {
+                continue; //resolve only third party classes
+            }
             String artifact = artifactSolver.getArtifact(absoluteClass);
             if (artifact != null) {
                 System.out.println(absoluteClass + ":" + artifact);
