@@ -21,7 +21,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     }
 
     @Override
-    public MavenProjModel build() {
+    protected MavenProjModel buildModel() {
         Validate.notNull(getSpec());
         
         String warFilename = getSpec().getArtifactId(); //will be used in url

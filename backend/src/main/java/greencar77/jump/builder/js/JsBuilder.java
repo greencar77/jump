@@ -11,7 +11,7 @@ public class JsBuilder extends Builder<JsSpec, AngularAppModel> {
     }
 
     @Override
-    public AngularAppModel build() {
+    protected AngularAppModel buildModel() {
         // TODO Auto-generated method stub
         return null;
     }

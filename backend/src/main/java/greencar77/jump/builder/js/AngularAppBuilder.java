@@ -23,7 +23,7 @@ public class AngularAppBuilder extends Builder<AngularAppSpec, AngularAppModel> 
     }
 
     @Override
-    public AngularAppModel build() {
+    protected AngularAppModel buildModel() {
         Validate.notNull(getSpec());
         //TODO use Spec to build model
         

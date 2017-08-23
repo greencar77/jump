@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.jsoup.helper.Validate;
 
+import greencar77.jump.builder.ValidationException;
 import greencar77.jump.builder.java.ArtifactSolver;
 import greencar77.jump.builder.java.MavenProjBuilder;
 import greencar77.jump.model.java.classfile.ClassFile;

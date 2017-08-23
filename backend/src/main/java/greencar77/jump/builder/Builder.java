@@ -15,8 +15,19 @@ public abstract class Builder<S, M extends Model> {
     public Builder(S spec) {
         this.spec = spec;
     }
+    
+    public M build() {
+        validate();
+        return build();
+    }
 
-    public abstract M build();
+    protected abstract M buildModel();
+
+    protected void validate() {
+        if (spec == null) {
+            throw new ValidationException("spec is null");
+        }
+    }
     
     @SuppressWarnings("unchecked")
     protected M generateModel(String specId) {
