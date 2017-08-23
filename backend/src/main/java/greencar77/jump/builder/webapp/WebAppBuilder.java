@@ -55,6 +55,7 @@ public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<
         super.build();
         
         model.setTargetContainer(getSpec().getTargetContainer());
+        model.setJerseyVersion(getSpec().getJerseyVersion());
         model.setWebFramework(getSpec().getWebFramework());
         
         if (getSpec().isAuthenticate()) {
@@ -77,6 +78,15 @@ public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<
         }
 
         return model;
+    }
+
+    @Override
+    protected void validate() {
+        super.validate();
+        
+        if (getSpec().getWebFramework() == WebFramework.JERSEY && getSpec().getJerseyVersion() == null) {
+            throw new ValidationException("missing jerseyVersion");
+        }
     }
 
     protected void setupWarRestEasy() {
@@ -112,7 +122,8 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         //TODO jersey servlets
         webDescriptor.registerServletThirdParty("com.sun.jersey.spi.container.servlet.ServletContainer", "jersey-servlet", "/rest/*", null);
         model.setServletMappingPrefix("/rest");
-        model.getPom().getDependencies().add("com.sun.jersey/jersey-servlet/1.18.1");
+        Validate.notNull(getSpec().getJerseyVersion());
+        model.getPom().getDependencies().add("com.sun.jersey/jersey-servlet/" + getSpec().getJerseyVersion());
 
         if (getSpec().isAuthenticate()) {
             StringBuilder sb = new StringBuilder();
@@ -150,8 +161,8 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
     protected void setupWar() {
 
         if (getSpec().getWebFramework() == WebFramework.JERSEY) {
-            model.getPom().addDependency("com.sun.jersey/jersey-server/1.18.1");
-            model.getPom().addDependency("com.sun.jersey/jersey-bundle/1.18.1");
+            model.getPom().addDependency("com.sun.jersey/jersey-server/" + getSpec().getJerseyVersion());
+            model.getPom().addDependency("com.sun.jersey/jersey-bundle/" + getSpec().getJerseyVersion());
             /*
     otherwise
     aug. 08, 2017 4:10:02 PM org.apache.catalina.core.StandardWrapperValve invoke
@@ -197,7 +208,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         method.classAnnotations.add("@GET");
         restClass.imports.add("javax.ws.rs.GET");
         method.classAnnotations.add("@Produces(MediaType.APPLICATION_JSON)");
-        model.getPom().getDependencies().add("com.sun.jersey/jersey-json/1.8");
+        model.getPom().getDependencies().add("com.sun.jersey/jersey-json/" + getSpec().getJerseyVersion());
         /*
          * otherwise
 aug. 08, 2017 4:05:39 PM com.sun.jersey.spi.container.ContainerResponse logException

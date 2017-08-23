@@ -18,6 +18,7 @@ public class WebAppModel extends MavenProjModel {
     private Set<String> localEndpoints = new TreeSet<>();
     private String servletMappingPrefix;
     private WebFramework webFramework;
+    private String jerseyVersion;
     private AuthRealm authRealm;
     
     private AngularAppModel angularApp;
@@ -80,5 +81,13 @@ public class WebAppModel extends MavenProjModel {
 
     public void setAuthRealm(AuthRealm authRealm) {
         this.authRealm = authRealm;
+    }
+
+    public String getJerseyVersion() {
+        return jerseyVersion;
+    }
+
+    public void setJerseyVersion(String jerseyVersion) {
+        this.jerseyVersion = jerseyVersion;
     }
 }

@@ -158,10 +158,11 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
         spec.setGroupId("x.y");
         spec.setArtifactId("webappTomcatAuth");
         spec.setRootPackage(spec.getGroupId());
-        
+
         spec.setTargetContainer(Container.TOMCAT);
         spec.setServlet3Support(false);
         spec.setWebFramework(WebFramework.JERSEY);
+        spec.setJerseyVersion("1.19.4");
         spec.setAppGenerator("buildAppSimple");
         spec.setAuthenticate(true);
 

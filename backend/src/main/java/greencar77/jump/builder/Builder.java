@@ -18,7 +18,7 @@ public abstract class Builder<S, M extends Model> {
     
     public M build() {
         validate();
-        return build();
+        return buildModel();
     }
 
     protected abstract M buildModel();

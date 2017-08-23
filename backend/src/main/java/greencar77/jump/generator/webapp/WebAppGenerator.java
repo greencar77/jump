@@ -13,6 +13,7 @@ import greencar77.jump.model.java.maven.ServletWebDescriptor;
 import greencar77.jump.model.java.maven.WebDescriptor;
 import greencar77.jump.model.js.AngularAppModel;
 import greencar77.jump.model.webapp.WebAppModel;
+import greencar77.jump.model.webapp.WebFramework;
 import greencar77.jump.model.webapp.auth.Role;
 import greencar77.jump.model.webapp.auth.User;
 
@@ -86,7 +87,11 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
         
         Validate.notNull(model.getWebFramework());
         sb.append(LF);
-        sb.append("Web framework: " + model.getWebFramework().getTitle() + LF);
+        sb.append("Web framework: " + model.getWebFramework().getTitle());
+        if (model.getWebFramework() == WebFramework.JERSEY) {
+            sb.append(" " + model.getJerseyVersion());
+        }
+        sb.append(LF);
 
         sb.append(LF);
         sb.append("Security: " + (model.getAuthRealm() == null? "Application is not secured": "Authentication is needed") + LF);
