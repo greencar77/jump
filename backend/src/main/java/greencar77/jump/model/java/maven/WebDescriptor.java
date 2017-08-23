@@ -25,14 +25,18 @@ public class WebDescriptor {
         this.filename = filename;
     }
 
-    public void registerServlet(ClassFile classFile, String name, String endpoint) {
-        servlets.add(new ServletWebDescriptor(name, classFile.packageName + "." + classFile.className, null));
+    public ServletWebDescriptor registerServlet(ClassFile classFile, String name, String endpoint) {
+        ServletWebDescriptor servletWebDescriptor = new ServletWebDescriptor(name, classFile.packageName + "." + classFile.className, null);
+        servlets.add(servletWebDescriptor);
         servletMappings.add(new ServletMappingWebDescriptor(name, endpoint));
+        return servletWebDescriptor;
     }
     
-    public void registerServletThirdParty(String classNameFull, String name, String endpoint, Integer loadOnStartup) {
-        servlets.add(new ServletWebDescriptor(name, classNameFull, loadOnStartup));
+    public ServletWebDescriptor registerServletThirdParty(String classNameFull, String name, String endpoint, Integer loadOnStartup) {
+        ServletWebDescriptor servletWebDescriptor = new ServletWebDescriptor(name, classNameFull, loadOnStartup);
+        servlets.add(servletWebDescriptor);
         servletMappings.add(new ServletMappingWebDescriptor(name, endpoint));
+        return servletWebDescriptor;
     }
     
     public void registerServletThirdParty(ServletWebDescriptor servlet, String endpoint) {

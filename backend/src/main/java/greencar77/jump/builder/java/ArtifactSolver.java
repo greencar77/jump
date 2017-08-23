@@ -7,7 +7,7 @@ public class ArtifactSolver {
     private static final Map<String, String> MAP = new HashMap<>();
     
     static {
-        MAP.put("javax.ws.rs.GET", "javax.ws.rs/jsr311-api/1.1.1");
+        //MAP.put("javax.ws.rs.GET", "javax.ws.rs/jsr311-api/1.1.1");
     }
     
     public String getArtifact(String absoluteClass) {
@@ -16,6 +16,9 @@ public class ArtifactSolver {
         }
         if (absoluteClass.startsWith("org.springframework.context.")) {
             return "org.springframework/spring-context/4.3.0.RELEASE";
+        }
+        if (absoluteClass.startsWith("javax.ws.rs.")) {
+            return "javax.ws.rs/jsr311-api/1.1.1";
         }
         
         if (MAP.containsKey(absoluteClass)) {

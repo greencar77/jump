@@ -9,7 +9,7 @@ public class WebAppSpec extends MavenProjSpec {
     private Container targetContainer = Container.WILDFLY;    
     private boolean servlet3Support;
     private WebFramework webFramework;
-    private String jerseyVersion;
+    private Jersey jersey;
     private boolean authenticate;
 
     public boolean isServlet3Support() {
@@ -44,11 +44,11 @@ public class WebAppSpec extends MavenProjSpec {
         this.authenticate = authenticate;
     }
 
-    public String getJerseyVersion() {
-        return jerseyVersion;
+    public Jersey getJersey() {
+        return jersey;
     }
 
-    public void setJerseyVersion(String jerseyVersion) {
-        this.jerseyVersion = jerseyVersion;
+    public void setJersey(Jersey jersey) {
+        this.jersey = jersey;
     }
 }

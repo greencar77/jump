@@ -20,6 +20,7 @@ import greencar77.jump.model.java.classfile.RestMethod;
 import greencar77.jump.model.java.classfile.TemplateClass;
 import greencar77.jump.model.java.maven.PluginPom;
 import greencar77.jump.model.java.maven.Pom;
+import greencar77.jump.model.java.maven.ServletWebDescriptor;
 import greencar77.jump.model.java.maven.WebDescriptor;
 import greencar77.jump.model.webapp.WebAppModel;
 import greencar77.jump.model.webapp.WebFramework;
@@ -27,6 +28,7 @@ import greencar77.jump.model.webapp.auth.AuthRealm;
 import greencar77.jump.model.webapp.auth.Role;
 import greencar77.jump.model.webapp.auth.User;
 import greencar77.jump.spec.java.MavenProjSpec;
+import greencar77.jump.spec.webapp.JerseyMajorVersion;
 import greencar77.jump.spec.webapp.WebAppSpec;
 
 public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<WebAppSpec, WebAppModel> {
@@ -55,7 +57,7 @@ public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<
         super.build();
         
         model.setTargetContainer(getSpec().getTargetContainer());
-        model.setJerseyVersion(getSpec().getJerseyVersion());
+        model.setJerseyVersion(getSpec().getJersey().getJerseyVersion());
         model.setWebFramework(getSpec().getWebFramework());
         
         if (getSpec().isAuthenticate()) {
@@ -84,7 +86,7 @@ public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<
     protected void validate() {
         super.validate();
         
-        if (getSpec().getWebFramework() == WebFramework.JERSEY && getSpec().getJerseyVersion() == null) {
+        if (getSpec().getWebFramework() == WebFramework.JERSEY && getSpec().getJersey().getJerseyVersion() == null) {
             throw new ValidationException("missing jerseyVersion");
         }
     }
@@ -119,11 +121,24 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
        
         //maven-war-plugin requires web.xml
         WebDescriptor webDescriptor = new WebDescriptor();
-        //TODO jersey servlets
-        webDescriptor.registerServletThirdParty("com.sun.jersey.spi.container.servlet.ServletContainer", "jersey-servlet", "/rest/*", null);
-        model.setServletMappingPrefix("/rest");
-        Validate.notNull(getSpec().getJerseyVersion());
-        model.getPom().getDependencies().add("com.sun.jersey/jersey-servlet/" + getSpec().getJerseyVersion());
+
+        Validate.notNull(getSpec().getJersey().getJerseyVersion());
+        switch (getSpec().getJersey().getJerseyMajorVersion()) {
+        case V1:
+            webDescriptor.registerServletThirdParty("com.sun.jersey.spi.container.servlet.ServletContainer", "jersey-servlet", "/rest/*", null);
+            model.setServletMappingPrefix("/rest");
+            model.getPom().getDependencies().add("com.sun.jersey/jersey-servlet/" + getSpec().getJersey().getJerseyVersion() + "/runtime");
+            break;
+        case V2:
+            ServletWebDescriptor servlet = webDescriptor.registerServletThirdParty("org.glassfish.jersey.servlet.ServletContainer", "jersey-servlet", "/rest/*", null);
+            model.setServletMappingPrefix("/rest");
+            model.getPom().getDependencies().add("org.glassfish.jersey.containers/jersey-container-servlet/" + getSpec().getJersey().getJerseyVersion() + "/runtime");
+            servlet.initParams.put("jersey.config.server.provider.packages", "x.y");
+            break;
+        default:
+            throw new RuntimeException(getSpec().getJersey().getJerseyMajorVersion().name());
+        }
+
 
         if (getSpec().isAuthenticate()) {
             StringBuilder sb = new StringBuilder();
@@ -161,8 +176,17 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
     protected void setupWar() {
 
         if (getSpec().getWebFramework() == WebFramework.JERSEY) {
-            model.getPom().addDependency("com.sun.jersey/jersey-server/" + getSpec().getJerseyVersion());
-            model.getPom().addDependency("com.sun.jersey/jersey-bundle/" + getSpec().getJerseyVersion());
+            switch (getSpec().getJersey().getJerseyMajorVersion()) {
+            case V1:
+                model.getPom().addDependency("com.sun.jersey/jersey-server/" + getSpec().getJersey().getJerseyVersion() + "/runtime");
+                model.getPom().addDependency("com.sun.jersey/jersey-bundle/" + getSpec().getJersey().getJerseyVersion() + "/runtime");
+                break;
+            case V2:
+                model.getPom().addDependency("org.glassfish.jersey.core/jersey-server/" + getSpec().getJersey().getJerseyVersion() + "/runtime");
+                break;
+            default:
+                throw new RuntimeException(getSpec().getJersey().getJerseyMajorVersion().name());
+            }
             /*
     otherwise
     aug. 08, 2017 4:10:02 PM org.apache.catalina.core.StandardWrapperValve invoke
@@ -208,13 +232,23 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         method.classAnnotations.add("@GET");
         restClass.imports.add("javax.ws.rs.GET");
         method.classAnnotations.add("@Produces(MediaType.APPLICATION_JSON)");
-        model.getPom().getDependencies().add("com.sun.jersey/jersey-json/" + getSpec().getJerseyVersion());
-        /*
-         * otherwise
-aug. 08, 2017 4:05:39 PM com.sun.jersey.spi.container.ContainerResponse logException
-SEVERE: Mapped exception to response: 500 (Internal Server Error)
-javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A message body writer for Java class com.x.y.User, and Java type class com.x.y.User, and MIME media type application/json was not found.
-         */
+        switch (getSpec().getJersey().getJerseyMajorVersion()) {
+        case V1:
+            model.getPom().getDependencies().add("com.sun.jersey/jersey-json/" + getSpec().getJersey().getJerseyVersion() + "/runtime");
+            /*
+             * otherwise
+    aug. 08, 2017 4:05:39 PM com.sun.jersey.spi.container.ContainerResponse logException
+    SEVERE: Mapped exception to response: 500 (Internal Server Error)
+    javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A message body writer for Java class com.x.y.User, and Java type class com.x.y.User, and MIME media type application/json was not found.
+             */
+            break;
+        case V2:
+            //https://stackoverflow.com/questions/26207252/messagebodywriter-not-found-for-media-type-application-json
+            model.getPom().getDependencies().add("org.glassfish.jersey.media/jersey-media-json-jackson/" + getSpec().getJersey().getJerseyVersion() + "/runtime");
+            break;
+        default:
+            throw new RuntimeException(getSpec().getJersey().getJerseyMajorVersion().name());
+        }
         restClass.imports.add("javax.ws.rs.Produces");
         restClass.imports.add("javax.ws.rs.core.MediaType");
         method.getContent().append(code(indent(TAB + TAB,
@@ -301,18 +335,18 @@ javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A mess
     }
     
     protected void addDirectDependencies() {
-        Set<String> absoluteClasses = new HashSet<>();
+        Set<String> consolidatedImportedClassList = new HashSet<>();
         
         for (ClassFile clazz: model.getClassFiles()) {
-            absoluteClasses.addAll(clazz.imports);
+            consolidatedImportedClassList.addAll(clazz.imports);
         }
         
-        for (String absoluteClass: absoluteClasses) {
+        for (String absoluteClass: consolidatedImportedClassList) {
             String artifact = artifactSolver.getArtifact(absoluteClass);
             if (artifact != null) {
-                if (!model.getPom().getDependencies().contains(artifact)) {
-                    System.out.println(absoluteClass + ":" + artifact);
-                    model.getPom().getDependencies().add(artifact);
+                System.out.println(absoluteClass + ":" + artifact);
+                if (!model.getPom().getDependencies().contains(artifact + "/provided")) {
+                    model.getPom().getDependencies().add(artifact + "/provided");
                 }
             }
         }

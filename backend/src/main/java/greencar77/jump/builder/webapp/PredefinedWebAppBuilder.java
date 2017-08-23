@@ -11,6 +11,8 @@ import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.model.webapp.Container;
 import greencar77.jump.model.webapp.WebAppModel;
 import greencar77.jump.model.webapp.WebFramework;
+import greencar77.jump.spec.webapp.Jersey;
+import greencar77.jump.spec.webapp.JerseyMajorVersion;
 import greencar77.jump.spec.webapp.WebAppSpec;
 
 public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppModel> implements Predefined<WebAppModel> {
@@ -162,7 +164,33 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
         spec.setTargetContainer(Container.TOMCAT);
         spec.setServlet3Support(false);
         spec.setWebFramework(WebFramework.JERSEY);
-        spec.setJerseyVersion("1.19.4");
+        Jersey jersey = new Jersey();
+        jersey.setJerseyMajorVersion(JerseyMajorVersion.V1);
+        jersey.setJerseyVersion("1.19.4");
+        spec.setJersey(jersey);
+        spec.setAppGenerator("buildAppSimple");
+        spec.setAuthenticate(true);
+
+        setSpec(spec);
+
+        build();
+
+        return model;
+    }
+
+    public WebAppModel specWebappTomcatAuthJersey2() {
+        WebAppSpec spec = new WebAppSpec();
+        spec.setGroupId("x.y");
+        spec.setArtifactId("webappTomcatAuthJersey2");
+        spec.setRootPackage(spec.getGroupId());
+
+        spec.setTargetContainer(Container.TOMCAT);
+        spec.setServlet3Support(false);
+        spec.setWebFramework(WebFramework.JERSEY);
+        Jersey jersey = new Jersey();
+        jersey.setJerseyMajorVersion(JerseyMajorVersion.V2);
+        jersey.setJerseyVersion("2.25.1");
+        spec.setJersey(jersey);
         spec.setAppGenerator("buildAppSimple");
         spec.setAuthenticate(true);
 
