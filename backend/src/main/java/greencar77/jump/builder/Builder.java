@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import greencar77.jump.model.Model;
 
 public abstract class Builder<S, M extends Model> {
-    private static final String SPEC_METHOD_PREFIX = "spec";
+    public static final String SPEC_METHOD_PREFIX = "spec";
     
     private S spec;
 
