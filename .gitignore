@@ -4,9 +4,9 @@
 .idea
 *.iml
 notes.txt
+run.bat
 target/
 buffer/
 backend/old_classes/
 backend/generated/template/
-frontend/
 

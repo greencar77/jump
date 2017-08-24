@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="css/wizard.css" />
+<title>init</title>
+<script src="../../_angular/angular.js"></script>
+<script src="../../_angular/angular-ui-router.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/routes.js"></script>
+    <script src="controllers/MainCtrl.js"></script>
+</head>
+<body ng-app="mainModule" ng-controller="MainCtrl">
+
+<div>
+    <select ng-model="selectedClass">
+        <option ng-repeat="s in specs" value="{{s.className}}">{{s.title}} ({{s.className}})</option>
+    </select>
+</div>
+
+<div ng-include="selview"></div>
+
+</body>
+</html>

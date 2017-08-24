@@ -1,0 +1,20 @@
+﻿body {
+	font-family:"arial";
+	background-color: lightgray;
+}
+
+div {
+	float: left;
+	clear: both;
+}
+
+.params {
+	margin-left: 5px;
+	margin-top: 5px;
+	padding-left: 3px;
+	padding-right: 3px;
+	#background-color: green;
+	border: 1px dotted black;
+	float: left;
+	#width: 100%;
+}

@@ -1,0 +1,24 @@
+<div id="plat_js" class="params" ng-if="config.platform == 'javascript'">
+    <input type="checkbox" ng-model="config.javascript.jquery" value="jquery">jQuery<br/>
+    <input type="checkbox" ng-model="config.javascript.angular">Angular.js<br/>
+    <input type="checkbox" ng-model="config.javascript.bootstrap" value="bootstrap">Bootstrap<br/>
+
+    <div id="angular_version" class="params" ng-if="config.javascript.angular">
+        Angular version:<br/>
+        <input type="radio" ng-model="config.javascript.angularVersion" value="1.5.7">1.5.7<br/>
+        <input type="radio" ng-model="config.javascript.angularVersion" value="2.x">2.x<br/>
+    </div>
+
+    <div id="angular_features" class="params" ng-if="config.javascript.angular">
+        Angular features:<br/>
+        <input type="checkbox" ng-model="config.javascript.angularRoutes">Routes<br/>
+        <input type="checkbox" ng-model="config.javascript.uiRoutes">UI Routes (ui.router)<br/>
+    </div>
+
+    <div id="angular_source" class="params" ng-if="config.javascript.angular">
+        Angular source:<br/>
+        <input type="radio" ng-model="config.javascript.angularSource" value="NONE">None<br/>
+        <input type="radio" ng-model="config.javascript.angularSource" value="STANDALONE">Standalone (includes angular.js)<br/>
+        <input type="radio" ng-model="config.javascript.angularSource" value="RELATIVE">Relative (_angular/angular.js)<br/>
+    </div>
+</div>
