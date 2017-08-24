@@ -7,6 +7,6 @@ notes.txt
 target/
 buffer/
 backend/old_classes/
-backend/generated/
+backend/generated/template/
 frontend/
 

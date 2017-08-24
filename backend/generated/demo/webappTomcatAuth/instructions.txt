@@ -1,0 +1,15 @@
+Preparation instructions:
+xcopy /s /Y target\*.war <TOMCAT_HOME>\webapps
+xcopy /s /Y tomcat\conf\webappTomcatAuth-tomcat-users.xml <TOMCAT_HOME>\conf
+assert: <TOMCAT_HOME>\conf\server.xml is updated to contain data of tomcat\conf\server.xml
+assert: TOMCAT instance is running
+
+Some endpoints:
+http://localhost:8080/webappTomcatAuth/rest/user
+
+Web framework: Jersey 1.19.4
+
+Security: Authentication is needed
+
+==Restlet==
+Create project: webappTomcatAuth
