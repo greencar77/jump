@@ -1,5 +1,7 @@
 <div id="mavenproj">
-    <ng-include src="'views/root.html'"></ng-include>
-    WebApp
-    <ng-include ng-show="spec == MavenProjSpec" src="'views/generation.html'"></ng-include>
+    <!--ng-include src="'views/root.html'"></ng-include-->
+    <div ng-include="'views/root.html'"></div>
+    <br/>
+    MavenProj
+    <ng-include ng-show="config.level == 'MavenProjSpec'" src="'views/generation.html'"></ng-include>
 </div>

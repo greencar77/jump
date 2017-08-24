@@ -1,4 +1,4 @@
 "use strict";
 
-var mod1 = angular.module('mainModule', ['ui.router']);
+var mod1 = angular.module('mainModule', ['ngRoute']);
 

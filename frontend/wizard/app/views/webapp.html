@@ -1,5 +1,13 @@
 <div id="webapp">
-    <ng-include src="'views/mavenproj.html'"></ng-include>
-    WebApp
-    <ng-include ng-show="spec == WebAppSpec" src="'views/generation.html'"></ng-include>
+    <!--ng-include src="'views/mavenproj.html'"></ng-include-->
+    <div ng-include="'views/mavenproj.html'"></div>
+    <br/>
+    WebApp<br/>
+    Target container: <select ng-model="config.targetContainer" ng-options="x for x in targetContainerList"></select><br/>
+    Web framework: <select ng-model="config.webFramework" ng-options="x for x in webFrameworkList"></select><br/>
+    <div ng-show="config.jersey">
+    Jersey version: <input ng-model="config.jersey.jerseyVersion" type="text"><br/>
+    </div>
+    <br/>
+    <ng-include ng-show="config.level == 'WebAppSpec'" src="'views/generation.html'"></ng-include>
 </div>
