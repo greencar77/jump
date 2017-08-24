@@ -1,9 +1,10 @@
 package greencar77.jump;
 
+import greencar77.jump.builder.BuilderFactory;
 import greencar77.jump.builder.java.PredefinedMavenProjBuilder;
 import greencar77.jump.builder.js.PredefinedAngularAppBuilder;
 import greencar77.jump.builder.webapp.PredefinedWebAppBuilder;
-import greencar77.jump.builder.webapp.WebAppBuilder;
+import greencar77.jump.generator.GeneratorFactory;
 import greencar77.jump.generator.java.MavenProjGenerator;
 import greencar77.jump.generator.js.PlunkerAngularGenerator;
 import greencar77.jump.generator.js.StandaloneAngularGenerator;
@@ -11,8 +12,9 @@ import greencar77.jump.generator.webapp.WebAppGenerator;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.js.AngularAppModel;
 import greencar77.jump.model.webapp.Container;
-import greencar77.jump.model.webapp.WebAppModel;
 import greencar77.jump.model.webapp.WebFramework;
+import greencar77.jump.spec.webapp.Jersey;
+import greencar77.jump.spec.webapp.JerseyMajorVersion;
 import greencar77.jump.spec.webapp.WebAppSpec;
 
 
@@ -28,8 +30,8 @@ public class App {
         //predefinedWebApp("spring4RestTomcat");
         //predefinedWebApp("spring4RestWildfly");
         //predefinedMavenProj("emptyMavenProject");
-        predefinedWebApp("webappTomcatAuth");
-        //playground();
+        //predefinedWebApp("webappTomcatAuth");
+        playground();
     }
     
     protected static void predefinedStandalone(String specId) {
@@ -68,8 +70,12 @@ public class App {
         spec.setTargetContainer(Container.WILDFLY);
         spec.setServlet3Support(false);
         spec.setWebFramework(WebFramework.JERSEY);
+        Jersey jersey = new Jersey();
+        jersey.setJerseyMajorVersion(JerseyMajorVersion.V2);
+        jersey.setJerseyVersion("2.25.1");
+        spec.setJersey(jersey);
         spec.setAppGenerator("buildAppSimple");
 
-        new WebAppGenerator(projectFolder, new WebAppBuilder<WebAppSpec, WebAppModel>(spec).build()).generate();
+        GeneratorFactory.create(projectFolder, BuilderFactory.create(spec).build()).generate();
     }
 }

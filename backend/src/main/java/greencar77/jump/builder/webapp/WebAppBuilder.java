@@ -29,6 +29,7 @@ import greencar77.jump.model.webapp.WebFramework;
 import greencar77.jump.model.webapp.auth.AuthRealm;
 import greencar77.jump.model.webapp.auth.Role;
 import greencar77.jump.model.webapp.auth.User;
+import greencar77.jump.spec.Spec;
 import greencar77.jump.spec.java.MavenProjSpec;
 import greencar77.jump.spec.webapp.JerseyMajorVersion;
 import greencar77.jump.spec.webapp.WebAppSpec;
@@ -86,7 +87,11 @@ public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<
     @Override
     protected void validate() {
         super.validate();
-        
+
+        if (getSpec().getWebFramework() == WebFramework.JERSEY && getSpec().getJersey() == null) {
+            throw new ValidationException("missing jersey");
+        }
+
         if (getSpec().getWebFramework() == WebFramework.JERSEY && getSpec().getJersey().getJerseyVersion() == null) {
             throw new ValidationException("missing jerseyVersion");
         }

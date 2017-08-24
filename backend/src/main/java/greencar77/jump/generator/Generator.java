@@ -42,6 +42,7 @@ public abstract class Generator<M> {
     }*/
 
     public final void generate() {
+        System.out.println(this.getClass().getSimpleName());
         clean();
         generateContent();
         generateInstructions();

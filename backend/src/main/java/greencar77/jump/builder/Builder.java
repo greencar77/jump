@@ -17,6 +17,8 @@ public abstract class Builder<S, M extends Model> {
     }
     
     public M build() {
+        System.out.println(spec.getClass().getSimpleName());
+        System.out.println(this.getClass().getSimpleName());
         validate();
         return buildModel();
     }
