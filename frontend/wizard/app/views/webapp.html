@@ -1,11 +1,11 @@
-<div id="webapp">
+<div id="webapp" class="params">
     <!--ng-include src="'views/mavenproj.html'"></ng-include-->
     <div ng-include="'views/mavenproj.html'"></div>
     <br/>
     WebApp<br/>
     Target container: <select ng-model="config.targetContainer" ng-options="x for x in targetContainerList"></select><br/>
     Web framework: <select ng-model="config.webFramework" ng-options="x for x in webFrameworkList"></select><br/>
-    <div ng-show="config.jersey">
+    <div ng-show="config.jersey" class="params">
     Jersey version: <input ng-model="config.jersey.jerseyVersion" type="text"><br/>
     </div>
     <br/>
