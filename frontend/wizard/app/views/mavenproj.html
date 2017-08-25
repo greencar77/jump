@@ -2,6 +2,10 @@
     <!--ng-include src="'views/root.html'"></ng-include-->
     <div ng-include="'views/root.html'"></div>
     <br/>
-    MavenProj
+    MavenProj<br/>
+    groupId: <input ng-model="config.groupId" type="text"> artifactId: <input ng-model="config.artifactId" type="text"><br/>
+    Root package: <input ng-model="config.rootPackage" type="text"><br/>
+    Application generation method: <input ng-model="config.appGenerator" type="text"><br/>
+    <br/>
     <ng-include ng-show="config.level == 'MavenProjSpec'" src="'views/generation.html'"></ng-include>
 </div>
