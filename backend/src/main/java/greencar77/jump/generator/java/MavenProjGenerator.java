@@ -15,6 +15,8 @@ import greencar77.jump.model.java.classfile.RestClassFile;
 import greencar77.jump.model.java.classfile.RestMethod;
 import greencar77.jump.model.java.classfile.TemplateClass;
 import greencar77.jump.model.java.maven.BuildPom;
+import greencar77.jump.model.java.maven.Dependency;
+import greencar77.jump.model.java.maven.DependencyScope;
 import greencar77.jump.model.java.maven.PluginPom;
 import greencar77.jump.model.java.maven.Pom;
 
@@ -87,7 +89,7 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
 
         sb.append(LF);
         sb.append(TAB + "<dependencies>" + LF);
-        for (String dependency: pom.getDependencies()) {
+        for (Dependency dependency: pom.getDependencies()) {
             outputDependency(sb, dependency);
         }
         sb.append(TAB + "</dependencies>" + LF);
@@ -118,14 +120,14 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     }
 
 
-    private void outputDependency(StringBuilder sb, String dependency) {
-        String parts[] = dependency.split("/");
+    private void outputDependency(StringBuilder sb, Dependency dependency) {
+        String parts[] = dependency.getName().split("/");
         sb.append(TAB + TAB + "<dependency>" + LF);
         sb.append(TAB + TAB + TAB + "<groupId>" + parts[0] + "</groupId>" + LF);
         sb.append(TAB + TAB + TAB + "<artifactId>" + parts[1] + "</artifactId>" + LF);
         sb.append(TAB + TAB + TAB + "<version>" + parts[2] + "</version>" + LF);
-        if (parts.length >= 4) {
-            sb.append(TAB + TAB + TAB + "<scope>" + parts[3] + "</scope>" + LF);
+        if (dependency.getScope() != DependencyScope.ANY) {
+            sb.append(TAB + TAB + TAB + "<scope>" + dependency.getScope().getXmlTitle() + "</scope>" + LF);
         }
         sb.append(TAB + TAB + "</dependency>" + LF);
     }

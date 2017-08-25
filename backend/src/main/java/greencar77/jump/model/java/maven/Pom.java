@@ -1,14 +1,15 @@
 package greencar77.jump.model.java.maven;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class Pom {
     private String groupId;
     private String artifactId;
     private String packaging = "jar";
-    protected List<String> dependencies = new ArrayList<String>();
+    protected Map<String, Dependency> dependencies = new HashMap<>();
     private BuildPom build = new BuildPom();
     public Properties properties = new Properties();
 
@@ -31,12 +32,8 @@ public class Pom {
         this.artifactId = artifactId;
     }
 
-    public List<String> getDependencies() {
-        return dependencies;
-    }
-
-    public void addDependency(String dependency) {
-        dependencies.add(dependency);
+    public Collection<Dependency> getDependencies() {
+        return dependencies.values();
     }
 
     public BuildPom getBuild() {
@@ -54,5 +51,36 @@ public class Pom {
     public void setPackaging(String packaging) {
         this.packaging = packaging;
     }
+    
+    public void addDependencyImported(String name) {
+        Dependency dependency = getDependency(name);
+        if (dependency == null) {
+            Dependency newDependency = new Dependency(name, DependencyScope.PROVIDED); //the minimum required
+            dependencies.put(newDependency.getName(), newDependency);
+        } else {
+            if (!dependency.getScope().isCompileAvailable()) {
+                dependency.setScope(DependencyScope.ANY);
+            } //else we already have what do we want
+        }
+    }
+    
+    public void addDependencyRuntime(String name) {
+        Dependency dependency = getDependency(name);
+        if (dependency == null) {
+            Dependency newDependency = new Dependency(name, DependencyScope.RUNTIME); //the minimum required
+            dependencies.put(newDependency.getName(), newDependency);
+        } else {
+            if (!dependency.getScope().isRuntimeAvailable()) {
+                dependency.setScope(DependencyScope.ANY);
+            } //else we already have what do we want
+        }
+    }
 
+    public Dependency getDependency(String name) {
+        if (dependencies.containsKey(name)) {
+            return dependencies.get(name);
+        } else {
+            return null;
+        }
+    }
 }

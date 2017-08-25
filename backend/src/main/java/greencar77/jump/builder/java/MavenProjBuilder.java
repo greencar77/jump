@@ -1,9 +1,13 @@
 package greencar77.jump.builder.java;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang.Validate;
 
 import greencar77.jump.builder.Builder;
 import greencar77.jump.model.java.MavenProjModel;
+import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.spec.java.MavenProjSpec;
 
@@ -37,5 +41,31 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     
     protected String getPackagingType() {
         return "jar";
+    }
+
+    protected void addDirectDependencies() {
+        PreferenceConfig preferenceConfig = getPreferenceConfig();
+
+        ArtifactSolver artifactSolver = new ArtifactSolver(preferenceConfig);
+        Set<String> consolidatedImportedClassList = new HashSet<>();
+
+        for (ClassFile clazz: model.getClassFiles()) {
+            consolidatedImportedClassList.addAll(clazz.imports);
+        }
+
+        for (String absoluteClass: consolidatedImportedClassList) {
+            if (absoluteClass.startsWith(getSpec().getRootPackage())) {
+                continue; //resolve only third party classes
+            }
+            String artifact = artifactSolver.getArtifact(absoluteClass);
+            if (artifact != null) {
+                System.out.println(absoluteClass + ":" + artifact);
+                model.getPom().addDependencyImported(artifact);
+            }
+        }
+    }
+
+    protected PreferenceConfig getPreferenceConfig() {
+        return null;
     }
 }
