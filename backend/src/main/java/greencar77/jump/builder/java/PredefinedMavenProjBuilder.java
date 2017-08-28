@@ -50,9 +50,4 @@ public class PredefinedMavenProjBuilder extends MavenProjBuilder<MavenProjSpec, 
         return model;
     }
 
-    private void buildAppSimple() {
-
-        model.getRawFiles().add(FileUtils.createRawJavaClassFromTemplate("App.java", getSpec().getRootPackage(), DEFAULT_MAIN_CLASS_NAME));
-    }
-
 }

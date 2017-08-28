@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 
+import greencar77.jump.FileUtils;
 import greencar77.jump.builder.Builder;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.classfile.ClassFile;
@@ -30,14 +31,16 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         
         model.setProjectFolder(getSpec().getProjectName());
         
-        String warFilename = getSpec().getArtifactId(); //will be used in url
-        
         //config project
         Pom pom = new Pom(getSpec().getGroupId(), getSpec().getArtifactId());
         model.setPom(pom);        
         pom.setPackaging(getPackagingType()); //TODO enum
-        pom.getBuild().finalName = warFilename; //this name will be used as build (war) file name
-        
+        pom.getBuild().finalName = getSpec().getArtifactId(); //this name will be used as build (jar/war) file name
+
+        if (getSpec().getAppGenerator() != null) {
+            invoke(getSpec().getAppGenerator());
+        }
+
         return model;
     }
     
@@ -81,5 +84,11 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
 
     protected PreferenceConfig getPreferenceConfig() {
         return null;
+    }
+
+
+    protected void buildAppSimple() {
+
+        model.getRawFiles().add(FileUtils.createRawJavaClassFromTemplate("App.java", getSpec().getRootPackage(), DEFAULT_MAIN_CLASS_NAME));
     }
 }

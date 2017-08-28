@@ -52,12 +52,20 @@ public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<
 
     @Override
     public WebAppModel buildModel() {
-        super.buildModel();
-        
+        Validate.notNull(getSpec());
+
+        model.setProjectFolder(getSpec().getProjectName());
+
+        //config project
+        Pom pom = new Pom(getSpec().getGroupId(), getSpec().getArtifactId());
+        model.setPom(pom);        
+        pom.setPackaging(getPackagingType()); //TODO enum
+        pom.getBuild().finalName = getSpec().getArtifactId(); //this name will be used as build (jar/war) file name
+
         model.setTargetContainer(getSpec().getTargetContainer());
         model.setJerseyVersion(getSpec().getJersey().getJerseyVersion());
         model.setWebFramework(getSpec().getWebFramework());
-        
+
         if (getSpec().isAuthenticate()) {
             setupAuthRealm();
         }

@@ -59,9 +59,13 @@ public abstract class Builder<S, M extends Model> {
     
     protected void invoke(String methodName) {
         try {
-            Method m = getMethod(this.getClass(), methodName);
+            Method m = getMethodSilently(this.getClass(), methodName);
             if (m == null) {
-                m = getMethod(this.getClass().getSuperclass(), methodName);
+                m = getMethodSilently(this.getClass().getSuperclass(), methodName);
+            }
+            if (m == null) {
+                //did not succeed to find the method in the whole class hierarchy
+                throw new RuntimeException("method not found: " + methodName);
             }
             m.setAccessible(true);
             System.out.println("Invoke: " + m.getName());
@@ -77,7 +81,7 @@ public abstract class Builder<S, M extends Model> {
         }
     }
 
-    private Method getMethod(Class<?> clazz, String methodName) {
+    private Method getMethodSilently(Class<?> clazz, String methodName) {
         try {
             return clazz.getDeclaredMethod(methodName);
         } catch (NoSuchMethodException e) {

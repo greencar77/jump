@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import greencar77.jump.builder.BuilderFactory;
 import greencar77.jump.generator.GeneratorFactory;
 import greencar77.jump.spec.Spec;
+import greencar77.jump.spec.java.MavenProjSpec;
 import greencar77.jump.spec.webapp.WebAppSpec;
 
 public class AppFromFile {
@@ -21,7 +22,7 @@ public class AppFromFile {
         Spec spec = loadSpec(clazz);
         GeneratorFactory.create(BuilderFactory.create(spec).build()).generate();
     }
-    
+
     private static Class<? extends Spec> detectClass() {
         List<String> lines;
         try {
@@ -38,13 +39,19 @@ public class AppFromFile {
             }
         }
         
+        return detectClass(name);
+    }
+
+    private static Class<? extends Spec> detectClass(String name) {
         if (name.equals(WebAppSpec.class.getSimpleName())) {
             return WebAppSpec.class;
+        } else if (name.equals(MavenProjSpec.class.getSimpleName())) {
+                return MavenProjSpec.class;
         } else {
             throw new RuntimeException(name);
         }
     }
-     
+
     private static Spec loadSpec(Class<? extends Spec> clazz) {
         ObjectMapper mapper = new ObjectMapper();
         
