@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true) //TODO remove
 public class Spec {
-    private String projectName;
+    private String projectName; //generation instance id, change it for each generation
     private Platform platform;
     private Javascript javascript;
 

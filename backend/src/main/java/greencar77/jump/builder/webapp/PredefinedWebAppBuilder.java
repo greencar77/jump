@@ -32,6 +32,7 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
 
     public WebAppModel specWebappSimpleTomcat() {
         WebAppSpec spec = new WebAppSpec();
+        spec.setProjectName("webappSimpleTomcat");
         spec.setGroupId("x.y");
         spec.setArtifactId("webappSimpleTomcat");
         spec.setRootPackage(spec.getGroupId());
@@ -50,6 +51,7 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
 
     public WebAppModel specWebappSimpleWildfly() {
         WebAppSpec spec = new WebAppSpec();
+        spec.setProjectName("webappSimpleWildfly");
         spec.setGroupId("x.y");
         spec.setArtifactId("webappSimpleWildfly");
         spec.setRootPackage(spec.getGroupId());
@@ -121,6 +123,7 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
     public WebAppModel specSpring4RestTomcat() {
         //http://viralpatel.net/blogs/spring-4-mvc-rest-example-json/
         WebAppSpec spec = new WebAppSpec();
+        spec.setProjectName("spring4RestTomcat");
         spec.setGroupId("x.y");
         spec.setArtifactId("spring4RestTomcat");
         spec.setRootPackage(spec.getGroupId());
@@ -139,6 +142,7 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
 
     public WebAppModel specSpring4RestWildfly() {
         WebAppSpec spec = new WebAppSpec();
+        spec.setProjectName("spring4RestWildfly");
         spec.setGroupId("x.y");
         spec.setArtifactId("spring4RestWildfly");
         spec.setRootPackage(spec.getGroupId());
@@ -157,6 +161,7 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
 
     public WebAppModel specWebappTomcatAuth() {
         WebAppSpec spec = new WebAppSpec();
+        spec.setProjectName("webappTomcatAuth");
         spec.setGroupId("x.y");
         spec.setArtifactId("webappTomcatAuth");
         spec.setRootPackage(spec.getGroupId());
@@ -180,6 +185,7 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
 
     public WebAppModel specWebappTomcatAuthJersey2() {
         WebAppSpec spec = new WebAppSpec();
+        spec.setProjectName("webappTomcatAuthJersey2");
         spec.setGroupId("x.y");
         spec.setArtifactId("webappTomcatAuthJersey2");
         spec.setRootPackage(spec.getGroupId());

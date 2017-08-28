@@ -24,15 +24,16 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
     
     private WebAppModel model;
 
-    public WebAppGenerator(String projectFolder, WebAppModel model) {
-        super(projectFolder, model);
+    public WebAppGenerator(WebAppModel model) {
+        super(model);
         this.model = model;
     }
 
     @Override
     protected void generateContent() {
         if (model.getAngularApp() != null) {
-            angularAppGenerator = new StandaloneAngularGenerator<>(projectFolder + WEBAPP_FOLDER, model.getAngularApp());
+            model.getAngularApp().setProjectFolder(model.getProjectFolder() + WEBAPP_FOLDER);
+            angularAppGenerator = new StandaloneAngularGenerator<>(model.getAngularApp());
             angularAppGenerator.generate();
         }
 
@@ -65,7 +66,7 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
         switch (model.getTargetContainer()) {
             case TOMCAT:
                 sb.append("xcopy /s /Y target\\*.war <TOMCAT_HOME>\\webapps" + LF);
-                sb.append("xcopy /s /Y tomcat\\conf\\" + projectFolder + "-" + "tomcat-users.xml <TOMCAT_HOME>\\conf" + LF);
+                sb.append("xcopy /s /Y tomcat\\conf\\" + model.getProjectFolder() + "-" + "tomcat-users.xml <TOMCAT_HOME>\\conf" + LF);
                 sb.append("assert: " + "<TOMCAT_HOME>\\conf\\server.xml" + " is updated to contain data of " + "tomcat\\conf\\" + "server.xml" + LF);
                 break;
             case WILDFLY:
@@ -98,7 +99,7 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
 
         sb.append(LF);
         sb.append("==Restlet==" + LF);
-        sb.append("Create project: " + projectFolder + LF);
+        sb.append("Create project: " + model.getProjectFolder() + LF);
 
         saveResource(INSTRUCTIONS_FILENAME, sb.toString().getBytes());
     }
@@ -191,7 +192,7 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
         }
 
         sb.append("</tomcat-users>" + LF);
-        saveResource("tomcat/conf/" + projectFolder + "-" + "tomcat-users.xml", sb.toString().getBytes());
+        saveResource("tomcat/conf/" + model.getProjectFolder() + "-" + "tomcat-users.xml", sb.toString().getBytes());
     }
 
     private void generateTomcatServerConf() {
@@ -205,7 +206,7 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
         sb.append(TAB + TAB + TAB + "type=\"org.apache.catalina.UserDatabase\"" + LF);
         sb.append(TAB + TAB + TAB + "description=\"User database that can be updated and saved\"" + LF);
         sb.append(TAB + TAB + TAB + "factory=\"org.apache.catalina.users.MemoryUserDatabaseFactory\"" + LF);
-        sb.append(TAB + TAB + TAB + "pathname=\"conf/" + projectFolder + "-" + "tomcat-users.xml" + "\" />" + LF);
+        sb.append(TAB + TAB + TAB + "pathname=\"conf/" + model.getProjectFolder() + "-" + "tomcat-users.xml" + "\" />" + LF);
         sb.append(TAB + "</GlobalNamingResources>" + LF);
         sb.append("</Server>" + LF);
         saveResource("tomcat/conf/" + "server.xml", sb.toString().getBytes());

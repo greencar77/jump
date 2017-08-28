@@ -23,8 +23,8 @@ import greencar77.jump.model.java.maven.Pom;
 public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     implements ClassGenerator {
 
-    public MavenProjGenerator(String projectFolder, MavenProjModel model) {
-        super(projectFolder, model);
+    public MavenProjGenerator(MavenProjModel model) {
+        super(model);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
 
     protected void mavenBuild() {
         String command = "clean package";
-        String path = new File(OUTPUT_PATH + projectFolder + "/").getAbsolutePath();
+        String path = new File(OUTPUT_PATH + model.getProjectFolder() + "/").getAbsolutePath();
 
         //https://stackoverflow.com/questions/5141788/how-to-run-maven-from-java/19904341#19904341
         MavenCli cli = new MavenCli();

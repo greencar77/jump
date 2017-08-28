@@ -9,8 +9,9 @@ import org.apache.commons.lang.Validate;
 
 import greencar77.jump.FileUtils;
 import greencar77.jump.VelocityManager;
+import greencar77.jump.model.Model;
 
-public abstract class Generator<M> {
+public abstract class Generator<M extends Model> {
     protected static final VelocityManager TEMPLATE_MANAGER = VelocityManager.getVelocityManager();
 
     public static final String OUTPUT_PATH = "generated/template/";
@@ -20,15 +21,13 @@ public abstract class Generator<M> {
     protected static final String INSTRUCTIONS_FILENAME = "instructions.txt";
 
     //protected String pathOffset;
-    protected String projectFolder;
     protected M model;
     
     private Set<String> files = new HashSet<>();
     
-    public Generator(String projectFolder, M model) {
-        Validate.notEmpty(projectFolder);
+    public Generator(M model) {
+        Validate.notEmpty(model.getProjectFolder());
 
-        this.projectFolder = projectFolder;
         this.model = model;
     }
     
@@ -51,7 +50,7 @@ public abstract class Generator<M> {
     protected abstract void generateInstructions();
 
     private void clean() {
-        final File templateFolder = new File(OUTPUT_PATH + projectFolder);
+        final File templateFolder = new File(OUTPUT_PATH + model.getProjectFolder());
         if (CLEAN_TEMPLATE_CONTENTS_ONLY) {
             if (templateFolder.listFiles() != null) {
                 for (File file: templateFolder.listFiles()) {
@@ -84,6 +83,6 @@ public abstract class Generator<M> {
             throw new RuntimeException("Duplicate file: " + filename);
         }
         files.add(filename);
-        return FileUtils.saveFileForced(OUTPUT_PATH + projectFolder + "/" + filename,  content);
+        return FileUtils.saveFileForced(OUTPUT_PATH + model.getProjectFolder() + "/" + filename,  content);
     }
 }

@@ -37,26 +37,26 @@ public class App {
     protected static void predefinedStandalone(String specId) {
         PredefinedAngularAppBuilder builder = new PredefinedAngularAppBuilder(); //no Spec, predefined builder method will be used
         
-        StandaloneAngularGenerator<AngularAppModel> generator = new StandaloneAngularGenerator<AngularAppModel>(specId, builder.build(specId));        
+        StandaloneAngularGenerator<AngularAppModel> generator = new StandaloneAngularGenerator<AngularAppModel>(builder.build(specId));        
         generator.generate();
     }
     
     protected static void predefinedPlunker(String specId) {
         PredefinedAngularAppBuilder builder = new PredefinedAngularAppBuilder(); //no Spec, predefined builder method will be used
         
-        PlunkerAngularGenerator generator = new PlunkerAngularGenerator(specId, builder.build(specId));        
+        PlunkerAngularGenerator generator = new PlunkerAngularGenerator(builder.build(specId));        
         generator.generate();
     }
     
     protected static void predefinedMavenProj(String specId) {
         PredefinedMavenProjBuilder builder = new PredefinedMavenProjBuilder(); //no Spec, predefined builder method will be used
         
-        MavenProjGenerator<MavenProjModel> generator = new MavenProjGenerator<MavenProjModel>(specId, builder.build(specId));
+        MavenProjGenerator<MavenProjModel> generator = new MavenProjGenerator<MavenProjModel>(builder.build(specId));
         generator.generate();
     }
 
     protected static void predefinedWebApp(String specId) {
-        new WebAppGenerator(specId, new PredefinedWebAppBuilder().build(specId)).generate();
+        new WebAppGenerator(new PredefinedWebAppBuilder().build(specId)).generate();
     }
 
     protected static void playground() {
@@ -76,6 +76,6 @@ public class App {
         spec.setJersey(jersey);
         spec.setAppGenerator("buildAppSimple");
 
-        GeneratorFactory.create(projectFolder, BuilderFactory.create(spec).build()).generate();
+        GeneratorFactory.create(BuilderFactory.create(spec).build()).generate();
     }
 }

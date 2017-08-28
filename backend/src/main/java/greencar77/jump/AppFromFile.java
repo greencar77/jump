@@ -19,7 +19,7 @@ public class AppFromFile {
     public static void main(String[] args) {
         Class<? extends Spec> clazz = detectClass();
         Spec spec = loadSpec(clazz);
-        GeneratorFactory.create("xxxx", BuilderFactory.create(spec).build()).generate();
+        GeneratorFactory.create(BuilderFactory.create(spec).build()).generate();
     }
     
     private static Class<? extends Spec> detectClass() {

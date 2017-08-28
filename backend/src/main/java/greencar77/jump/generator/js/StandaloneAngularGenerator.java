@@ -26,8 +26,8 @@ import greencar77.jump.model.angular.html.TemplateHtmlFragment;
 
 public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
 
-    public StandaloneAngularGenerator(String projectFolder, AngularAppModel model) {
-        super(projectFolder, model);
+    public StandaloneAngularGenerator(AngularAppModel model) {
+        super(model);
     }
 
     @Override
@@ -386,7 +386,7 @@ public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
     protected void generateInstructions() {
         StringBuilder sb = new StringBuilder();
         
-        sb.append("\"<CHROME_HOME>\\chrome\" --allow-file-access-from-files <APP_HOME>/" + projectFolder + "/index.html#/" + LF);
+        sb.append("\"<CHROME_HOME>\\chrome\" --allow-file-access-from-files <APP_HOME>/" + model.getProjectFolder() + "/index.html#/" + LF);
 
         saveResource(INSTRUCTIONS_FILENAME, sb.toString().getBytes());
     }

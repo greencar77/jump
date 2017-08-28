@@ -6,8 +6,8 @@ import greencar77.jump.model.js.AngularAppModel;
 
 public class PlunkerAngularGenerator extends StandaloneAngularGenerator<AngularAppModel> {
 
-    public PlunkerAngularGenerator(String projectFolder, AngularAppModel model) {
-        super(projectFolder, model);
+    public PlunkerAngularGenerator(AngularAppModel model) {
+        super(model);
     }
 
     @Override

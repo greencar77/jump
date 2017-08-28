@@ -28,6 +28,8 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     protected MavenProjModel buildModel() {
         Validate.notNull(getSpec());
         
+        model.setProjectFolder(getSpec().getProjectName());
+        
         String warFilename = getSpec().getArtifactId(); //will be used in url
         
         //config project

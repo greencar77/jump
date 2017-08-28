@@ -7,8 +7,8 @@ public class JsFiddleGenerator extends Generator<AngularAppModel> {
 
     private boolean singleFile;
 
-    public JsFiddleGenerator(String projectFolder, AngularAppModel model, boolean singleFile) {
-        super(projectFolder, model);
+    public JsFiddleGenerator(AngularAppModel model, boolean singleFile) {
+        super(model);
         this.singleFile = singleFile;
     }
 

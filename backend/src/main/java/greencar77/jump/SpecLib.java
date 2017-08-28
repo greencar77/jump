@@ -19,13 +19,14 @@ public class SpecLib {
         AngularAppModel model = new AngularAppModel();
         model.setBootstrapCss(true);
 
+        model.setProjectFolder(projectFolder);
         model.setTitle("Modal with UI Bootstrap");
 
         Module module = new Module();
         model.getModules().add(module);
         module.getControllers().add(new Controller()); //default controller for index page
 
-        new StandaloneAngularGenerator<AngularAppModel>(projectFolder, model)
+        new StandaloneAngularGenerator<AngularAppModel>(model)
             .generate();
     }
 
@@ -33,6 +34,7 @@ public class SpecLib {
         String projectFolder = "localStorage";
 
         AngularAppModel angularApp = new AngularAppModel(AngularVersion.LATEST, true);
+        angularApp.setProjectFolder(projectFolder);
         Module module = new Module();
         angularApp.getModules().add(module);
         module.getControllers().add(new Controller());
@@ -47,7 +49,7 @@ public class SpecLib {
         fragment.setTemplate("localStorage/localStorage.html");
         angularApp.getHtmlFragments().add(fragment);
 
-        new StandaloneAngularGenerator<AngularAppModel>(projectFolder, angularApp)
+        new StandaloneAngularGenerator<AngularAppModel>(angularApp)
             .generate();
     }
     
@@ -55,6 +57,7 @@ public class SpecLib {
         String projectFolder = "cookie";
 
         AngularAppModel angularApp = new AngularAppModel(AngularVersion.LATEST, true);
+        angularApp.setProjectFolder(projectFolder);
         angularApp.setNgCookies(true);
         Module module = new Module();
         angularApp.getModules().add(module);
@@ -70,7 +73,7 @@ public class SpecLib {
         fragment.setTemplate("cookie/cookie.html");
         angularApp.getHtmlFragments().add(fragment);
 
-        new StandaloneAngularGenerator<AngularAppModel>(projectFolder, angularApp)
+        new StandaloneAngularGenerator<AngularAppModel>(angularApp)
             .generate();
     }
     
@@ -78,11 +81,12 @@ public class SpecLib {
         String projectFolder = "rest_test";
 
         AngularAppModel model = new AngularAppModel(AngularVersion.LATEST, false);
+        model.setProjectFolder(projectFolder);
         Module module = new Module();
         module.getControllers().add(new Controller());
         model.getModules().add(module);
         
-        new PlunkerAngularGenerator(projectFolder, model)
+        new PlunkerAngularGenerator(model)
             .generate();
     }
     
@@ -90,6 +94,7 @@ public class SpecLib {
         String projectFolder = "extendController2";
 
         AngularAppModel angularApp = new AngularAppModel(AngularVersion.LATEST, true);
+        angularApp.setProjectFolder(projectFolder);
         Module module = new Module();
         angularApp.getModules().add(module);
         Controller contr0 = new Controller("MainCtrl");
@@ -102,7 +107,7 @@ public class SpecLib {
         angularApp.getHtmlFragments().add(new HtmlFragment("first", contr1));
         angularApp.getHtmlFragments().add(new HtmlFragment("second", contr2));
         
-        new PlunkerAngularGenerator(projectFolder, angularApp)
+        new PlunkerAngularGenerator(angularApp)
             .generate();
     }
     
@@ -110,12 +115,13 @@ public class SpecLib {
         String projectFolder = "aaa";
 
         AngularAppModel angularApp = new AngularAppModel(AngularVersion.V_1_5_7, false);
+        angularApp.setProjectFolder(projectFolder);
         Module module = new Module();
         angularApp.getModules().add(module);
         Controller mainContr = new Controller("MainCtrl");
         module.getControllers().add(mainContr);
 
-        new PlunkerAngularGenerator(projectFolder, angularApp)
+        new PlunkerAngularGenerator(angularApp)
             .generate();
     }
     
@@ -123,9 +129,10 @@ public class SpecLib {
         String projectFolder = "aaa";
 
         AngularAppModel model = new AngularAppModel(AngularVersion.V_1_5_7, true);
+        model.setProjectFolder(projectFolder);
         model.getModules().add(new Module());
         
-        new JsFiddleGenerator(projectFolder, model, true)
+        new JsFiddleGenerator(model, true)
             .generate();
     }
     
@@ -133,11 +140,12 @@ public class SpecLib {
         String projectFolder = "temp";
 
         AngularAppModel model = new AngularAppModel(AngularVersion.V_1_5_7, false);
+        model.setProjectFolder(projectFolder);
         Module module = new Module();
         module.getControllers().add(new Controller());
         model.getModules().add(module);
         
-        new PlunkerAngularGenerator(projectFolder, model)
+        new PlunkerAngularGenerator(model)
             .generate();
     }
 
