@@ -143,7 +143,9 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
             }
         }
         
-        sb.append(webDescriptor.getSecuritySection());
+        if (webDescriptor.getSecuritySection() != null) {
+            sb.append(webDescriptor.getSecuritySection());
+        }
 
         sb.append("</web-app>" + LF);
 

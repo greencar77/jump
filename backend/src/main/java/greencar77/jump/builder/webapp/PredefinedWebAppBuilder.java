@@ -197,6 +197,7 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
         jersey.setJerseyMajorVersion(JerseyMajorVersion.V2);
         jersey.setJerseyVersion("2.25.1");
         spec.setJersey(jersey);
+        spec.setSslRestricted(true);
         spec.setAppGenerator("buildAppSimple");
         spec.setAuthenticate(true);
 

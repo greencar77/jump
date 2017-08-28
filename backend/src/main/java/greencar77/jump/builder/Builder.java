@@ -19,11 +19,14 @@ public abstract class Builder<S, M extends Model> {
     public M build() {
         System.out.println(spec.getClass().getSimpleName());
         System.out.println(this.getClass().getSimpleName());
+        setupDefault();
         validate();
         return buildModel();
     }
 
     protected abstract M buildModel();
+
+    protected void setupDefault() {}
 
     protected void validate() {
         if (spec == null) {

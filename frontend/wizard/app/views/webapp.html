@@ -3,6 +3,12 @@
     <div ng-include="'views/mavenproj.html'"></div>
     <br/>
     WebApp<br/>
+
+    <div class="params">
+        Allowed invocation protocol:<br/>
+        <input type="radio" ng-model="config.sslRestricted" value="false" />non-secured & secured with SSL (NONE)<br/>
+        <input type="radio" ng-model="config.sslRestricted" value="true" />only secured with SSL (CONFIDENTIAL)<br/>
+    </div>
     Target container: <select ng-model="config.targetContainer" ng-options="x for x in targetContainerList"></select><br/>
     Web framework: <select ng-model="config.webFramework" ng-options="x for x in webFrameworkList"></select><br/>
     <div ng-show="config.jersey" class="params">

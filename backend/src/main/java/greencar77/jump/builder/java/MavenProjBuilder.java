@@ -41,6 +41,18 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         return model;
     }
     
+    @Override
+    protected void setupDefault() {
+        super.setupDefault();
+        
+        if (getSpec().getGroupId() == null) {
+            getSpec().setGroupId("x.y");
+        }
+        if (getSpec().getArtifactId() == null) {
+            getSpec().setArtifactId(getSpec().getProjectName());
+        }
+    }
+    
     protected String getPackagingType() {
         return "jar";
     }

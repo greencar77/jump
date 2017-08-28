@@ -159,7 +159,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
                     TAB + TAB + "<role-name>" + ROLE + "</role-name>",
                     TAB + "</auth-constraint>",
                     TAB + "<user-data-constraint>",
-                    TAB + TAB + "<transport-guarantee>NONE</transport-guarantee>",
+                    TAB + TAB + "<transport-guarantee>" + (getSpec().getSslRestricted() == null || getSpec().getSslRestricted() == false? "NONE": "CONFIDENTIAL") + "</transport-guarantee>",
                     TAB + "</user-data-constraint>",
                     "</security-constraint>",
                     "<login-config>",

@@ -11,6 +11,7 @@ public class WebAppSpec extends MavenProjSpec {
     private WebFramework webFramework;
     private Jersey jersey;
     private boolean authenticate;
+    private Boolean sslRestricted;
 
     public boolean isServlet3Support() {
         return servlet3Support;
@@ -50,5 +51,13 @@ public class WebAppSpec extends MavenProjSpec {
 
     public void setJersey(Jersey jersey) {
         this.jersey = jersey;
+    }
+
+    public Boolean getSslRestricted() {
+        return sslRestricted;
+    }
+
+    public void setSslRestricted(Boolean sslRestricted) {
+        this.sslRestricted = sslRestricted;
     }
 }
