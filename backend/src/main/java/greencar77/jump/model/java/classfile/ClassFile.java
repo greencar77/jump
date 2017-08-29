@@ -18,7 +18,8 @@ public class ClassFile implements ClassGeneratorVisitable {
     private StringBuilder stateBody = new StringBuilder();
     private StringBuilder body = new StringBuilder();
     private boolean logging;
-    
+    private List<Method> methods = new ArrayList<>();
+
     public ClassFile(String packageName, String className) {
         this.packageName = packageName;
         this.className = className;
@@ -70,5 +71,9 @@ public class ClassFile implements ClassGeneratorVisitable {
     @Override
     public StringBuilder generateWith(ClassGenerator generator) {
         return generator.generate(this);        
+    }
+
+    public List<Method> getMethods() {
+        return methods;
     }
 }

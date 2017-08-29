@@ -1,5 +1,9 @@
 package greencar77.jump.builder.java;
 
+import static greencar77.jump.generator.CodeManager.code;
+import static greencar77.jump.generator.CodeManager.indent;
+import static greencar77.jump.generator.Generator.TAB;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,6 +13,7 @@ import greencar77.jump.FileUtils;
 import greencar77.jump.builder.Builder;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.classfile.ClassFile;
+import greencar77.jump.model.java.classfile.Method;
 import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.spec.java.MavenProjSpec;
 
@@ -40,6 +45,8 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         if (getSpec().getAppGenerator() != null) {
             invoke(getSpec().getAppGenerator());
         }
+
+        addDirectDependencies();
 
         return model;
     }
@@ -90,5 +97,29 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     protected void buildAppSimple() {
 
         model.getRawFiles().add(FileUtils.createRawJavaClassFromTemplate("App.java", getSpec().getRootPackage(), DEFAULT_MAIN_CLASS_NAME));
+    }
+
+    protected void buildAppExcel() {
+        Method method;
+
+        ClassFile mainClass = new ClassFile(getSpec().getRootPackage(), "App");
+        method = new Method(true, null, "main", "String[] args");
+        mainClass.getMethods().add(method);
+        model.getClassFiles().add(mainClass);
+
+        ClassFile clazz = new ClassFile(getSpec().getRootPackage(), "ExcelReader");
+        method = new Method(false, null, "run", null);
+        method.getContent().append(code(indent(TAB + TAB,
+//                "XSSFWorkbook workbook = new XSSFWorkbook(\"sample1.xlsx\");"
+                "try {",
+                TAB + "XSSFWorkbook workbook = new XSSFWorkbook(\"sample1.xlsx\");",
+                "} catch (IOException e) {",
+                TAB + "throw new RuntimeException(e);",
+                "}"
+                )));
+        clazz.imports.add("org.apache.poi.xssf.usermodel.XSSFWorkbook");
+        clazz.imports.add("java.io.IOException");        
+        clazz.getMethods().add(method);
+        model.getClassFiles().add(clazz);
     }
 }

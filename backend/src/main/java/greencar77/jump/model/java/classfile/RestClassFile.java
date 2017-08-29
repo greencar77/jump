@@ -1,13 +1,9 @@
 package greencar77.jump.model.java.classfile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import greencar77.jump.generator.java.ClassGenerator;
 
 public class RestClassFile extends ClassFile {
     private String path;
-    private List<RestMethod> methods = new ArrayList<>();
 
     public RestClassFile(String packageName, String className) {
         super(packageName, className);
@@ -30,9 +26,5 @@ public class RestClassFile extends ClassFile {
         this.path = path;
         classAnnotations.add("@Path(\"" + this.path + "\")");
         imports.add("javax.ws.rs.Path");
-    }
-
-    public List<RestMethod> getMethods() {
-        return methods;
     }
 }

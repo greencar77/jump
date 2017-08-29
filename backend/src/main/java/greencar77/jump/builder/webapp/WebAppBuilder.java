@@ -15,7 +15,7 @@ import greencar77.jump.builder.java.MavenProjBuilder;
 import greencar77.jump.builder.java.PreferenceConfig;
 import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.RestClassFile;
-import greencar77.jump.model.java.classfile.RestMethod;
+import greencar77.jump.model.java.classfile.Method;
 import greencar77.jump.model.java.classfile.TemplateClass;
 import greencar77.jump.model.java.maven.PluginPom;
 import greencar77.jump.model.java.maven.Pom;
@@ -229,6 +229,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         return "war";
     }
     
+    @Override
     protected void buildAppSimple() {
         Validate.isFalse(getSpec().isServlet3Support());
         
@@ -240,7 +241,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         RestClassFile restClass = new RestClassFile(getSpec().getRootPackage(), "Alpha");
         restClass.setPath("/user");
         model.getLocalEndpoints().add("/user");
-        RestMethod method = new RestMethod("getUser");
+        Method method = new Method("getUser");
         method.classAnnotations.add("@GET");
         restClass.imports.add("javax.ws.rs.GET");
         method.classAnnotations.add("@Produces(MediaType.APPLICATION_JSON)");

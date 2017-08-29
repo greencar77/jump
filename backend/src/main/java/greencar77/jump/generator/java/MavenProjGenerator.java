@@ -12,7 +12,7 @@ import greencar77.jump.model.RawFile;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.RestClassFile;
-import greencar77.jump.model.java.classfile.RestMethod;
+import greencar77.jump.model.java.classfile.Method;
 import greencar77.jump.model.java.classfile.TemplateClass;
 import greencar77.jump.model.java.maven.BuildPom;
 import greencar77.jump.model.java.maven.Dependency;
@@ -29,6 +29,9 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
 
     @Override
     protected void generateContent() {
+
+        generateClassFiles();        
+
         for (RawFile rawFile: model.getRawFiles()) {
             saveResource(rawFile.getPath(), rawFile.getContent());
         }
@@ -176,7 +179,7 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
         return sb;
     }
     
-    protected StringBuilder generateMethodAnnotations(RestMethod method, String indent) {
+    protected StringBuilder generateMethodAnnotations(Method method, String indent) {
         StringBuilder sb = new StringBuilder();
 
         if (method.classAnnotations.size() > 0) {
@@ -192,9 +195,9 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
         StringBuilder sb = new StringBuilder();
 
         if (clazz.getMethods().size() > 0) {
-            for (RestMethod method: clazz.getMethods()) {
+            for (Method method: clazz.getMethods()) {
                 sb.append(generateMethodAnnotations(method, TAB));
-                sb.append(TAB + "public " + method.getReturnType() + " " + method.getName() + "() {" + LF);
+                sb.append(TAB + "public" + " " + (method.getReturnType() == null? "void": method.getReturnType()) + " " + method.getName() + "() {" + LF);
                 sb.append(method.getContent()).append(LF);
                 sb.append(TAB + "}" + LF);
             }
@@ -203,7 +206,25 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
         return sb;
     }
     protected StringBuilder generateBody(ClassFile clazz) {
-        return clazz.getBody();
+        StringBuilder sb = new StringBuilder();
+
+        if (clazz.getMethods().size() > 0) {
+            for (Method method: clazz.getMethods()) {
+                sb.append(generateMethodAnnotations(method, TAB));
+                sb.append(TAB + "public"
+                        + (method.isStaticFlag()? " static": "")
+                        + " " + (method.getReturnType() == null? "void": method.getReturnType())
+                        + " " + method.getName() + "("
+                        + (method.getSignature() == null? "": method.getSignature())
+                        + ") {" + LF);
+                sb.append(method.getContent()).append(LF);
+                sb.append(TAB + "}" + LF);
+            }
+        }
+
+        sb.append(clazz.getBody());
+
+        return sb;
     }
 
     @Override

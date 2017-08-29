@@ -21,6 +21,9 @@ import greencar77.jump.spec.webapp.WebAppSpec;
 public class App {
     
     public static void main(String[] args) {
+
+        //demo
+        predefinedWebApp("webappTomcatAuth");
         
         //predefinedStandalone("tutti");
         //predefinedPlunker("inlineTemplating");
@@ -30,7 +33,7 @@ public class App {
         //predefinedWebApp("spring4RestTomcat");
         //predefinedWebApp("spring4RestWildfly");
         //predefinedMavenProj("emptyMavenProject");
-        predefinedWebApp("webappTomcatAuthJersey2");
+        //predefinedWebApp("webappTomcatAuthJersey2");
         //playground();
     }
     
