@@ -55,12 +55,15 @@ public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<
         Validate.notNull(getSpec());
 
         model.setProjectFolder(getSpec().getProjectName());
+        model.setJavaVersion(getSpec().getJavaVersion());
 
         //config project
         Pom pom = new Pom(getSpec().getGroupId(), getSpec().getArtifactId());
         model.setPom(pom);        
         pom.setPackaging(getPackagingType()); //TODO enum
         pom.getBuild().finalName = getSpec().getArtifactId(); //this name will be used as build (jar/war) file name
+        pom.properties.put("maven.compiler.target", getSpec().getJavaVersion().getId());
+        pom.properties.put("maven.compiler.source", getSpec().getJavaVersion().getId());
 
         model.setTargetContainer(getSpec().getTargetContainer());
         model.setJerseyVersion(getSpec().getJersey().getJerseyVersion());

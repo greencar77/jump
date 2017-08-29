@@ -7,6 +7,7 @@ public class MavenProjSpec extends Spec {
     private String artifactId;
     private String rootPackage = "x.y";
     private String appGenerator;
+    private JavaVersion javaVersion = JavaVersion.V18;
 
     public String getRootPackage() {
         return rootPackage;
@@ -38,5 +39,13 @@ public class MavenProjSpec extends Spec {
 
     public void setAppGenerator(String appGenerator) {
         this.appGenerator = appGenerator;
+    }
+
+    public JavaVersion getJavaVersion() {
+        return javaVersion;
+    }
+
+    public void setJavaVersion(JavaVersion javaVersion) {
+        this.javaVersion = javaVersion;
     }
 }

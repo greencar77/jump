@@ -5,6 +5,7 @@
     MavenProj<br/>
     groupId: <input ng-model="config.groupId" type="text"> artifactId: <input ng-model="config.artifactId" type="text"><br/>
     Root package: <input ng-model="config.rootPackage" type="text"><br/>
+    Java version: <select ng-model="config.javaVersion" ng-options="x for x in javaVersionList"></select><br/>
     Application generation method: <input ng-model="config.appGenerator" type="text"><br/>
     <br/>
     <ng-include ng-show="config.level == 'MavenProjSpec'" src="'views/generation.html'"></ng-include>

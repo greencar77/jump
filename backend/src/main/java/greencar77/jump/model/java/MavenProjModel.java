@@ -7,8 +7,10 @@ import greencar77.jump.model.Model;
 import greencar77.jump.model.RawFile;
 import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.maven.Pom;
+import greencar77.jump.spec.java.JavaVersion;
 
 public class MavenProjModel extends Model {
+    private JavaVersion javaVersion;
     private Pom pom;
     private List<RawFile> rawFiles = new ArrayList<>();
     private List<ClassFile> classFiles = new ArrayList<>();
@@ -36,5 +38,13 @@ public class MavenProjModel extends Model {
 
     public void setRuntimeClass(List<String> runtimeClass) {
         this.runtimeClass = runtimeClass;
+    }
+
+    public JavaVersion getJavaVersion() {
+        return javaVersion;
+    }
+
+    public void setJavaVersion(JavaVersion javaVersion) {
+        this.javaVersion = javaVersion;
     }
 }

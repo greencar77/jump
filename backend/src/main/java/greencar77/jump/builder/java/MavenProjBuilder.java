@@ -15,6 +15,7 @@ import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.Method;
 import greencar77.jump.model.java.maven.Pom;
+import greencar77.jump.spec.java.JavaVersion;
 import greencar77.jump.spec.java.MavenProjSpec;
 
 public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjModel> {
@@ -35,12 +36,15 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         Validate.notNull(getSpec());
         
         model.setProjectFolder(getSpec().getProjectName());
+        model.setJavaVersion(getSpec().getJavaVersion());
         
         //config project
         Pom pom = new Pom(getSpec().getGroupId(), getSpec().getArtifactId());
         model.setPom(pom);        
         pom.setPackaging(getPackagingType()); //TODO enum
         pom.getBuild().finalName = getSpec().getArtifactId(); //this name will be used as build (jar/war) file name
+        pom.properties.put("maven.compiler.target", getSpec().getJavaVersion().getId());
+        pom.properties.put("maven.compiler.source", getSpec().getJavaVersion().getId());
 
         if (getSpec().getAppGenerator() != null) {
             invoke(getSpec().getAppGenerator());
