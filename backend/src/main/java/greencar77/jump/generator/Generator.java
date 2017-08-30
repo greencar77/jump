@@ -44,7 +44,9 @@ public abstract class Generator<M extends Model> {
         System.out.println(this.getClass().getSimpleName());
         clean();
         generateContent();
-        generateInstructions();
+        if (model.isRoot()) {
+            generateInstructions();
+        }
     }
 
     protected abstract void generateInstructions();

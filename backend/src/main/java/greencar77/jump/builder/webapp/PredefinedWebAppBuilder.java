@@ -8,6 +8,7 @@ import greencar77.jump.builder.js.PredefinedAngularAppBuilder;
 import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.TemplateClass;
 import greencar77.jump.model.java.maven.Pom;
+import greencar77.jump.model.js.AngularAppModel;
 import greencar77.jump.model.webapp.Container;
 import greencar77.jump.model.webapp.WebAppModel;
 import greencar77.jump.model.webapp.WebFramework;
@@ -94,28 +95,25 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
     }
     
     public WebAppModel specWebappAngular() {
-        String rootPackage = "x.y";
+        WebAppSpec spec = new WebAppSpec();
+        spec.setProjectName("webappAngular");
+        spec.setGroupId("x.y");
+        spec.setArtifactId("webappAngular");
+        spec.setRootPackage(spec.getGroupId());
         
-        //setup business files
-        Map<String, String> props = new HashMap<>();
-        props.put("package", rootPackage);
-        ClassFile clazz = new TemplateClass(rootPackage, "User", "java/webapp/UserPojo.java", props);
-        model.getClassFiles().add(clazz);
+        spec.setTargetContainer(Container.TOMCAT);
+        spec.setServlet3Support(false);
+        spec.setWebFramework(WebFramework.JERSEY);
+        spec.setAppGenerator("buildAppSimple");
 
-        clazz = new TemplateClass(rootPackage, "UserResource", "java/webapp/UserResource.java", props);
-        model.getClassFiles().add(clazz);
+        setSpec(spec);
+
+        build();
         
         //Angular app
-        model.setAngularApp(angularAppBuilder.specTutti());
-
-        //config project
-        Pom pom = new Pom("x.y", "webx");
-        model.setPom(pom);        
-        
-        pom.setPackaging("war"); //TODO enum
-        pom.getBuild().finalName = rootPackage; //this name will be used as build (war) file name
-        
-        setupWar();
+        AngularAppModel subModel = angularAppBuilder.specTutti();
+        subModel.setRoot(false);
+        model.setAngularApp(subModel);
         
         return model;
     }

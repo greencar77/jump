@@ -23,7 +23,8 @@ public class App {
     public static void main(String[] args) {
 
         //demo
-        predefinedWebApp("webappTomcatAuth");
+        //predefinedWebApp("webappTomcatAuth");
+        predefinedWebApp("webappAngular");
         
         //predefinedStandalone("tutti");
         //predefinedPlunker("inlineTemplating");

@@ -1,0 +1,15 @@
+<div ng-controller="PaletteCtrl">
+    <h1>{{aa}}</h1>
+    <input type="text" ng-model="bbb"/>
+    <button ng-click="searchData()">Search</button><br/>
+    <br/>
+    <button ng-click="restTest()">RestTest</button><br/>
+    {{restTestResponse}}<br/>
+    Cookie value: {{myFruit}}<br/>
+    
+    <br/>
+    Articles:
+    <ul>
+        <li ng-repeat="article in articles">{{article}}</li>
+    </ul>
+</div>

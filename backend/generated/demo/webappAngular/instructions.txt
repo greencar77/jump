@@ -1,0 +1,13 @@
+Preparation instructions:
+xcopy /s /Y target\*.war <TOMCAT_HOME>\webapps
+assert: TOMCAT instance is running
+
+Some endpoints:
+http://localhost:8080/webappAngular/rest/user
+
+Web framework: Jersey 1.19.4
+
+Security: Application is not secured
+
+==Restlet==
+Create project: webappAngular

@@ -70,8 +70,10 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
         switch (model.getTargetContainer()) {
             case TOMCAT:
                 sb.append("xcopy /s /Y target\\*.war <TOMCAT_HOME>\\webapps" + LF);
-                sb.append("xcopy /s /Y tomcat\\conf\\" + model.getProjectFolder() + "-" + "tomcat-users.xml <TOMCAT_HOME>\\conf" + LF);
-                sb.append("assert: " + "<TOMCAT_HOME>\\conf\\server.xml" + " is updated to contain data of " + "tomcat\\conf\\" + "server.xml" + LF);
+                if (model.getAuthRealm() != null) {
+                    sb.append("xcopy /s /Y tomcat\\conf\\" + model.getProjectFolder() + "-" + "tomcat-users.xml <TOMCAT_HOME>\\conf" + LF);
+                    sb.append("assert: " + "<TOMCAT_HOME>\\conf\\server.xml" + " is updated to contain data of " + "tomcat\\conf\\" + "server.xml" + LF);
+                }
                 break;
             case WILDFLY:
                 sb.append("xcopy /s /Y target\\*.war <WILDFLY_HOME>\\standalone\\deployments" + LF);

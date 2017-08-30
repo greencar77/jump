@@ -27,6 +27,7 @@ import greencar77.jump.model.webapp.auth.AuthRealm;
 import greencar77.jump.model.webapp.auth.Role;
 import greencar77.jump.model.webapp.auth.User;
 import greencar77.jump.spec.java.MavenProjSpec;
+import greencar77.jump.spec.webapp.Jersey;
 import greencar77.jump.spec.webapp.JerseyMajorVersion;
 import greencar77.jump.spec.webapp.WebAppSpec;
 
@@ -373,5 +374,15 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         }
 
         return result;
+    }
+    
+    @Override
+    protected void setupDefault() {
+        super.setupDefault();
+        
+        if (getSpec().getWebFramework() == WebFramework.JERSEY && getSpec().getJersey() == null) {
+            Jersey jersey = new Jersey();
+            getSpec().setJersey(jersey);
+        }
     }
 }
