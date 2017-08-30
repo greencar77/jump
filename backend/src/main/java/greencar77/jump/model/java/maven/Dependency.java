@@ -30,6 +30,10 @@ public class Dependency {
     public void setScope(DependencyScope scope) {
         this.scope = scope;
     }
+    
+    public String getFullName() {
+        return name + "/" + scope.getXmlTitle();
+    }
 
     /*
     @Override

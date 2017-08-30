@@ -1,6 +1,10 @@
 package greencar77.jump.generator.java;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
@@ -22,6 +26,15 @@ import greencar77.jump.model.java.maven.Pom;
 
 public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     implements ClassGenerator {
+    
+    private static final Comparator<Dependency> DEPENDENCIES_ALPHABETICALLY = new Comparator<Dependency>() {
+
+        @Override
+        public int compare(Dependency d1, Dependency d2) {
+            return d1.getFullName().compareTo(d2.getFullName());
+        }
+        
+    };
 
     public MavenProjGenerator(MavenProjModel model) {
         super(model);
@@ -92,7 +105,9 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
 
         sb.append(LF);
         sb.append(TAB + "<dependencies>" + LF);
-        for (Dependency dependency: pom.getDependencies()) {
+        List<Dependency> list = new ArrayList<>(pom.getDependencies());
+        Collections.sort(list, DEPENDENCIES_ALPHABETICALLY);
+        for (Dependency dependency: list) {
             outputDependency(sb, dependency);
         }
         sb.append(TAB + "</dependencies>" + LF);

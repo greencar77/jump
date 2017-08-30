@@ -1,5 +1,9 @@
 package greencar77.jump.generator.webapp;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -165,16 +169,29 @@ public class WebAppGenerator extends MavenProjGenerator<WebAppModel> {
     private void generateUsersTomcat() {
         //http://www.avajava.com/tutorials/lessons/how-do-i-use-basic-authentication-with-tomcat.html
         StringBuilder sb = new StringBuilder();
-        //TODO persistent order
 
         sb.append("<?xml version='1.0' encoding='utf-8'?>" + LF);
         sb.append("<tomcat-users>" + LF);
 
-        for (Role role: model.getAuthRealm().getRoles()) {
+        List<Role> list = new ArrayList<>(model.getAuthRealm().getRoles());
+        Collections.sort(list, new Comparator<Role>() {
+            @Override
+            public int compare(Role r1, Role r2) {
+                return r1.getName().compareTo(r2.getName());
+            }
+        });
+        for (Role role: list) {
             sb.append(TAB + "<role rolename=\"" + role.getName() + "\"/>" + LF);
         }
 
-        for (User user: model.getAuthRealm().getUsers()) {
+        List<User> usersList = new ArrayList<>(model.getAuthRealm().getUsers());
+        Collections.sort(usersList, new Comparator<User>() {
+            @Override
+            public int compare(User u1, User u2) {
+                return u1.getName().compareTo(u2.getName());
+            }
+        });
+        for (User user: usersList) {
             sb.append(TAB + "<user username=\"" + user.getName() + "\" password=\"" + user.getPassword() + "\"");
 
             String roleString = user.getRoles()
