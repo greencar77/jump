@@ -14,6 +14,7 @@ public class MavenProjModel extends Model {
     private Pom pom;
     private List<RawFile> rawFiles = new ArrayList<>();
     private List<ClassFile> classFiles = new ArrayList<>();
+    private List<ClassFile> testClassFiles = new ArrayList<>();
     private List<String> runtimeClass = new ArrayList<>(); //class names which will be needed only during deploy/runtime
 
     public Pom getPom() {
@@ -46,5 +47,13 @@ public class MavenProjModel extends Model {
 
     public void setJavaVersion(JavaVersion javaVersion) {
         this.javaVersion = javaVersion;
+    }
+
+    public List<ClassFile> getTestClassFiles() {
+        return testClassFiles;
+    }
+
+    public void setTestClassFiles(List<ClassFile> testClassFiles) {
+        this.testClassFiles = testClassFiles;
     }
 }

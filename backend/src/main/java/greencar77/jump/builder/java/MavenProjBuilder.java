@@ -11,11 +11,11 @@ import org.apache.commons.lang.Validate;
 
 import greencar77.jump.FileUtils;
 import greencar77.jump.builder.Builder;
+import greencar77.jump.model.ClassType;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.Method;
 import greencar77.jump.model.java.maven.Pom;
-import greencar77.jump.spec.java.JavaVersion;
 import greencar77.jump.spec.java.MavenProjSpec;
 
 public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjModel> {
@@ -65,6 +65,9 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         if (getSpec().getArtifactId() == null) {
             getSpec().setArtifactId(getSpec().getProjectName());
         }
+        if (getSpec().getAppGenerator() == null) {
+            getSpec().setAppGenerator("buildAppMulti");
+        }
     }
     
     protected String getPackagingType() {
@@ -77,6 +80,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         ArtifactSolver artifactSolver = new ArtifactSolver(preferenceConfig);
         Set<String> consolidatedImportedClassList = new HashSet<>();
 
+        //source classes
         for (ClassFile clazz: model.getClassFiles()) {
             consolidatedImportedClassList.addAll(clazz.imports);
         }
@@ -91,6 +95,23 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
                 model.getPom().addDependencyImported(artifact);
             }
         }
+
+        //test classes //TODO duplicate code
+        consolidatedImportedClassList = new HashSet<>();
+        for (ClassFile clazz: model.getTestClassFiles()) {
+            consolidatedImportedClassList.addAll(clazz.imports);
+        }
+
+        for (String absoluteClass: consolidatedImportedClassList) {
+            if (absoluteClass.startsWith(getSpec().getRootPackage())) {
+                continue; //resolve only third party classes
+            }
+            String artifact = artifactSolver.getArtifact(absoluteClass);
+            if (artifact != null) {
+                System.out.println(absoluteClass + ":" + artifact);
+                model.getPom().addDependencyTesting(artifact);
+            }
+        }
     }
 
     protected PreferenceConfig getPreferenceConfig() {
@@ -98,18 +119,42 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     }
 
 
-    protected void buildAppSimple() {
+    protected void buildAppMulti() {
 
-        model.getRawFiles().add(FileUtils.createRawJavaClassFromTemplate("App.java", getSpec().getRootPackage(), DEFAULT_MAIN_CLASS_NAME));
+        ClassFile mainClass = new ClassFile(getSpec().getRootPackage(), "App");
+        Method method = new Method(true, null, "main", "String[] args");
+        mainClass.getMethods().add(method);
+        model.getClassFiles().add(mainClass);
+//        model.getRawFiles().add(FileUtils.createRawJavaClassFromTemplate(ClassType.SOURCE, "App.java", getSpec().getRootPackage(), DEFAULT_MAIN_CLASS_NAME));
+        
+        if (getSpec().isFeatureExcel()) {
+            buildAppExcel();
+        }
+        if (getSpec().isFeatureUnitTests()) {
+            appendUnitTests();
+        }
+    }
+    
+    protected void appendUnitTests() {
+        for (ClassFile sourceClass: model.getClassFiles()) {
+            ClassFile testClass = new ClassFile(getSpec().getRootPackage(), sourceClass.getClassName() + "Test");
+            for (Method method: sourceClass.getMethods()) {
+                Method testMethod = new Method(false, null, method.getName() + "Test", null);
+                testMethod.classAnnotations.add("@Test");
+                testClass.imports.add("org.junit.Test");
+                testClass.getMethods().add(testMethod);
+            }
+            model.getTestClassFiles().add(testClass);
+        }
     }
 
     protected void buildAppExcel() {
         Method method;
 
-        ClassFile mainClass = new ClassFile(getSpec().getRootPackage(), "App");
-        method = new Method(true, null, "main", "String[] args");
-        mainClass.getMethods().add(method);
-        model.getClassFiles().add(mainClass);
+//        ClassFile mainClass = new ClassFile(getSpec().getRootPackage(), "App");
+//        method = new Method(true, null, "main", "String[] args");
+//        mainClass.getMethods().add(method);
+//        model.getClassFiles().add(mainClass);
 
         ClassFile clazz = new ClassFile(getSpec().getRootPackage(), "ExcelReader");
         method = new Method(false, null, "run", null);

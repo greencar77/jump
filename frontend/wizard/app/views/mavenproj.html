@@ -7,6 +7,8 @@
     Root package: <input ng-model="config.rootPackage" type="text"><br/>
     Java version: <select ng-model="config.javaVersion" ng-options="x for x in javaVersionList"></select><br/>
     Application generation method: <input ng-model="config.appGenerator" type="text"><br/>
+    Feature Unit Tests: <input type="checkbox" ng-model="config.featureUnitTests" /><br/>
+    Feature Excel: <input type="checkbox" ng-model="config.featureExcel" /><br/>
     <br/>
     <ng-include ng-show="config.level == 'MavenProjSpec'" src="'views/generation.html'"></ng-include>
 </div>

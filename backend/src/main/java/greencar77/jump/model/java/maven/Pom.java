@@ -75,6 +75,18 @@ public class Pom {
             } //else we already have what do we want
         }
     }
+    
+    public void addDependencyTesting(String name) {
+        Dependency dependency = getDependency(name);
+        if (dependency == null) {
+            Dependency newDependency = new Dependency(name, DependencyScope.TEST); //the minimum required
+            dependencies.put(newDependency.getName(), newDependency);
+        } else {
+            if (!dependency.getScope().isTestAvailable()) {
+                dependency.setScope(DependencyScope.ANY);
+            } //else we already have what do we want
+        }
+    }
 
     public Dependency getDependency(String name) {
         if (dependencies.containsKey(name)) {

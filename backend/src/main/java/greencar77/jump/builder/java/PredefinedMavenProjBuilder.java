@@ -2,6 +2,7 @@ package greencar77.jump.builder.java;
 
 import greencar77.jump.FileUtils;
 import greencar77.jump.builder.Predefined;
+import greencar77.jump.model.ClassType;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.spec.java.MavenProjSpec;
@@ -30,7 +31,7 @@ public class PredefinedMavenProjBuilder extends MavenProjBuilder<MavenProjSpec, 
         Pom pom = new Pom("x.bp", "brightpoint-client");
         model.setPom(pom);
 
-        model.getRawFiles().add(FileUtils.createRawJavaClassFromTemplate("App.java", "x.bp.brightpointclient", DEFAULT_MAIN_CLASS_NAME));
+        model.getRawFiles().add(FileUtils.createRawJavaClassFromTemplate(ClassType.SOURCE, "App.java", "x.bp.brightpointclient", DEFAULT_MAIN_CLASS_NAME));
 
         return model;
     }
@@ -45,7 +46,7 @@ public class PredefinedMavenProjBuilder extends MavenProjBuilder<MavenProjSpec, 
 
         build();
 
-        buildAppSimple();
+        buildAppMulti();
 
         return model;
     }

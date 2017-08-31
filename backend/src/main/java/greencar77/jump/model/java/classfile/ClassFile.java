@@ -76,4 +76,8 @@ public class ClassFile implements ClassGeneratorVisitable {
     public List<Method> getMethods() {
         return methods;
     }
+
+    public String getClassName() {
+        return className;
+    }
 }

@@ -233,7 +233,6 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         return "war";
     }
     
-    @Override
     protected void buildAppSimple() {
         Validate.isFalse(getSpec().isServlet3Support());
         

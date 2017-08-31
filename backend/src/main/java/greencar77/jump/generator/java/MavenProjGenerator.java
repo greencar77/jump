@@ -12,6 +12,7 @@ import org.apache.maven.cli.MavenCli;
 
 import greencar77.jump.FileUtils;
 import greencar77.jump.generator.Generator;
+import greencar77.jump.model.ClassType;
 import greencar77.jump.model.RawFile;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.classfile.ClassFile;
@@ -56,8 +57,11 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     }
 
     protected void generateClassFiles() {
-        for (ClassFile file: model.getClassFiles()) {            
-            model.getRawFiles().add(FileUtils.createRawJavaClass(file.packageName, file.className, file.generateWith(this)));
+        for (ClassFile file: model.getClassFiles()) {
+            model.getRawFiles().add(FileUtils.createRawJavaClass(ClassType.SOURCE, file.packageName, file.className, file.generateWith(this)));
+        }        
+        for (ClassFile file: model.getTestClassFiles()) {
+            model.getRawFiles().add(FileUtils.createRawJavaClass(ClassType.TEST, file.packageName, file.className, file.generateWith(this)));
         }        
     }
 

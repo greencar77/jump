@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import greencar77.jump.model.ClassType;
 import greencar77.jump.model.RawFile;
 
 public class FileUtils {
@@ -49,19 +50,19 @@ public class FileUtils {
         return packageName.replaceAll("\\.", "/") + "/";
     }
     
-    public static RawFile createRawJavaClass(String packageName, String className, byte[] content) {
-        return new RawFile("src/main/java/" + FileUtils.packageToPath(packageName) + className + ".java", content);
+    public static RawFile createRawJavaClass(ClassType type, String packageName, String className, byte[] content) {
+        return new RawFile(type.getInnerPath() + FileUtils.packageToPath(packageName) + className + ".java", content);
     }
 
-    public static RawFile createRawJavaClass(String packageName, String className, StringBuilder content) {
-        return new RawFile("src/main/java/" + FileUtils.packageToPath(packageName) + className + ".java", content.toString().getBytes());
+    public static RawFile createRawJavaClass(ClassType type, String packageName, String className, StringBuilder content) {
+        return new RawFile(type.getInnerPath() + FileUtils.packageToPath(packageName) + className + ".java", content.toString().getBytes());
     }
     
-    public static RawFile createRawJavaClassFromTemplate(String templateName, String packageName, String className) {
+    public static RawFile createRawJavaClassFromTemplate(ClassType type, String templateName, String packageName, String className) {
         Map<String, String> map = new HashMap<>();
         map.put("package", packageName);
         map.put("class", className);
-        return new RawFile("src/main/java/" + FileUtils.packageToPath(packageName) + className + ".java",
+        return new RawFile(type.getInnerPath() + FileUtils.packageToPath(packageName) + className + ".java",
                 TEMPLATE_MANAGER.getFilledTemplate("templates/" + templateName, map));
     }
 }

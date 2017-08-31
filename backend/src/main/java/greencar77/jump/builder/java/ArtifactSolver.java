@@ -38,6 +38,9 @@ public class ArtifactSolver {
         if (absoluteClass.startsWith("org.apache.poi.xssf.usermodel.")) {
             return "org.apache.poi/poi-ooxml/3.15";
         }
+        if (absoluteClass.startsWith("org.junit.")) {
+            return "junit/junit/4.10";
+        }
         
         if (MAP.containsKey(absoluteClass)) {
             return MAP.get(absoluteClass);
