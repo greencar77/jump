@@ -8,7 +8,14 @@
     Java version: <select ng-model="config.javaVersion" ng-options="x for x in javaVersionList"></select><br/>
     Application generation method: <input ng-model="config.appGenerator" type="text"><br/>
     Feature Unit Tests: <input type="checkbox" ng-model="config.featureUnitTests" /><br/>
+    Feature Spring: <input type="checkbox" ng-model="config.featureSpring" /><br/>
     Feature Excel: <input type="checkbox" ng-model="config.featureExcel" /><br/>
+    <div class="params">
+        Invocation:<br/>
+        IDE - Eclipse: <input type="checkbox" ng-model="config.invokeEclipse" /><br/>
+        IDE - IntelliJ: <input type="checkbox" ng-model="config.invokeIntelliJ" /><br/>
+        Command line: <input type="checkbox" ng-model="config.invokeCli" /><br/>
+    </div>
     <br/>
     <ng-include ng-show="config.level == 'MavenProjSpec'" src="'views/generation.html'"></ng-include>
 </div>

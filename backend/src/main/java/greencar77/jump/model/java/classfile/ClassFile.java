@@ -19,6 +19,7 @@ public class ClassFile implements ClassGeneratorVisitable {
     private StringBuilder body = new StringBuilder();
     private boolean logging;
     private List<Method> methods = new ArrayList<>();
+    private boolean springBean;
 
     public ClassFile(String packageName, String className) {
         this.packageName = packageName;
@@ -79,5 +80,13 @@ public class ClassFile implements ClassGeneratorVisitable {
 
     public String getClassName() {
         return className;
+    }
+
+    public boolean isSpringBean() {
+        return springBean;
+    }
+
+    public void setSpringBean(boolean springBean) {
+        this.springBean = springBean;
     }
 }

@@ -9,11 +9,10 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 
-import greencar77.jump.FileUtils;
 import greencar77.jump.builder.Builder;
-import greencar77.jump.model.ClassType;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.classfile.ClassFile;
+import greencar77.jump.model.java.classfile.MetaSpringContext;
 import greencar77.jump.model.java.classfile.Method;
 import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.spec.java.MavenProjSpec;
@@ -125,8 +124,11 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         Method method = new Method(true, null, "main", "String[] args");
         mainClass.getMethods().add(method);
         model.getClassFiles().add(mainClass);
-//        model.getRawFiles().add(FileUtils.createRawJavaClassFromTemplate(ClassType.SOURCE, "App.java", getSpec().getRootPackage(), DEFAULT_MAIN_CLASS_NAME));
-        
+        model.setMainClass(mainClass);
+
+        if (getSpec().isFeatureSpring()) {
+            buildAppSpring();
+        }
         if (getSpec().isFeatureExcel()) {
             buildAppExcel();
         }
@@ -137,7 +139,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     
     protected void appendUnitTests() {
         for (ClassFile sourceClass: model.getClassFiles()) {
-            ClassFile testClass = new ClassFile(getSpec().getRootPackage(), sourceClass.getClassName() + "Test");
+            ClassFile testClass = new ClassFile(sourceClass.packageName, sourceClass.getClassName() + "Test");
             for (Method method: sourceClass.getMethods()) {
                 Method testMethod = new Method(false, null, method.getName() + "Test", null);
                 testMethod.classAnnotations.add("@Test");
@@ -148,18 +150,46 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         }
     }
 
-    protected void buildAppExcel() {
+
+    protected void buildAppSpring() {
+        ClassFile clazz;
         Method method;
 
-//        ClassFile mainClass = new ClassFile(getSpec().getRootPackage(), "App");
-//        method = new Method(true, null, "main", "String[] args");
-//        mainClass.getMethods().add(method);
-//        model.getClassFiles().add(mainClass);
+        //bean class
+        ClassFile beanClass = new ClassFile(getSpec().getRootPackage() + ".domain", "Alpha");
+        method = new Method(false, "int", "getFive", null);
+        method.getContent().append(code(indent(TAB + TAB,
+                "return 5;"
+                )));
+        beanClass.getMethods().add(method);
+        model.getClassFiles().add(beanClass);
+        
+        MetaSpringContext springContext = new MetaSpringContext("ctx");
+        springContext.registerBean(beanClass, "alphaBean");
+        
+        clazz = new ClassFile(getSpec().getRootPackage(), "SpringDemo");
+        method = new Method(false, null, "run", null);
+        method.getContent().append(code(indent(TAB + TAB,
+                "ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {\"" + springContext.getId() + ".xml\"});"
+                )));
+        clazz.imports.add("org.springframework.context.ApplicationContext");
+        clazz.imports.add("org.springframework.context.support.ClassPathXmlApplicationContext");        
+        clazz.getMethods().add(method);
+        model.getClassFiles().add(clazz);
+        
+        model.getMainClass().getMethods().get(0).getContent().append(code(indent(TAB + TAB,
+                "new SpringDemo().run();")
+                ));
+        
+        model.setSpringContext(springContext);
+    }
+
+    protected void buildAppExcel() {
+        Method method;
 
         ClassFile clazz = new ClassFile(getSpec().getRootPackage(), "ExcelReader");
         method = new Method(false, null, "run", null);
         method.getContent().append(code(indent(TAB + TAB,
-//                "XSSFWorkbook workbook = new XSSFWorkbook(\"sample1.xlsx\");"
                 "try {",
                 TAB + "XSSFWorkbook workbook = new XSSFWorkbook(\"sample1.xlsx\");",
                 "} catch (IOException e) {",

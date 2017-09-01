@@ -1,9 +1,8 @@
 package greencar77.jump.model.java.classfile;
 
-public class MetaClass {
+public class Interface {
     private String classPackage;
     private String className;
-    private boolean bean;
 
     public String getClassName() {
         return className;
@@ -17,10 +16,5 @@ public class MetaClass {
     public void setClassPackage(String classPackage) {
         this.classPackage = classPackage;
     }
-    public boolean isBean() {
-        return bean;
-    }
-    public void setBean(boolean bean) {
-        this.bean = bean;
-    }
+
 }

@@ -1,6 +1,7 @@
 package greencar77.jump.generator.java;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.apache.maven.cli.MavenCli;
+import org.apache.velocity.VelocityContext;
 
 import greencar77.jump.FileUtils;
 import greencar77.jump.generator.Generator;
@@ -16,6 +18,8 @@ import greencar77.jump.model.ClassType;
 import greencar77.jump.model.RawFile;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.classfile.ClassFile;
+import greencar77.jump.model.java.classfile.MetaBean;
+import greencar77.jump.model.java.classfile.MetaSpringContext;
 import greencar77.jump.model.java.classfile.RestClassFile;
 import greencar77.jump.model.java.classfile.Method;
 import greencar77.jump.model.java.classfile.TemplateClass;
@@ -48,6 +52,10 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
 
         for (RawFile rawFile: model.getRawFiles()) {
             saveResource(rawFile.getPath(), rawFile.getContent());
+        }
+        
+        if (model.getSpringContext() != null) {
+            generateSpringContext();
         }
 
         byte[] pom = generatePom();        
@@ -272,6 +280,33 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     @Override
     protected void generateInstructions() {
         //TODO
+    }
+
+    protected void generateSpringContext() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF);
+        sb.append("<beans xmlns=\"http://www.springframework.org/schema/beans\"" + LF);
+        sb.append(TAB + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + LF);
+                
+        sb.append(TAB + "xsi:schemaLocation=\"" + LF);
+        sb.append(TAB + "http://www.springframework.org/schema/beans" + LF);
+        sb.append(TAB + "http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" + LF);
+                
+        sb.append(TAB + "\">" + LF);
+
+        MetaSpringContext context = model.getSpringContext();
+        if (context.getBeans().size() > 0) {
+            for (MetaBean bean: context.getBeans()) {
+                sb.append(TAB + "<bean id=\"")
+                .append(bean.getName())
+                .append("\" class=\"").append(bean.getClassFile().getFullName())
+                .append("\" />" + LF);
+            }
+
+        }
+        sb.append("</beans>" + LF);
+
+        saveResource("src/main/resources/" + context.getId() + ".xml", sb.toString().getBytes());
     }
 
 }

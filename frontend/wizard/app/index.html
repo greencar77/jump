@@ -16,8 +16,13 @@
 </head>
 <body ng-app="mainModule" ng-controller="MainCtrl">
 
-<a href="#!/mavenproj">Maven application</a><br/>
-<a href="#!/webapp">Web application</a><br/>
+<ul>
+<li><a href="#!/mavenproj">Maven application</a></li>
+    <ul>
+        <li><a href="#!/webapp">Web application</a></li>
+    </ul>
+</ul>
+<br/>
 
 <div ng-view></div>
 </body>
