@@ -9,6 +9,9 @@
     Application generation method: <input ng-model="config.appGenerator" type="text"><br/>
     Feature Unit Tests: <input type="checkbox" ng-model="config.featureUnitTests" /><br/>
     Feature Spring: <input type="checkbox" ng-model="config.featureSpring" /><br/>
+    <div class="params" ng-show="config.featureSpring">
+        Configuration basis: <select ng-model="config.spring.configBasis" ng-options="x for x in springConfigBasisList"></select><br/>
+    </div>
     Feature Excel: <input type="checkbox" ng-model="config.featureExcel" /><br/>
     <div class="params">
         Invocation:<br/>

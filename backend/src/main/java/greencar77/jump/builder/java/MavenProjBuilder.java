@@ -16,6 +16,7 @@ import greencar77.jump.model.java.classfile.MetaSpringContext;
 import greencar77.jump.model.java.classfile.Method;
 import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.spec.java.MavenProjSpec;
+import greencar77.jump.spec.java.SpringConfigBasis;
 
 public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjModel> {
     protected static final String DEFAULT_MAIN_CLASS_NAME = "App";
@@ -36,6 +37,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         
         model.setProjectFolder(getSpec().getProjectName());
         model.setJavaVersion(getSpec().getJavaVersion());
+        model.setConfigBasis(getSpec().getSpring().getConfigBasis());
         
         //config project
         Pom pom = new Pom(getSpec().getGroupId(), getSpec().getArtifactId());
@@ -142,7 +144,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
             ClassFile testClass = new ClassFile(sourceClass.packageName, sourceClass.getClassName() + "Test");
             for (Method method: sourceClass.getMethods()) {
                 Method testMethod = new Method(false, null, method.getName() + "Test", null);
-                testMethod.classAnnotations.add("@Test");
+                testMethod.annotations.add("@Test");
                 testClass.imports.add("org.junit.Test");
                 testClass.getMethods().add(testMethod);
             }
@@ -164,16 +166,35 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         beanClass.getMethods().add(method);
         model.getClassFiles().add(beanClass);
         
+        ClassFile beanTwo = new ClassFile(getSpec().getRootPackage() + ".domain", "Beta");
+        method = new Method(false, "int", "getTen", null);
+        method.getContent().append(code(indent(TAB + TAB,
+                "return 10;"
+                )));
+        beanClass.getMethods().add(method);
+        model.getClassFiles().add(beanTwo);
+        
         MetaSpringContext springContext = new MetaSpringContext("ctx");
         springContext.registerBean(beanClass, "alphaBean");
+        springContext.registerBean(beanTwo, "betaBean");
         
         clazz = new ClassFile(getSpec().getRootPackage(), "SpringDemo");
         method = new Method(false, null, "run", null);
-        method.getContent().append(code(indent(TAB + TAB,
-                "ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {\"" + springContext.getId() + ".xml\"});"
-                )));
-        clazz.imports.add("org.springframework.context.ApplicationContext");
-        clazz.imports.add("org.springframework.context.support.ClassPathXmlApplicationContext");        
+        if (getSpec().getSpring().getConfigBasis() == SpringConfigBasis.XML) {
+            method.getContent().append(code(indent(TAB + TAB,
+                    "ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {\"" + springContext.getId() + ".xml\"});"
+                    )));
+            clazz.imports.add("org.springframework.context.ApplicationContext");
+            clazz.imports.add("org.springframework.context.support.ClassPathXmlApplicationContext");
+        } else { //JAVA
+            //https://www.tutorialspoint.com/spring/spring_java_based_configuration.htm
+            ClassFile springConfigClass = createConfigClass(springContext);
+            method.getContent().append(code(indent(TAB + TAB,
+                    "ApplicationContext context = new AnnotationConfigApplicationContext(" + springConfigClass.className + ".class" + ");"
+                    )));
+            clazz.imports.add("org.springframework.context.ApplicationContext");
+            clazz.imports.add("org.springframework.context.annotation.AnnotationConfigApplicationContext");
+        }
         clazz.getMethods().add(method);
         model.getClassFiles().add(clazz);
         
@@ -182,6 +203,29 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
                 ));
         
         model.setSpringContext(springContext);
+    }
+
+    protected ClassFile createConfigClass(MetaSpringContext springContext) {
+        if (getSpec().getSpring().getConfigBasis() == SpringConfigBasis.JAVA) {
+            ClassFile springConfigClass = new ClassFile(getSpec().getRootPackage(), "SpringConfig");
+            springConfigClass.annotations.add("@Configuration");
+            springConfigClass.imports.add("org.springframework.context.annotation.Configuration");
+            model.getClassFiles().add(springConfigClass);
+            springContext.getBeans().stream().forEach(b -> {
+                Method beanMethod = new Method(false, b.getClassFile().className, b.getClassFile().className, null);
+                beanMethod.annotations.add("@Bean");
+                springConfigClass.imports.add("org.springframework.context.annotation.Bean");
+                beanMethod.getContent().append(code(indent(TAB + TAB,
+                        "return new " + b.getClassFile().className + "();"
+                        )));
+                springConfigClass.getMethods().add(beanMethod);
+                springConfigClass.imports.add(b.getClassFile().getFullName());
+            });
+
+            return springConfigClass;
+        }
+
+        throw new RuntimeException();
     }
 
     protected void buildAppExcel() {

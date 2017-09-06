@@ -11,6 +11,7 @@ public class MavenProjSpec extends Spec {
     private boolean featureExcel;
     private boolean featureUnitTests;
     private boolean featureSpring;
+    private Spring spring;
 
     public String getRootPackage() {
         return rootPackage;
@@ -74,5 +75,13 @@ public class MavenProjSpec extends Spec {
 
     public void setFeatureSpring(boolean featureSpring) {
         this.featureSpring = featureSpring;
+    }
+
+    public Spring getSpring() {
+        return spring;
+    }
+
+    public void setSpring(Spring spring) {
+        this.spring = spring;
     }
 }

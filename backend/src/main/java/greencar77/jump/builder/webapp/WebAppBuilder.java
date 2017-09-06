@@ -245,9 +245,9 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         restClass.setPath("/user");
         model.getLocalEndpoints().add("/user");
         Method method = new Method("getUser");
-        method.classAnnotations.add("@GET");
+        method.annotations.add("@GET");
         restClass.imports.add("javax.ws.rs.GET");
-        method.classAnnotations.add("@Produces(MediaType.APPLICATION_JSON)");
+        method.annotations.add("@Produces(MediaType.APPLICATION_JSON)");
         switch (getSpec().getJersey().getJerseyMajorVersion()) {
         case V1:
             model.getPom().addDependencyRuntime("com.sun.jersey/jersey-json/" + getSpec().getJersey().getJerseyVersion());
@@ -287,11 +287,11 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         Validate.isTrue(getSpec().isServlet3Support());
 
         ClassFile configClass = new ClassFile(getSpec().getRootPackage(), "AppConfig");
-        configClass.classAnnotations.add("@Configuration");
+        configClass.annotations.add("@Configuration");
         configClass.imports.add("org.springframework.context.annotation.Configuration");
-        configClass.classAnnotations.add("@EnableWebMvc");
+        configClass.annotations.add("@EnableWebMvc");
         configClass.imports.add("org.springframework.web.servlet.config.annotation.EnableWebMvc");
-        configClass.classAnnotations.add("@ComponentScan(basePackages = \"" + getSpec().getRootPackage() + "\")");
+        configClass.annotations.add("@ComponentScan(basePackages = \"" + getSpec().getRootPackage() + "\")");
         configClass.imports.add("org.springframework.context.annotation.ComponentScan");
         model.getClassFiles().add(configClass);
         
@@ -325,7 +325,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         model.getClassFiles().add(userClass);
         
         ClassFile controller = new ClassFile(getSpec().getRootPackage(), "UserRestController");
-        controller.classAnnotations.add("@RestController");
+        controller.annotations.add("@RestController");
         controller.imports.add("org.springframework.web.bind.annotation.RestController");
         controller.getBody().append(code(indent(TAB,
                 //"@GetMapping(\"/user\")",

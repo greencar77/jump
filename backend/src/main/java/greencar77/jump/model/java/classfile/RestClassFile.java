@@ -24,7 +24,7 @@ public class RestClassFile extends ClassFile {
 
     public void setPath(String path) {
         this.path = path;
-        classAnnotations.add("@Path(\"" + this.path + "\")");
+        annotations.add("@Path(\"" + this.path + "\")");
         imports.add("javax.ws.rs.Path");
     }
 }

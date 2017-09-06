@@ -8,7 +8,7 @@ public class Method {
     private String signature;
     private String returnType;
     private StringBuilder content = new StringBuilder(); 
-    public List<String> classAnnotations = new ArrayList<>();
+    public List<String> annotations = new ArrayList<>();
     private boolean staticFlag;
 
     public Method(String name) {

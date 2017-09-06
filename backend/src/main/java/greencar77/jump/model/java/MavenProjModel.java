@@ -9,6 +9,7 @@ import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.MetaSpringContext;
 import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.spec.java.JavaVersion;
+import greencar77.jump.spec.java.SpringConfigBasis;
 
 public class MavenProjModel extends Model {
     private JavaVersion javaVersion;
@@ -19,6 +20,7 @@ public class MavenProjModel extends Model {
     private List<ClassFile> testClassFiles = new ArrayList<>();
     private List<String> runtimeClass = new ArrayList<>(); //class names which will be needed only during deploy/runtime
     private MetaSpringContext springContext;
+    private SpringConfigBasis configBasis;
 
     public Pom getPom() {
         return pom;
@@ -74,5 +76,13 @@ public class MavenProjModel extends Model {
 
     public void setMainClass(ClassFile mainClass) {
         this.mainClass = mainClass;
+    }
+
+    public SpringConfigBasis getConfigBasis() {
+        return configBasis;
+    }
+
+    public void setConfigBasis(SpringConfigBasis configBasis) {
+        this.configBasis = configBasis;
     }
 }

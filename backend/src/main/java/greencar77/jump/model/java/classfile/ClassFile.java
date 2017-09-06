@@ -14,7 +14,7 @@ public class ClassFile implements ClassGeneratorVisitable {
     public String packageName;
     public String className;
     public String classNameTail;
-    public List<String> classAnnotations = new ArrayList<>();
+    public List<String> annotations = new ArrayList<>();
     private StringBuilder stateBody = new StringBuilder();
     private StringBuilder body = new StringBuilder();
     private boolean logging;

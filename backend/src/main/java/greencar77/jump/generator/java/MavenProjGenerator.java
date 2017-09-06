@@ -28,6 +28,7 @@ import greencar77.jump.model.java.maven.Dependency;
 import greencar77.jump.model.java.maven.DependencyScope;
 import greencar77.jump.model.java.maven.PluginPom;
 import greencar77.jump.model.java.maven.Pom;
+import greencar77.jump.spec.java.SpringConfigBasis;
 
 public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     implements ClassGenerator {
@@ -197,8 +198,8 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     protected StringBuilder generateClassAnnotations(ClassFile clazz) {
         StringBuilder sb = new StringBuilder();
 
-        if (clazz.classAnnotations.size() > 0) {
-            for (String annotation: clazz.classAnnotations) {
+        if (clazz.annotations.size() > 0) {
+            for (String annotation: clazz.annotations) {
                 sb.append(annotation + LF);
             }
         }
@@ -209,8 +210,8 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     protected StringBuilder generateMethodAnnotations(Method method, String indent) {
         StringBuilder sb = new StringBuilder();
 
-        if (method.classAnnotations.size() > 0) {
-            for (String annotation: method.classAnnotations) {
+        if (method.annotations.size() > 0) {
+            for (String annotation: method.annotations) {
                 sb.append(indent + annotation + LF);
             }
         }
@@ -283,6 +284,10 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     }
 
     protected void generateSpringContext() {
+        if (model.getConfigBasis() != SpringConfigBasis.XML) {
+            return;
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF);
         sb.append("<beans xmlns=\"http://www.springframework.org/schema/beans\"" + LF);
