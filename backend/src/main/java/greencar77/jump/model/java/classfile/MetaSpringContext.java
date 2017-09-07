@@ -19,8 +19,9 @@ public class MetaSpringContext {
         return beans;
     }
     
-    public void registerBean(ClassFile clazz, String name) {
+    public MetaSpringContext registerBean(ClassFile clazz, String name) {
         beans.add(new MetaBean(clazz, name));
+        return this;
     }
 
     public String getId() {

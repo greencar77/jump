@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Method {
+    private ClassFile classFile;
     private String name;
     private String signature;
     private String returnType;
@@ -17,8 +18,9 @@ public class Method {
     }
 
     //with most attributes
-    public Method(boolean staticFlag, String returnType, String name, String signature) {
+    public Method(ClassFile classFile, boolean staticFlag, String returnType, String name, String signature) {
         super();
+        this.classFile = classFile;
         this.staticFlag = staticFlag;
         this.returnType = returnType;
         this.name = name;
@@ -55,5 +57,13 @@ public class Method {
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public ClassFile getClassFile() {
+        return classFile;
+    }
+
+    public void setClassFile(ClassFile classFile) {
+        this.classFile = classFile;
     }
 }
