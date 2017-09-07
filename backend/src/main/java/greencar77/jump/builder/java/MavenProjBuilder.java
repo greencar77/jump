@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 
+import greencar77.jump.Utils;
 import greencar77.jump.builder.Builder;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.classfile.ClassFile;
@@ -212,7 +213,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
             springConfigClass.imports.add("org.springframework.context.annotation.Configuration");
             model.getClassFiles().add(springConfigClass);
             springContext.getBeans().stream().forEach(b -> {
-                Method beanMethod = new Method(false, b.getClassFile().className, b.getClassFile().className, null);
+                Method beanMethod = new Method(false, b.getClassFile().className, Utils.toLowerCaseFirst(b.getClassFile().className), null);
                 beanMethod.annotations.add("@Bean");
                 springConfigClass.imports.add("org.springframework.context.annotation.Bean");
                 beanMethod.getContent().append(code(indent(TAB + TAB,
