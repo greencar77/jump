@@ -12,6 +12,7 @@ public class MavenProjSpec extends Spec {
     private boolean featureUnitTests;
     private boolean featureSpring;
     private Spring spring;
+    private boolean featureMqRabbit;
 
     public String getRootPackage() {
         return rootPackage;
@@ -83,5 +84,13 @@ public class MavenProjSpec extends Spec {
 
     public void setSpring(Spring spring) {
         this.spring = spring;
+    }
+
+    public boolean isFeatureMqRabbit() {
+        return featureMqRabbit;
+    }
+
+    public void setFeatureMqRabbit(boolean featureMqRabbit) {
+        this.featureMqRabbit = featureMqRabbit;
     }
 }

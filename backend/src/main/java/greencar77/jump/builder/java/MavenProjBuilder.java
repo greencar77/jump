@@ -42,7 +42,9 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         
         model.setProjectFolder(getSpec().getProjectName());
         model.setJavaVersion(getSpec().getJavaVersion());
-        model.setConfigBasis(getSpec().getSpring().getConfigBasis());
+        if (getSpec().getSpring() != null) {
+            model.setConfigBasis(getSpec().getSpring().getConfigBasis());
+        }
         
         //config project
         Pom pom = new Pom(getSpec().getGroupId(), getSpec().getArtifactId());
@@ -137,8 +139,13 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
             buildAppSpring();
         }
         if (getSpec().isFeatureExcel()) {
-            buildAppExcel();
+            appendExcel();
         }
+        if (getSpec().isFeatureMqRabbit()) {
+            appendMqRabbit();
+        }
+
+        //now classes for other features are generated
         if (getSpec().isFeatureUnitTests()) {
             appendUnitTests();
         }
@@ -163,11 +170,11 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         //bean class
         ClassFile beanOne = newClass(getSpec().getRootPackage() + ".domain", "Alpha");
         method = newMethod(beanOne, false, "int", "getFive", null);
-        addMethodContent(method, "return 5;");
+        addContent(method, "return 5;");
 
         ClassFile beanTwo = newClass(getSpec().getRootPackage() + ".domain", "Beta");
         method = newMethod(beanTwo, false, "int", "getTen", null);
-        addMethodContent(method, "return 10;");
+        addContent(method, "return 10;");
 
         MetaSpringContext springContext = new MetaSpringContext("ctx")
                 .registerBean(beanOne, "alphaBean")
@@ -177,7 +184,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         ClassFile springDemo = newClass(getSpec().getRootPackage(), "SpringDemo");
         method = newMethod(springDemo, false, (String) null, "run", null);
         if (getSpec().getSpring().getConfigBasis() == SpringConfigBasis.XML) {
-            addMethodContent(method,
+            addContent(method,
                     "//#org.springframework.context.ApplicationContext",
                     "//#org.springframework.context.support.ClassPathXmlApplicationContext",
                     "ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {\"" + springContext.getId() + ".xml\"});"
@@ -185,15 +192,15 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         } else { //JAVA
             //https://www.tutorialspoint.com/spring/spring_java_based_configuration.htm
             ClassFile springConfigClass = createConfigClass(springContext);
-            addMethodContent(method,
+            addContent(method,
                     "//#org.springframework.context.ApplicationContext",
                     "//#org.springframework.context.annotation.AnnotationConfigApplicationContext",
                     "ApplicationContext context = new AnnotationConfigApplicationContext(" + springConfigClass.className + ".class" + ");"
                     );
         }
 
-        addMethodContent(model.getMainClass().getMethods().get(0),
-                "new SpringDemo().run();"
+        addContent(model.getMainClass().getMethods().get(0),
+                "new " + springDemo.className + "().run();"
                 );
     }
 
@@ -206,7 +213,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
             Method beanMethod = newMethod(springConfigClass, false, b.getClassFile(),
                     Utils.toLowerCaseFirst(b.getClassFile().className), null);
             addAnnotation(beanMethod, "@Bean", "org.springframework.context.annotation.Bean");
-            addMethodContent(beanMethod,
+            addContent(beanMethod,
                     "return new " + b.getClassFile().className + "();"
                     );
         });
@@ -272,7 +279,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         }
     }
     
-    protected void addMethodContent(Method method, String... lines) {
+    protected void addContent(Method method, String... lines) {
         List<String> meaningfulLines = new ArrayList<>();
         for (String line: lines) {
             if (line.startsWith(IMPORT_COMMENT_PREFIX)) {
@@ -288,22 +295,80 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
                 lines
                 )));
     }
+    
+    protected void addContent(ClassFile clazz, String... lines) {
+        List<String> meaningfulLines = new ArrayList<>();
+        for (String line: lines) {
+            if (line != null && line.startsWith(IMPORT_COMMENT_PREFIX)) {
+                clazz.imports.add(line.substring(IMPORT_COMMENT_PREFIX.length()));
+            } else {
+                meaningfulLines.add(line);
+            }
+        }
 
-    protected void buildAppExcel() {
-        Method method;
+        lines = meaningfulLines.toArray(new String[0]);
 
-        ClassFile clazz = new ClassFile(getSpec().getRootPackage(), "ExcelReader");
-        method = new Method(clazz, false, null, "run", null);
-        method.getContent().append(code(indent(TAB + TAB,
+        clazz.getStateBody().append(code(indent(TAB,
+                lines
+                )));
+    }
+
+    protected void appendExcel() {
+        ClassFile clazz = newClass(getSpec().getRootPackage(), "ExcelReader");
+        Method method = newMethod(clazz, false, (String) null, "run", null);
+        addContent(method,
                 "try {",
+                "//#org.apache.poi.xssf.usermodel.XSSFWorkbook",
                 TAB + "XSSFWorkbook workbook = new XSSFWorkbook(\"sample1.xlsx\");",
+                "//#java.io.IOException",
                 "} catch (IOException e) {",
                 TAB + "throw new RuntimeException(e);",
                 "}"
-                )));
-        clazz.imports.add("org.apache.poi.xssf.usermodel.XSSFWorkbook");
-        clazz.imports.add("java.io.IOException");        
-        clazz.getMethods().add(method);
-        model.getClassFiles().add(clazz);
+                );
+
+        addContent(model.getMainClass().getMethods().get(0),
+                "//#" + clazz.getFullName(),
+                "new " + clazz.className + "().run();"
+                );
+    }
+
+    protected void appendMqRabbit() {
+        ClassFile clazz = newClass(getSpec().getRootPackage(), "RabbitClient");
+        addContent(clazz,
+                "private final static String QUEUE_NAME = \"hello\";",
+                ""
+                );
+
+        //https://www.rabbitmq.com/tutorials/tutorial-one-java.html
+        Method method = newMethod(clazz, false, (String) null, "run", null);
+        addContent(method,
+                "//#com.rabbitmq.client.ConnectionFactory",
+                "ConnectionFactory factory = new ConnectionFactory();",
+                "factory.setHost(\"localhost\");",
+                "",
+                "try {",
+                "//#com.rabbitmq.client.Connection",
+                TAB + "Connection connection = factory.newConnection();",
+                "//#com.rabbitmq.client.Channel",
+                TAB + "Channel channel = connection.createChannel();",
+                TAB + "channel.queueDeclare(QUEUE_NAME, false, false, false, null);",
+                TAB + "String message = \"Hello World!\";",
+                TAB + "channel.basicPublish(\"\", QUEUE_NAME, null, message.getBytes(\"UTF-8\"));",
+                TAB + "System.out.println(\" [x] Sent '\" + message + \"'\");",
+                TAB + "channel.close();",
+                TAB + "connection.close();",
+                "//#java.io.IOException",
+                "} catch (IOException e) {",
+                TAB + "throw new RuntimeException(e);",
+                "//#java.util.concurrent.TimeoutException",
+                "} catch (TimeoutException e) {",
+                TAB + "throw new RuntimeException(e);",
+                "}"
+                );
+
+        addContent(model.getMainClass().getMethods().get(0),
+                "//#" + clazz.getFullName(),
+                "new " + clazz.className + "().run();"
+                );
     }
 }

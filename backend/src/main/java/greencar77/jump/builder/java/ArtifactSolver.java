@@ -41,6 +41,9 @@ public class ArtifactSolver {
         if (absoluteClass.startsWith("org.junit.")) {
             return "junit/junit/4.10";
         }
+        if (absoluteClass.startsWith("com.rabbitmq.")) {
+            return "com.rabbitmq/amqp-client/4.2.0";
+        }
         
         if (MAP.containsKey(absoluteClass)) {
             return MAP.get(absoluteClass);

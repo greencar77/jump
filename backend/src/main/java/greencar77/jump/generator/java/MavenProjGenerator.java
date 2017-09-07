@@ -188,8 +188,7 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
 
         sb.append(generateClassAnnotations(clazz));
         sb.append("public class " + clazz.className + " " + (clazz.classNameTail == null? "": clazz.classNameTail) + " {" + LF);
-        //sb.append(generateStateBody()); //TODO
-        sb.append(generateBody(clazz)); //TODO
+        sb.append(generateBody(clazz));
         sb.append("}" + LF);
         
         return sb;
@@ -233,8 +232,11 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
         
         return sb;
     }
+
     protected StringBuilder generateBody(ClassFile clazz) {
         StringBuilder sb = new StringBuilder();
+
+        sb.append(clazz.getStateBody());
 
         if (clazz.getMethods().size() > 0) {
             for (Method method: clazz.getMethods()) {
@@ -271,7 +273,6 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
 
         sb.append(generateClassAnnotations(clazz));
         sb.append("public class " + clazz.className + " " + (clazz.classNameTail == null? "": clazz.classNameTail) + " {" + LF);
-        //sb.append(generateStateBody()); //TODO
         sb.append(generateBody(clazz));
         sb.append("}" + LF);
         
