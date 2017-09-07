@@ -4,6 +4,7 @@ import static greencar77.jump.generator.CodeManager.code;
 import static greencar77.jump.generator.CodeManager.indent;
 import static greencar77.jump.generator.Generator.TAB;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import greencar77.jump.spec.java.MavenProjSpec;
 import greencar77.jump.spec.java.SpringConfigBasis;
 
 public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjModel> {
+    public static final String IMPORT_COMMENT_PREFIX = "//#";
     protected static final String DEFAULT_MAIN_CLASS_NAME = "App";
     
     //Having result object as instance variable relieves us from passing it around in method signatures.
@@ -176,18 +178,18 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         method = newMethod(springDemo, false, (String) null, "run", null);
         if (getSpec().getSpring().getConfigBasis() == SpringConfigBasis.XML) {
             addMethodContent(method,
+                    "//#org.springframework.context.ApplicationContext",
+                    "//#org.springframework.context.support.ClassPathXmlApplicationContext",
                     "ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {\"" + springContext.getId() + ".xml\"});"
                     );
-            springDemo.imports.add("org.springframework.context.ApplicationContext");
-            springDemo.imports.add("org.springframework.context.support.ClassPathXmlApplicationContext");
         } else { //JAVA
             //https://www.tutorialspoint.com/spring/spring_java_based_configuration.htm
             ClassFile springConfigClass = createConfigClass(springContext);
             addMethodContent(method,
+                    "//#org.springframework.context.ApplicationContext",
+                    "//#org.springframework.context.annotation.AnnotationConfigApplicationContext",
                     "ApplicationContext context = new AnnotationConfigApplicationContext(" + springConfigClass.className + ".class" + ");"
                     );
-            springDemo.imports.add("org.springframework.context.ApplicationContext");
-            springDemo.imports.add("org.springframework.context.annotation.AnnotationConfigApplicationContext");
         }
 
         addMethodContent(model.getMainClass().getMethods().get(0),
@@ -271,6 +273,17 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     }
     
     protected void addMethodContent(Method method, String... lines) {
+        List<String> meaningfulLines = new ArrayList<>();
+        for (String line: lines) {
+            if (line.startsWith(IMPORT_COMMENT_PREFIX)) {
+                method.getClassFile().imports.add(line.substring(IMPORT_COMMENT_PREFIX.length()));
+            } else {
+                meaningfulLines.add(line);
+            }
+        }
+
+        lines = meaningfulLines.toArray(new String[0]);
+
         method.getContent().append(code(indent(TAB + TAB,
                 lines
                 )));
