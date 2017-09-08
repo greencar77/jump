@@ -16,5 +16,5 @@ div {
 	#background-color: green;
 	border: 1px dotted black;
 	float: left;
-	#width: 100%;
+	width: 100%;
 }

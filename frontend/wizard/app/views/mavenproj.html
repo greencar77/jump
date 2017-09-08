@@ -1,7 +1,7 @@
 <div id="mavenproj" class="params">
     <!--ng-include src="'views/root.html'"></ng-include-->
     <div ng-include="'views/root.html'"></div>
-    <br/>
+    <div class="params">
     MavenProj<br/>
     groupId: <input ng-model="config.groupId" type="text"> artifactId: <input ng-model="config.artifactId" type="text"><br/>
     Root package: <input ng-model="config.rootPackage" type="text"><br/>
@@ -19,6 +19,7 @@
         IDE - Eclipse: <input type="checkbox" ng-model="config.invokeEclipse" /><br/>
         IDE - IntelliJ: <input type="checkbox" ng-model="config.invokeIntelliJ" /><br/>
         Command line: <input type="checkbox" ng-model="config.invokeCli" /><br/>
+    </div>
     </div>
     <br/>
     <ng-include ng-show="config.level == 'MavenProjSpec'" src="'views/generation.html'"></ng-include>
