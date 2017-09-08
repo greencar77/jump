@@ -19,15 +19,19 @@ public class AppFromFile {
     private static final String BUFFER_PATH = PATH + "buffer\\config.txt";
 
     public static void main(String[] args) {
+        new AppFromFile().run();
+    }
+    
+    public void run() {
         Class<? extends Spec> clazz = detectClass();
         Spec spec = loadSpec(clazz);
         GeneratorFactory.create(BuilderFactory.create(spec).build()).generate();
     }
 
-    private static Class<? extends Spec> detectClass() {
+    protected Class<? extends Spec> detectClass() {
         List<String> lines;
         try {
-            lines = org.apache.commons.io.FileUtils.readLines(new File(BUFFER_PATH));
+            lines = org.apache.commons.io.FileUtils.readLines(new File(getBufferPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -43,7 +47,7 @@ public class AppFromFile {
         return detectClass(name);
     }
 
-    private static Class<? extends Spec> detectClass(String name) {
+    protected Class<? extends Spec> detectClass(String name) {
         if (name.equals(WebAppSpec.class.getSimpleName())) {
             return WebAppSpec.class;
         } else if (name.equals(MavenProjSpec.class.getSimpleName())) {
@@ -55,13 +59,17 @@ public class AppFromFile {
         }
     }
 
-    private static Spec loadSpec(Class<? extends Spec> clazz) {
+    protected Spec loadSpec(Class<? extends Spec> clazz) {
         ObjectMapper mapper = new ObjectMapper();
         
         try {
-            return mapper.readValue(new File(BUFFER_PATH), clazz);
+            return mapper.readValue(new File(getBufferPath()), clazz);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    protected String getBufferPath() {
+        return BUFFER_PATH;
     }
 }

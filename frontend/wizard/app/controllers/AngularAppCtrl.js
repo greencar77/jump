@@ -3,4 +3,12 @@ mod1.controller('AngularAppCtrl', function($scope, $controller) {
 
     $scope.config.level = 'AngularAppSpec';
 
+    $scope.$watch('config.bootstrapUi', function() {
+        if ($scope.config.bootstrapUi) {
+            $scope.config.bootstrapUiSpec = new Object();
+        } else {
+            delete $scope.config.bootstrapUiSpec;
+        }
+    });
+
 });

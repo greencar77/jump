@@ -46,7 +46,7 @@ public class PredefinedMavenProjBuilder extends MavenProjBuilder<MavenProjSpec, 
 
         build();
 
-        buildAppMulti();
+        buildAppFeatures();
 
         return model;
     }

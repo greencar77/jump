@@ -13,6 +13,7 @@ import org.apache.commons.lang.Validate;
 import greencar77.jump.generator.Generator;
 import greencar77.jump.model.js.AngularAppModel;
 import greencar77.jump.model.js.AngularVersion;
+import greencar77.jump.model.RawFile;
 import greencar77.jump.model.angular.Module;
 import greencar77.jump.model.angular.controller.Controller;
 import greencar77.jump.model.angular.controller.PaletteController;
@@ -36,6 +37,10 @@ public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
 
         byte[] index = getIndex(model.getModules().iterator().next(), localScriptPaths); //TODO assume only one module exists        
         saveResource("index.html", index);
+
+        for (RawFile rawFile: model.getRawFiles()) {
+            saveResource(rawFile.getPath(), rawFile.getContent());
+        }
 
         generateHtml();
     }
@@ -169,9 +174,19 @@ public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
         sb.append("<head>" + LF);       
         sb.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />" + LF);
         sb.append("<title>" + "index" + "</title>" + LF);
-        sb.append(TAB + "<!--third-party dependencies-->" + LF);
         setupThirdParty(sb);
+        setupLocalDependencies(sb, localScriptPaths);
+        sb.append("</head>" + LF);
+    }
+
+    protected void setupLocalDependencies(StringBuilder sb, List<String> localScriptPaths) {
         sb.append(TAB + "<!--local dependencies-->" + LF);
+        if (!CollectionUtils.isEmpty(model.getCssFiles())) {
+            model.getCssFiles().stream().forEach(css -> {
+                sb.append(TAB + "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + css.getPath() + "\" />" + LF);
+            });
+        }
+
         if (!CollectionUtils.isEmpty(localScriptPaths)) {
             localScriptPaths.stream().forEach(p -> {
                 sb.append(TAB + "<script src=\"" + p + "\"></script>" + LF);
@@ -179,9 +194,8 @@ public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
         } else {
             sb.append(TAB + "<script src=\"script.js\"></script>" + LF);
         }
-        sb.append("</head>" + LF);
     }
-    
+
     protected void appendBody(StringBuilder sb) {
         sb.append("<body ng-controller=\"MainCtrl\">" + LF);
         
@@ -224,12 +238,16 @@ public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
     }
 
     protected void setupThirdParty(StringBuilder sb) {
+        sb.append(TAB + "<!--third-party dependencies-->" + LF);
         setupAngular(sb);
         if (model.isJquery()) {
             sb.append("<script src=\"../jquery/jquery-3.1.0.js\"></script>" + LF);
         }
         if (model.isBootstrapCss()) {
             sb.append(TAB + "<link href=\"http://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\" rel=\"stylesheet\"/>" + LF);
+        }
+        if (model.isBootstrapUi()) {
+           sb.append(TAB + "<script src=\"http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-" + model.getBootstrapUiVersion() + ".js\"></script>" + LF);
         }
     }
 
@@ -252,9 +270,6 @@ public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
         }
         if (model.isNgCookies()) {
             sb.append(TAB + "<script src=\"" + angularUrl + "angular-cookies.js\"></script>" + LF);          
-        }
-        if (model.isBootstrapUi()) {
-            sb.append(TAB + "<script src=\"http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.5.0.js\"></script>" + LF);          
         }
     }
     
@@ -386,9 +401,13 @@ public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
     protected void generateInstructions() {
         StringBuilder sb = new StringBuilder();
         
-        sb.append("\"<CHROME_HOME>\\chrome\" --allow-file-access-from-files <APP_HOME>/" + model.getProjectFolder() + "/index.html#/" + LF);
+        sb.append("\"" + getChromeHome() + "\\chrome\" --allow-file-access-from-files <APP_HOME>/" + model.getProjectFolder() + "/index.html#/" + LF);
 
         saveResource(INSTRUCTIONS_FILENAME, sb.toString().getBytes());
+    }
+    
+    protected String getChromeHome() {
+        return "<CHROME_HOME>";
     }
 
 }

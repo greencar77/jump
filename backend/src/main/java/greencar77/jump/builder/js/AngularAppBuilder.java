@@ -23,6 +23,7 @@ import greencar77.jump.model.angular.html.MiscNode;
 import greencar77.jump.model.angular.html.NgButton;
 import greencar77.jump.model.angular.html.TemplateHtmlFragment;
 import greencar77.jump.spec.js.AngularAppSpec;
+import greencar77.jump.spec.js.BootstrapUi;
 
 public class AngularAppBuilder extends Builder<AngularAppSpec, AngularAppModel> {
     
@@ -38,6 +39,12 @@ public class AngularAppBuilder extends Builder<AngularAppSpec, AngularAppModel> 
     protected AngularAppModel buildModel() {
         Validate.notNull(getSpec());
         model.setProjectFolder(getSpec().getProjectName());
+
+        model.setBootstrapCss(getSpec().isBootstrapCss());
+        model.setBootstrapUi(getSpec().isBootstrapUi());
+        if (getSpec().getBootstrapUiSpec() != null) {
+            model.setBootstrapUiVersion(getSpec().getBootstrapUiSpec().getVersion());
+        }
 
         if (getSpec().getAppGenerator() != null) {
             invoke(getSpec().getAppGenerator());
@@ -97,22 +104,45 @@ public class AngularAppBuilder extends Builder<AngularAppSpec, AngularAppModel> 
     protected void setupDefault() {
         super.setupDefault();
         
+        if (getSpec().isBootstrapUi() && getSpec().getBootstrapUiSpec() == null) {
+            BootstrapUi bootstrapUi = new BootstrapUi();
+            bootstrapUi.setVersion("2.5.0");
+            getSpec().setBootstrapUiSpec(bootstrapUi);
+        }
+        
+        if (getSpec().isBootstrapUi()) {
+            getSpec().setBootstrapCss(true);
+        }
+        
         if (getSpec().getAppGenerator() == null) {
             getSpec().setAppGenerator("buildAppEmpty");
-        }        
+        }
     }
     
     protected void buildAppEmpty() {
         addModule();
         model.setTitle("Empty project");
     }
+    
+    protected void buildAppFeatures() {
+        addModule();
+
+        //TODO move to spec
+        model.setAngularVersion(AngularVersion.LATEST);
+        model.setNgRoute(true);
+        model.setTitle("Features project");
+
+        addModule();
+
+        if (getSpec().isFeatureTabs()) {
+            appendTabs();
+        }
+    }
 
     protected void buildAppTutti() {
         //TODO move to spec
-        model.setBootstrapCss(true);
         model.setAngularVersion(AngularVersion.LATEST);
         model.setNgRoute(true);
-        model.setBootstrapUi(true);
         model.setTitle("Palette (tutti)");
 
         addModule();
@@ -164,16 +194,30 @@ public class AngularAppBuilder extends Builder<AngularAppSpec, AngularAppModel> 
                 ))
                 );
 
-        //tabs
-        ControlledPage tabPage = addControlledPage("tabs", "TabsCtrl");
-        model.setBootstrapUi(true);
-        DomNode tabRoot = tabPage.getHtmlFragment().getRootNode();
-        tabRoot.add(new MiscNode("uib-tabset", null, null, "active=\"active\"")
-                .add(new MiscNode("uib-tab", null, null, "heading=\"Head1\""))
-                .add(new MiscNode("uib-tab", null, null, "heading=\"Head2\""))
-                );
+        appendTabs();
     }
     
+    protected void appendTabs() {
+        model.setBootstrapUi(true);
+        ControlledPage tabPage = addControlledPage("tabs", "TabsCtrl");
+        DomNode tabRoot = tabPage.getHtmlFragment().getRootNode();
+        
+        int majorVersion = Integer.valueOf(getSpec().getBootstrapUiSpec().getVersion().substring(0, getSpec().getBootstrapUiSpec().getVersion().indexOf(".")));
+        if (majorVersion >=2 ) {
+            tabRoot.add(new MiscNode("uib-tabset", null, null, "active=\"active\"")
+                    .add(new MiscNode("uib-tab", null, null, "heading=\"Head1\""))
+                    .add(new MiscNode("uib-tab", null, null, "heading=\"Head2\""))
+                    .add(new MiscNode("uib-tab", null, null, "heading=\"Head3\""))
+                    );
+        } else {
+            tabRoot.add(new MiscNode("tabset", null, null, "active=\"active\"")
+                    .add(new MiscNode("tab", null, null, "heading=\"Head1\""))
+                    .add(new MiscNode("tab", null, null, "heading=\"Head2\""))
+                    .add(new MiscNode("tab", null, null, "heading=\"Head3\""))
+                    );
+        }
+    }
+
     protected ControlledPage setupPopup(String htmlFilename, String controllerName) {
         ControlledPage controlledPopup = addControlledPage(htmlFilename, controllerName);
         HtmlFragment popupHtml = controlledPopup.getHtmlFragment();

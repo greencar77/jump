@@ -4,5 +4,11 @@
     <br/>
     AngularApp<br/>
     Application generation method: <input ng-model="config.appGenerator" type="text"><br/>
+    Bootstrap CSS: <input type="checkbox" ng-model="config.bootstrapCss" /><br/>
+    Bootstrap UI: <input type="checkbox" ng-model="config.bootstrapUi" /><br/>
+    <div class="params" ng-show="config.bootstrapUi">
+        Version: <input ng-model="config.bootstrapUiSpec.version" type="text"><br/>
+    </div>
+    Tabs (Bootstrap UI): <input type="checkbox" ng-model="config.featureTabs" /><br/>
     <ng-include ng-show="config.level == 'AngularAppSpec'" src="'views/generation.html'"></ng-include>
 </div>

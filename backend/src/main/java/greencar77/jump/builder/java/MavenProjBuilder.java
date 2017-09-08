@@ -74,7 +74,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
             getSpec().setArtifactId(getSpec().getProjectName());
         }
         if (getSpec().getAppGenerator() == null) {
-            getSpec().setAppGenerator("buildAppMulti");
+            getSpec().setAppGenerator("buildAppFeatures");
         }
     }
     
@@ -127,7 +127,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     }
 
 
-    protected void buildAppMulti() {
+    protected void buildAppFeatures() {
 
         ClassFile mainClass = new ClassFile(getSpec().getRootPackage(), "App");
         Method method = new Method(mainClass, true, null, "main", "String[] args");

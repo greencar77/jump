@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import greencar77.jump.model.Model;
+import greencar77.jump.model.RawFile;
 import greencar77.jump.model.angular.Module;
 import greencar77.jump.model.angular.html.HtmlFragment;
 
@@ -14,8 +15,11 @@ public class AngularAppModel extends Model {
     private boolean bootstrapCss;
     private boolean bootstrapUi;
     private boolean jquery;
-    private String bootstrapVersion;
+    private String bootstrapCssVersion;
+    private String bootstrapUiVersion;
     private List<String> libs = new ArrayList<String>();
+    private List<RawFile> cssFiles = new ArrayList<>();
+    private List<RawFile> rawFiles = new ArrayList<>();
 
     //Angular
     private AngularVersion angularVersion = AngularVersion.LATEST;
@@ -76,12 +80,12 @@ public class AngularAppModel extends Model {
         this.title = title;
     }
 
-    public String getBootstrapVersion() {
-        return bootstrapVersion;
+    public String getBootstrapCssVersion() {
+        return bootstrapCssVersion;
     }
 
-    public void setBootstrapVersion(String bootstrapVersion) {
-        this.bootstrapVersion = bootstrapVersion;
+    public void setBootstrapCssVersion(String bootstrapCssVersion) {
+        this.bootstrapCssVersion = bootstrapCssVersion;
     }
 
     public boolean isBootstrapCss() {
@@ -118,6 +122,22 @@ public class AngularAppModel extends Model {
 
     public void setBootstrapUi(boolean bootstrapUi) {
         this.bootstrapUi = bootstrapUi;
+    }
+
+    public String getBootstrapUiVersion() {
+        return bootstrapUiVersion;
+    }
+
+    public void setBootstrapUiVersion(String bootstrapUiVersion) {
+        this.bootstrapUiVersion = bootstrapUiVersion;
+    }
+
+    public List<RawFile> getCssFiles() {
+        return cssFiles;
+    }
+
+    public List<RawFile> getRawFiles() {
+        return rawFiles;
     }
 
 }
