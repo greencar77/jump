@@ -13,15 +13,17 @@
     <script src="controllers/MainCtrl.js"></script>
     <script src="controllers/MavenProjCtrl.js"></script>
     <script src="controllers/WebAppCtrl.js"></script>
+    <script src="controllers/AngularAppCtrl.js"></script>
 </head>
 <body ng-app="mainModule" ng-controller="MainCtrl">
 
 <ul>
-<li><a href="#!/mavenproj">Maven application</a></li>
-    <ul>
-        <li><a href="#!/webapp">Web application</a></li>
+    <li><a href="#!/angularapp">Angular application</a></li>
+    <li><a href="#!/mavenproj">Maven application</a></li>
+        <ul>
+            <li><a href="#!/webapp">Web application</a></li>
+        </ul>
     </ul>
-</ul>
 <br/>
 
 <div ng-view></div>

@@ -1,21 +1,10 @@
 package greencar77.jump.builder.js;
 
-import static greencar77.jump.generator.CodeManager.code;
-import static greencar77.jump.generator.CodeManager.indent;
-import static greencar77.jump.generator.Generator.TAB;
-
 import greencar77.jump.builder.Predefined;
-import greencar77.jump.generator.Generator;
-import greencar77.jump.model.angular.ControlledPage;
 import greencar77.jump.model.angular.Module;
 import greencar77.jump.model.angular.controller.Controller;
 import greencar77.jump.model.angular.directive.Directive;
-import greencar77.jump.model.angular.html.Br;
-import greencar77.jump.model.angular.html.DomNode;
 import greencar77.jump.model.angular.html.HtmlFragment;
-import greencar77.jump.model.angular.html.Input;
-import greencar77.jump.model.angular.html.MiscNode;
-import greencar77.jump.model.angular.html.NgButton;
 import greencar77.jump.model.angular.html.TemplateHtmlFragment;
 import greencar77.jump.model.js.AngularAppModel;
 import greencar77.jump.model.js.AngularVersion;
@@ -40,77 +29,11 @@ public class PredefinedAngularAppBuilder extends AngularAppBuilder implements Pr
 
         setSpec(spec);
 
-        build();
+        build();        
         
-        model.setBootstrapCss(true);
-        model.setAngularVersion(AngularVersion.LATEST);
-        model.setNgRoute(true);
-        model.setBootstrapUi(true);
-        model.setTitle("Palette (tutti)");
-        
-        addModule();
         buildAppTutti();
 
         return model;
-    }
-
-    private void buildAppTutti() {
-
-        Module module = model.getModules().iterator().next();
-
-        //palette
-        addPalette();
-        
-        //directives
-        Directive directive = new Directive("dirFirst", "dir_first");
-        directive.setHtml(new TemplateHtmlFragment("dir_first", null, "directives/dir_first.html"));
-        module.getDirectives().add(directive);
-        
-        addControlledPage("directives", "DirectiveDemoCtrl", "directiveDemo", "directives");
-
-        //multiElements
-        ControlledPage controlledPage = addControlledPage("multiElements", "MultiElementsCtrl");
-        
-        //popup
-        ControlledPage controlledPopup = setupPopup("popup", "PopupCtrl");
-        
-        //page itself        
-        Controller controller = controlledPage.getController();
-        controller.getParameters().add("$uibModal"); //requires UI bootstrap
-        StringBuilder ctrl = controller.getContent();
-        ctrl.append(Generator.LF);
-
-        DomNode rootNode = controlledPage.getHtmlFragment().getRootNode();
-
-        rootNode.add(new NgButton("btn btn-default", "button", "Click me!", "buttonPush()"));
-        ctrl.append(code(indent(TAB,
-                "$scope.buttonPush = function() {",
-                TAB + "$uibModal.open({",
-                TAB + TAB + "templateUrl: '" + controlledPopup.getHtmlFragment().getFullPath() + "',",
-                TAB + TAB + "controller: '" + controlledPopup.getController().getName() + "',",
-                TAB + "});",
-                "};"
-                ))
-                );
-
-        rootNode.add(new Br());
-
-        rootNode.add(new NgButton("btn btn-default", "button", "Click alert!", "buttonAlert()"));        
-        ctrl.append(code(indent(TAB,
-                "$scope.buttonAlert = function() {",
-                TAB + "alert('aaa');",
-                "};"
-                ))
-                );
-
-        //tabs
-        ControlledPage tabPage = addControlledPage("tabs", "TabsCtrl");
-        model.setBootstrapUi(true);
-        DomNode tabRoot = tabPage.getHtmlFragment().getRootNode();
-        tabRoot.add(new MiscNode("uib-tabset", null, null, "active=\"active\"")
-                .add(new MiscNode("uib-tab", null, null, "heading=\"Head1\""))
-                .add(new MiscNode("uib-tab", null, null, "heading=\"Head2\""))
-                );
     }
 
     public AngularAppModel specInlineTemplating() {
@@ -125,34 +48,6 @@ public class PredefinedAngularAppBuilder extends AngularAppBuilder implements Pr
         model.setInlineHtml(true);
 
         return model;
-    }
-    
-    protected ControlledPage setupPopup(String htmlFilename, String controllerName) {
-        ControlledPage controlledPopup = addControlledPage(htmlFilename, controllerName);
-        HtmlFragment popupHtml = controlledPopup.getHtmlFragment();
-        popupHtml.setStandalonePage(false);
-        popupHtml.setInlineControllerReference(false); //will be done in open function
-        DomNode rootNode = popupHtml.getRootNode();
-        rootNode.add(new Input(null, null));
-        rootNode.add(new Br());
-        rootNode.add(new NgButton("btn btn-primary", "button", "OK", "buttonOk()"));
-        rootNode.add(new NgButton("btn btn-warning", "button", "Cancel", "buttonCancel()"));
-        
-        Controller controller = controlledPopup.getController();
-        controller.getParameters().add("$uibModalInstance"); //requires UI bootstrap
-        
-        controller.getContent().append(code(indent(TAB,
-                "$scope.buttonOk = function() {",
-                TAB + "$uibModalInstance.close('aaa');",
-                "};",
-                //Generator.LF,
-                "$scope.buttonCancel = function() {",
-                TAB + "$uibModalInstance.dismiss('cancel');",
-                "};"
-                ))
-                );
-        
-        return controlledPopup;
     }
 
     public void specDirectiveMulti() {

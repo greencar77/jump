@@ -1,14 +1,26 @@
 package greencar77.jump.builder.js;
 
+import static greencar77.jump.generator.CodeManager.code;
+import static greencar77.jump.generator.CodeManager.indent;
+import static greencar77.jump.generator.Generator.TAB;
+
 import org.apache.commons.lang.Validate;
 
 import greencar77.jump.builder.Builder;
+import greencar77.jump.generator.Generator;
 import greencar77.jump.model.js.AngularAppModel;
+import greencar77.jump.model.js.AngularVersion;
 import greencar77.jump.model.angular.ControlledPage;
 import greencar77.jump.model.angular.Module;
 import greencar77.jump.model.angular.controller.Controller;
 import greencar77.jump.model.angular.controller.TemplateController;
+import greencar77.jump.model.angular.directive.Directive;
+import greencar77.jump.model.angular.html.Br;
+import greencar77.jump.model.angular.html.DomNode;
 import greencar77.jump.model.angular.html.HtmlFragment;
+import greencar77.jump.model.angular.html.Input;
+import greencar77.jump.model.angular.html.MiscNode;
+import greencar77.jump.model.angular.html.NgButton;
 import greencar77.jump.model.angular.html.TemplateHtmlFragment;
 import greencar77.jump.spec.js.AngularAppSpec;
 
@@ -19,13 +31,17 @@ public class AngularAppBuilder extends Builder<AngularAppSpec, AngularAppModel> 
     protected AngularAppModel model = new AngularAppModel();
 
     public AngularAppBuilder(AngularAppSpec spec) {
-        super(null);
+        super(spec);
     }
 
     @Override
     protected AngularAppModel buildModel() {
         Validate.notNull(getSpec());
-        //TODO use Spec to build model
+        model.setProjectFolder(getSpec().getProjectName());
+
+        if (getSpec().getAppGenerator() != null) {
+            invoke(getSpec().getAppGenerator());
+        }
         
         return model;
     }
@@ -75,5 +91,114 @@ public class AngularAppBuilder extends Builder<AngularAppSpec, AngularAppModel> 
     protected HtmlFragment register(HtmlFragment htmlFragment) {
         model.getHtmlFragments().add(htmlFragment);
         return htmlFragment;
+    }
+    
+    @Override
+    protected void setupDefault() {
+        super.setupDefault();
+        
+        if (getSpec().getAppGenerator() == null) {
+            getSpec().setAppGenerator("buildAppEmpty");
+        }        
+    }
+    
+    protected void buildAppEmpty() {
+        addModule();
+        model.setTitle("Empty project");
+    }
+
+    protected void buildAppTutti() {
+        //TODO move to spec
+        model.setBootstrapCss(true);
+        model.setAngularVersion(AngularVersion.LATEST);
+        model.setNgRoute(true);
+        model.setBootstrapUi(true);
+        model.setTitle("Palette (tutti)");
+
+        addModule();
+
+        Module module = model.getModules().iterator().next();
+
+        //palette
+        addPalette();
+        
+        //directives
+        Directive directive = new Directive("dirFirst", "dir_first");
+        directive.setHtml(new TemplateHtmlFragment("dir_first", null, "directives/dir_first.html"));
+        module.getDirectives().add(directive);
+        
+        addControlledPage("directives", "DirectiveDemoCtrl", "directiveDemo", "directives");
+
+        //multiElements
+        ControlledPage controlledPage = addControlledPage("multiElements", "MultiElementsCtrl");
+        
+        //popup
+        ControlledPage controlledPopup = setupPopup("popup", "PopupCtrl");
+        
+        //page itself        
+        Controller controller = controlledPage.getController();
+        controller.getParameters().add("$uibModal"); //requires UI bootstrap
+        StringBuilder ctrl = controller.getContent();
+        ctrl.append(Generator.LF);
+
+        DomNode rootNode = controlledPage.getHtmlFragment().getRootNode();
+
+        rootNode.add(new NgButton("btn btn-default", "button", "Click me!", "buttonPush()"));
+        ctrl.append(code(indent(TAB,
+                "$scope.buttonPush = function() {",
+                TAB + "$uibModal.open({",
+                TAB + TAB + "templateUrl: '" + controlledPopup.getHtmlFragment().getFullPath() + "',",
+                TAB + TAB + "controller: '" + controlledPopup.getController().getName() + "',",
+                TAB + "});",
+                "};"
+                ))
+                );
+
+        rootNode.add(new Br());
+
+        rootNode.add(new NgButton("btn btn-default", "button", "Click alert!", "buttonAlert()"));        
+        ctrl.append(code(indent(TAB,
+                "$scope.buttonAlert = function() {",
+                TAB + "alert('aaa');",
+                "};"
+                ))
+                );
+
+        //tabs
+        ControlledPage tabPage = addControlledPage("tabs", "TabsCtrl");
+        model.setBootstrapUi(true);
+        DomNode tabRoot = tabPage.getHtmlFragment().getRootNode();
+        tabRoot.add(new MiscNode("uib-tabset", null, null, "active=\"active\"")
+                .add(new MiscNode("uib-tab", null, null, "heading=\"Head1\""))
+                .add(new MiscNode("uib-tab", null, null, "heading=\"Head2\""))
+                );
+    }
+    
+    protected ControlledPage setupPopup(String htmlFilename, String controllerName) {
+        ControlledPage controlledPopup = addControlledPage(htmlFilename, controllerName);
+        HtmlFragment popupHtml = controlledPopup.getHtmlFragment();
+        popupHtml.setStandalonePage(false);
+        popupHtml.setInlineControllerReference(false); //will be done in open function
+        DomNode rootNode = popupHtml.getRootNode();
+        rootNode.add(new Input(null, null));
+        rootNode.add(new Br());
+        rootNode.add(new NgButton("btn btn-primary", "button", "OK", "buttonOk()"));
+        rootNode.add(new NgButton("btn btn-warning", "button", "Cancel", "buttonCancel()"));
+        
+        Controller controller = controlledPopup.getController();
+        controller.getParameters().add("$uibModalInstance"); //requires UI bootstrap
+        
+        controller.getContent().append(code(indent(TAB,
+                "$scope.buttonOk = function() {",
+                TAB + "$uibModalInstance.close('aaa');",
+                "};",
+                //Generator.LF,
+                "$scope.buttonCancel = function() {",
+                TAB + "$uibModalInstance.dismiss('cancel');",
+                "};"
+                ))
+                );
+        
+        return controlledPopup;
     }
 }

@@ -1,0 +1,8 @@
+<div id="angularapp" class="params">
+    <!--ng-include src="'views/root.html'"></ng-include-->
+    <div ng-include="'views/root.html'"></div>
+    <br/>
+    AngularApp<br/>
+    Application generation method: <input ng-model="config.appGenerator" type="text"><br/>
+    <ng-include ng-show="config.level == 'AngularAppSpec'" src="'views/generation.html'"></ng-include>
+</div>

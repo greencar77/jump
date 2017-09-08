@@ -9,6 +9,10 @@ mod1.config(function($routeProvider) {
             templateUrl : 'views/webapp.html',
             controller: 'WebAppCtrl'
         })
+        .when("/angularapp", {
+            templateUrl : 'views/angularapp.html',
+            controller: 'AngularAppCtrl'
+        })
     ;
 });
 

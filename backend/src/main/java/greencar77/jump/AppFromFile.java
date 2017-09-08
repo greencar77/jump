@@ -10,6 +10,7 @@ import greencar77.jump.builder.BuilderFactory;
 import greencar77.jump.generator.GeneratorFactory;
 import greencar77.jump.spec.Spec;
 import greencar77.jump.spec.java.MavenProjSpec;
+import greencar77.jump.spec.js.AngularAppSpec;
 import greencar77.jump.spec.webapp.WebAppSpec;
 
 public class AppFromFile {
@@ -47,6 +48,8 @@ public class AppFromFile {
             return WebAppSpec.class;
         } else if (name.equals(MavenProjSpec.class.getSimpleName())) {
                 return MavenProjSpec.class;
+        } else if (name.equals(AngularAppSpec.class.getSimpleName())) {
+            return AngularAppSpec.class;
         } else {
             throw new RuntimeException(name);
         }
