@@ -21,6 +21,8 @@ public class MavenProjModel extends Model {
     private List<String> runtimeClass = new ArrayList<>(); //class names which will be needed only during deploy/runtime
     private MetaSpringContext springContext;
     private SpringConfigBasis configBasis;
+    private PersistenceUnit persistenceUnit;
+    private HibernateConfiguration hibernateConfiguration;
 
     public Pom getPom() {
         return pom;
@@ -84,5 +86,21 @@ public class MavenProjModel extends Model {
 
     public void setConfigBasis(SpringConfigBasis configBasis) {
         this.configBasis = configBasis;
+    }
+
+    public HibernateConfiguration getHibernateConfiguration() {
+        return hibernateConfiguration;
+    }
+
+    public void setHibernateConfiguration(HibernateConfiguration hibernateConfiguration) {
+        this.hibernateConfiguration = hibernateConfiguration;
+    }
+
+    public PersistenceUnit getPersistenceUnit() {
+        return persistenceUnit;
+    }
+
+    public void setPersistenceUnit(PersistenceUnit persistenceUnit) {
+        this.persistenceUnit = persistenceUnit;
     }
 }

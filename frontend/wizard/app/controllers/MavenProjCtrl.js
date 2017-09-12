@@ -24,4 +24,25 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
             delete $scope.config.spring;
         }
     });
+
+    $scope.hibernateVersionList = [
+        {id: 'V3_6_3', name: '3.6.3', jpa: '2.0'},
+        {id: 'V4_3_0', name: '4.3.0', jpa: '2.1'},
+        {id: 'V5_2_7', name: '5.2.7', jpa: '2.1'},
+        {id: 'V5_2_10', name: '5.2.10', jpa: '2.1'}
+    ];
+
+    $scope.$watch('config.featureHibernate', function() {
+        if ($scope.config.featureHibernate) {
+            $scope.config.hibernate = new Object();
+        } else {
+            delete $scope.config.hibernate;
+        }
+    });
+
+    $scope.entityManagerSetupStrategyList = [
+        {id: 'PROGRAMMATICALLY', name: 'Programmatically'},
+        {id: 'SPRING', name: 'By Spring'},
+        {id: 'EJB', name: 'By EJB'},
+        ]
 });

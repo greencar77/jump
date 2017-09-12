@@ -8,6 +8,7 @@ public class Method {
     private String name;
     private String signature;
     private String returnType;
+    private String throwsClause;
     private StringBuilder content = new StringBuilder(); 
     public List<String> annotations = new ArrayList<>();
     private boolean staticFlag;
@@ -65,5 +66,13 @@ public class Method {
 
     public void setClassFile(ClassFile classFile) {
         this.classFile = classFile;
+    }
+
+    public String getThrowsClause() {
+        return throwsClause;
+    }
+
+    public void setThrowsClause(String throwsClause) {
+        this.throwsClause = throwsClause;
     }
 }

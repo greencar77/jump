@@ -2,31 +2,21 @@ package greencar77.jump.generator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.apache.commons.lang.Validate;
-
-import greencar77.jump.FileUtils;
 import greencar77.jump.VelocityManager;
 import greencar77.jump.model.Model;
 
-public abstract class Generator<M extends Model> {
+public abstract class Generator<M extends Model> extends AbstractGenerator {
     protected static final VelocityManager TEMPLATE_MANAGER = VelocityManager.getVelocityManager();
 
-    public static final String OUTPUT_PATH = "generated/template/";
-    public static final String LF = "\n";
-    public static final String TAB = "    "; //\t
     private static final boolean CLEAN_TEMPLATE_CONTENTS_ONLY = true;  //avoid problem ("java.io.IOException: Unable to delete directory") if folder is opened in a command window
     protected static final String INSTRUCTIONS_FILENAME = "instructions.txt";
 
     //protected String pathOffset;
     protected M model;
     
-    private Set<String> files = new HashSet<>();
-    
     public Generator(M model) {
-        Validate.notEmpty(model.getProjectFolder());
+        super(model.getProjectFolder());
 
         this.model = model;
     }
@@ -40,6 +30,7 @@ public abstract class Generator<M extends Model> {
         this.model = model;
     }*/
 
+    @Override
     public final void generate() {
         System.out.println(this.getClass().getSimpleName());
         clean();
@@ -56,6 +47,10 @@ public abstract class Generator<M extends Model> {
         if (CLEAN_TEMPLATE_CONTENTS_ONLY) {
             if (templateFolder.listFiles() != null) {
                 for (File file: templateFolder.listFiles()) {
+                    if (file.getAbsolutePath().contains(".idea")) {
+                        //full project re-import into IntelliJ will be required if project files will be missing
+                        continue;
+                    }
                     try {
                         System.out.println("Deleting " + file.getAbsolutePath());
                         if (file.isDirectory()) {
@@ -79,12 +74,4 @@ public abstract class Generator<M extends Model> {
     }
 
     protected abstract void generateContent();
-
-    protected File saveResource(String filename, byte[] content) {
-        if (files.contains(filename)) {
-            throw new RuntimeException("Duplicate file: " + filename);
-        }
-        files.add(filename);
-        return FileUtils.saveFileForced(OUTPUT_PATH + model.getProjectFolder() + "/" + filename,  content);
-    }
 }

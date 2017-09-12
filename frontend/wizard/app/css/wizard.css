@@ -13,6 +13,8 @@ div {
 	margin-top: 5px;
 	padding-left: 3px;
 	padding-right: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
 	#background-color: green;
 	border: 1px dotted black;
 	float: left;

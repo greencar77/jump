@@ -13,6 +13,9 @@ public class MavenProjSpec extends Spec {
     private boolean featureSpring;
     private Spring spring;
     private boolean featureMqRabbit;
+    private boolean featureHibernate;
+    private Hibernate hibernate;
+    private boolean invokeCli;
 
     public String getRootPackage() {
         return rootPackage;
@@ -92,5 +95,29 @@ public class MavenProjSpec extends Spec {
 
     public void setFeatureMqRabbit(boolean featureMqRabbit) {
         this.featureMqRabbit = featureMqRabbit;
+    }
+
+    public boolean isFeatureHibernate() {
+        return featureHibernate;
+    }
+
+    public void setFeatureHibernate(boolean featureHibernate) {
+        this.featureHibernate = featureHibernate;
+    }
+
+    public Hibernate getHibernate() {
+        return hibernate;
+    }
+
+    public void setHibernate(Hibernate hibernate) {
+        this.hibernate = hibernate;
+    }
+
+    public boolean isInvokeCli() {
+        return invokeCli;
+    }
+
+    public void setInvokeCli(boolean invokeCli) {
+        this.invokeCli = invokeCli;
     }
 }

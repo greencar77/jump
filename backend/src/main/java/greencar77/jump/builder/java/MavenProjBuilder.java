@@ -6,19 +6,27 @@ import static greencar77.jump.generator.Generator.TAB;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 
 import greencar77.jump.Utils;
 import greencar77.jump.builder.Builder;
+import greencar77.jump.model.java.HibernateConfiguration;
 import greencar77.jump.model.java.MavenProjModel;
+import greencar77.jump.model.java.PersistenceUnit;
 import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.MetaSpringContext;
 import greencar77.jump.model.java.classfile.Method;
+import greencar77.jump.model.java.classfile.TemplateClass;
+import greencar77.jump.model.java.maven.DependencyScope;
 import greencar77.jump.model.java.maven.Pom;
+import greencar77.jump.spec.java.EntityManagerSetupStrategy;
+import greencar77.jump.spec.java.HibernateVersion;
 import greencar77.jump.spec.java.MavenProjSpec;
 import greencar77.jump.spec.java.SpringConfigBasis;
 
@@ -120,12 +128,44 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
                 model.getPom().addDependencyTesting(artifact);
             }
         }
+        
+        //runtime classes
+        for (String absoluteClass: model.getRuntimeClass()) {
+            if (absoluteClass.startsWith(getSpec().getRootPackage())) {
+                continue; //resolve only third party classes
+            }
+            String artifact = artifactSolver.getArtifact(absoluteClass);
+            if (artifact != null) {
+                System.out.println(absoluteClass + ":" + artifact);
+                model.getPom().addDependencyRuntime(artifact);
+            }
+        }
+        
+        if (getSpec().isInvokeCli()) {
+            model.getPom().getDependencies()
+                .stream()
+                .forEach(d -> {
+                    if (!d.getScope().isRuntimeAvailable()) {
+                        d.setScope(DependencyScope.ANY);
+                    }
+                });
+        }
     }
 
     protected PreferenceConfig getPreferenceConfig() {
-        return null;
-    }
+        PreferenceConfig result = new PreferenceConfig();
 
+        if (getSpec().isFeatureHibernate()) {
+            result.setHibernate(getSpec().getHibernate().getVersion().getVersionString());
+            if (getSpec().getHibernate().getVersion().getIndex() >= HibernateVersion.V4_3_0.getIndex()) {
+                //hibernate-core depends on jpa21 
+                result.setJpa(Jpa.V2_1);
+                System.out.println("JPA preference: " + result.getJpa());
+            }
+        }
+
+        return result;
+    }
 
     protected void buildAppFeatures() {
 
@@ -143,6 +183,9 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         }
         if (getSpec().isFeatureMqRabbit()) {
             appendMqRabbit();
+        }
+        if (getSpec().isFeatureHibernate()) {
+            appendHibernate();
         }
 
         //now classes for other features are generated
@@ -370,5 +413,104 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
                 "//#" + clazz.getFullName(),
                 "new " + clazz.className + "().run();"
                 );
+    }
+
+    protected void appendHibernate() {
+        Validate.isTrue(getSpec().getHibernate().getEntityManagerSetupStrategy() == EntityManagerSetupStrategy.PROGRAMMATICALLY);
+
+        PersistenceUnit persistenceUnit = setupHibernate();
+        //<!-- https://stackoverflow.com/a/22103666 -->
+        //<!-- provider>org.hibernate.ejb.HibernatePersistence</provider-->
+        persistenceUnit.setProviderClass("org.hibernate.jpa.HibernatePersistenceProvider");
+        model.getRuntimeClass().add("org.hibernate.jpa.HibernatePersistenceProvider");
+        model.setPersistenceUnit(persistenceUnit);
+        
+        //http://www.alexecollins.com/tutorial-hibernate-jpa-part-1/index.html
+        
+        Map<String, String> props = new HashMap<>();
+        String domainPackage = getSpec().getRootPackage() + ".domain";
+        props.put("package", domainPackage);
+        ClassFile userClass = new TemplateClass(domainPackage, "User", "hiber_domain/User.java", props);
+        userClass.imports.add("javax.persistence.Column");
+        userClass.imports.add("javax.persistence.Entity");
+        //...and others
+        model.getClassFiles().add(userClass);
+        ClassFile roleClass = new TemplateClass(domainPackage, "Role", "hiber_domain/Role.java", props);
+        model.getClassFiles().add(roleClass);
+        roleClass.imports.add("javax.persistence.Column");
+        roleClass.imports.add("javax.persistence.Entity");
+        //...and others
+        
+        ClassFile clazz = newClass(getSpec().getRootPackage() + ".hiber", "EntityManagerDemo");
+        clazz.classNameTail = "implements Runnable";
+
+        Method setupMethod = newMethod(clazz, false, (String) null, "setup", null);
+        setupMethod.setThrowsClause("throws Exception");
+        addContent(setupMethod,
+                "//#org.apache.naming.java.javaURLContextFactory",
+                "//#javax.naming.Context",
+                "System.setProperty(Context.INITIAL_CONTEXT_FACTORY, javaURLContextFactory.class.getName());",
+                "System.setProperty(Context.URL_PKG_PREFIXES, \"org.apache.naming\");",
+                "",
+                "//#javax.naming.InitialContext",
+                "InitialContext ic = new InitialContext();",
+                "ic.createSubcontext(\"java:\");",
+                "ic.createSubcontext(\"java:comp\");",
+                "ic.createSubcontext(\"java:comp/env\");",
+                "ic.createSubcontext(\"java:comp/env/jdbc\");",
+                "",
+                "//#org.apache.derby.jdbc.EmbeddedDataSource",
+                "EmbeddedDataSource ds = new EmbeddedDataSource();",
+                "ds.setDatabaseName(\"tutorialDB\");",
+                "// tell Derby to create the database if it does not already exist",
+                "ds.setCreateDatabase(\"create\");",
+                "ic.bind(\"java:comp/env/jdbc/tutorialDS\", ds);"
+                );
+
+        Method demoMethod = newMethod(clazz, false, (String) null, "demo", null);
+        addContent(demoMethod,
+                "//#javax.persistence.EntityManager",
+                "//#javax.persistence.Persistence",
+                "EntityManager entityManager = Persistence.createEntityManagerFactory(\"" + persistenceUnit.getName() + "\").createEntityManager();",
+                "entityManager.getTransaction().begin();",
+                "//#" + userClass.getFullName(),
+                "User user = new User();",
+                "//#java.util.Date",
+                "user.setName(Long.toString(new Date().getTime()));",
+                "entityManager.persist(user);",
+                "entityManager.getTransaction().commit();",
+                "System.out.println(\"user=\" + user + \", user.id=\" + user.getId());",
+                "User foundUser = entityManager.find(User.class, user.getId());",
+                "System.out.println(\"foundUser=\" + foundUser);",
+                "entityManager.close();",
+                ""
+                );
+
+        Method method = newMethod(clazz, false, (String) null, "run", null);
+        addContent(method,
+                "try {",
+                TAB + setupMethod.getName() + "();",
+                "} catch (Exception e) {",
+                TAB + "throw new RuntimeException(e);",
+                "}",
+                demoMethod.getName() + "();"
+                );
+
+        addContent(model.getMainClass().getMethods().get(0),
+                "//#" + clazz.getFullName(),
+                "new " + clazz.className + "().run();"
+                );
+        
+        HibernateConfiguration hibernateConfiguration = new HibernateConfiguration();
+        hibernateConfiguration.getDomainClasses().add(roleClass);
+        hibernateConfiguration.getDomainClasses().add(userClass);
+        model.setHibernateConfiguration(hibernateConfiguration);
+    }
+    
+    protected PersistenceUnit setupHibernate() {
+        PersistenceUnit persistenceUnit = new PersistenceUnit();
+        persistenceUnit.setName("pu1");
+        
+        return persistenceUnit;
     }
 }

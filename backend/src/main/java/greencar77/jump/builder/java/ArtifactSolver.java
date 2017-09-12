@@ -35,14 +35,30 @@ public class ArtifactSolver {
         if (absoluteClass.startsWith("javax.ws.rs.")) {
             return "javax.ws.rs/jsr311-api/1.1.1";
         }
+        
+        //Apache
         if (absoluteClass.startsWith("org.apache.poi.xssf.usermodel.")) {
             return "org.apache.poi/poi-ooxml/3.15";
         }
+        if (absoluteClass.startsWith("org.apache.naming.")) {
+            return "org.apache.tomcat/catalina/6.0.18";
+        }
+        if (absoluteClass.startsWith("org.apache.derby.")) {
+            return "org.apache.derby/derby/10.13.1.1";
+        }
+        
+        //other
         if (absoluteClass.startsWith("org.junit.")) {
             return "junit/junit/4.10";
         }
         if (absoluteClass.startsWith("com.rabbitmq.")) {
             return "com.rabbitmq/amqp-client/4.2.0";
+        }
+        if (absoluteClass.startsWith("javax.persistence.")) {
+            return "org.hibernate.javax.persistence/hibernate-jpa-2.0-api/1.0.0.Final";
+        }
+        if (absoluteClass.startsWith("org.hibernate.jpa.")) {
+            return "org.hibernate/hibernate-core/4.3.0.Final";
         }
         
         if (MAP.containsKey(absoluteClass)) {
@@ -60,6 +76,12 @@ public class ArtifactSolver {
         //based on artifact
         if (primaryArtifact.equals("javax.ws.rs/jsr311-api/1.1.1") && preferenceConfig.getJaxRs() == JaxRs.V2) {
             return "javax.ws.rs/javax.ws.rs-api/2.0.1";
+        }
+        if (primaryArtifact.equals("org.hibernate.javax.persistence/hibernate-jpa-2.0-api/1.0.0.Final") && preferenceConfig.getJpa() == Jpa.V2_1) {
+            return "org.hibernate.javax.persistence/hibernate-jpa-2.1-api/1.0.0.Final";
+        }
+        if (primaryArtifact.equals("org.hibernate/hibernate-core/4.3.0.Final") && preferenceConfig.getHibernate() != null) {
+            return "org.hibernate/hibernate-core/" + preferenceConfig.getHibernate();
         }
 
         //based on class and artifact
