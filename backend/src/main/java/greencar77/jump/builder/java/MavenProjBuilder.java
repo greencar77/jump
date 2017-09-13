@@ -29,6 +29,7 @@ import greencar77.jump.spec.java.EntityManagerSetupStrategy;
 import greencar77.jump.spec.java.HibernateVersion;
 import greencar77.jump.spec.java.MavenProjSpec;
 import greencar77.jump.spec.java.SpringConfigBasis;
+import greencar77.jump.spec.java.UnitTestsMajorVersion;
 
 public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjModel> {
     public static final String IMPORT_COMMENT_PREFIX = "//#";
@@ -195,12 +196,34 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     }
     
     protected void appendUnitTests() {
+        if (getSpec().getUnitTests().getMajorVersion() == UnitTestsMajorVersion.V5) {
+            appendUnitTests5();
+        } else { //junit 3, 4
+            appendUnitTestsVintage();
+        }
+        
+    }
+    
+    protected void appendUnitTestsVintage() {
         for (ClassFile sourceClass: model.getClassFiles()) {
             ClassFile testClass = new ClassFile(sourceClass.packageName, sourceClass.getClassName() + "Test");
             for (Method method: sourceClass.getMethods()) {
                 Method testMethod = new Method(testClass, false, null, method.getName() + "Test", null);
                 testMethod.annotations.add("@Test");
                 testClass.imports.add("org.junit.Test");
+                testClass.getMethods().add(testMethod);
+            }
+            model.getTestClassFiles().add(testClass);
+        }
+    }
+    
+    protected void appendUnitTests5() {
+        for (ClassFile sourceClass: model.getClassFiles()) {
+            ClassFile testClass = new ClassFile(sourceClass.packageName, sourceClass.getClassName() + "Test");
+            for (Method method: sourceClass.getMethods()) {
+                Method testMethod = new Method(testClass, false, null, method.getName() + "Test", null);
+                testMethod.annotations.add("@Test");
+                testClass.imports.add("org.junit.jupiter.api.Test");
                 testClass.getMethods().add(testMethod);
             }
             model.getTestClassFiles().add(testClass);

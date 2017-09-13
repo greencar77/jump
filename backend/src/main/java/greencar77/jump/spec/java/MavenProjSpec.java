@@ -10,6 +10,7 @@ public class MavenProjSpec extends Spec {
     private JavaVersion javaVersion = JavaVersion.V18;
     private boolean featureExcel;
     private boolean featureUnitTests;
+    private UnitTests unitTests;
     private boolean featureSpring;
     private Spring spring;
     private boolean featureMqRabbit;
@@ -119,5 +120,13 @@ public class MavenProjSpec extends Spec {
 
     public void setInvokeCli(boolean invokeCli) {
         this.invokeCli = invokeCli;
+    }
+
+    public UnitTests getUnitTests() {
+        return unitTests;
+    }
+
+    public void setUnitTests(UnitTests unitTests) {
+        this.unitTests = unitTests;
     }
 }

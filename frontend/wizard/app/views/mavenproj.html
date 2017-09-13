@@ -7,7 +7,6 @@
     Root package: <input ng-model="config.rootPackage" type="text"><br/>
     Java version: <select ng-model="config.javaVersion" ng-options="x for x in javaVersionList"></select><br/>
     Application generation method: <input ng-model="config.appGenerator" type="text"><br/>
-    Unit Tests: <input type="checkbox" ng-model="config.featureUnitTests" /><br/>
     Spring: <input type="checkbox" ng-model="config.featureSpring" /><br/>
     <div class="params" ng-show="config.featureSpring">
         Configuration basis: <select ng-model="config.spring.configBasis" ng-options="x for x in springConfigBasisList"></select><br/>
@@ -15,10 +14,14 @@
     Hibernate: <input type="checkbox" ng-model="config.featureHibernate" /><br/>
         <div class="params" ng-show="config.featureHibernate">
             Version: <select ng-model="config.hibernate.version" ng-options="x.id as (x.name + ' (JPA ' + x.jpa + ')') for x in hibernateVersionList"></select><br/>
-            EnityManager setup strategy: <select ng-model="config.hibernate.entityManagerSetupStrategy" ng-options="x.id as x.name for x in entityManagerSetupStrategyList"></select><br/>
+            EntityManager setup strategy: <select ng-model="config.hibernate.entityManagerSetupStrategy" ng-options="x.id as x.name for x in entityManagerSetupStrategyList"></select><br/>
         </div>
     Excel: <input type="checkbox" ng-model="config.featureExcel" /><br/>
     MQRabbit: <input type="checkbox" ng-model="config.featureMqRabbit" /><br/>
+    Unit Tests: <input type="checkbox" ng-model="config.featureUnitTests" /><br/>
+    <div class="params" ng-show="config.featureUnitTests">
+        Major Version: <select ng-model="config.unitTests.majorVersion" ng-options="x.id as x.name for x in unitTestsMajorVersionList"></select><br/>
+    </div>
     <div class="params">
         Invocation:<br/>
         IDE - Eclipse: <input type="checkbox" ng-model="config.invokeEclipse" /><br/>

@@ -35,6 +35,9 @@ public class ArtifactSolver {
         if (absoluteClass.startsWith("javax.ws.rs.")) {
             return "javax.ws.rs/jsr311-api/1.1.1";
         }
+        if (absoluteClass.startsWith("org.junit.jupiter.")) {
+            return "org.junit.jupiter/junit-jupiter-engine/5.0.0";
+        }
         
         //Apache
         if (absoluteClass.startsWith("org.apache.poi.xssf.usermodel.")) {

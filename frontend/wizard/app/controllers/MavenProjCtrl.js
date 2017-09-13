@@ -12,6 +12,20 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
 
     $scope.javaVersion = 'V18';
 
+    $scope.unitTestsMajorVersionList = [
+        {id: 'V3', name: '3'},
+        {id: 'V4', name: '4'},
+        {id: 'V5', name: '5'},
+    ];
+
+    $scope.$watch('config.featureUnitTests', function() {
+        if ($scope.config.featureUnitTests) {
+            $scope.config.unitTests = new Object();
+        } else {
+            delete $scope.config.unitTests;
+        }
+    });
+
     $scope.springConfigBasisList = [
         'XML',
         'JAVA',
