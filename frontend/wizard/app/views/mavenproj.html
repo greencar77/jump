@@ -5,7 +5,7 @@
     MavenProj<br/>
     groupId: <input ng-model="config.groupId" type="text"> artifactId: <input ng-model="config.artifactId" type="text"><br/>
     Root package: <input ng-model="config.rootPackage" type="text"><br/>
-    Java version: <select ng-model="config.javaVersion" ng-options="x for x in javaVersionList"></select><br/>
+    Java version: <select ng-model="config.javaVersion" ng-options="x.id as x.name for x in javaVersionList"></select><br/>
     Application generation method: <input ng-model="config.appGenerator" type="text"><br/>
     Spring: <input type="checkbox" ng-model="config.featureSpring" /><br/>
     <div class="params" ng-show="config.featureSpring">

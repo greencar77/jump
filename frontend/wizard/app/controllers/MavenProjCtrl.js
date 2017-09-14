@@ -4,13 +4,13 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
     $scope.config.level = 'MavenProjSpec';
 
     $scope.javaVersionList = [
-        'V15',
-        'V16',
-        'V17',
-        'V18',
+        {id: 'V15', name: '1.5'},
+        {id: 'V16', name: '1.6'},
+        {id: 'V17', name: '1.7'},
+        {id: 'V18', name: '1.8'},
     ];
 
-    $scope.javaVersion = 'V18';
+    $scope.config.javaVersion = 'V18';
 
     $scope.unitTestsMajorVersionList = [
         {id: 'V3', name: '3'},
