@@ -9,6 +9,7 @@ public class Pom {
     private String groupId;
     private String artifactId;
     private String packaging = "jar";
+    private Dependency parent;
     protected Map<String, Dependency> dependencies = new HashMap<>();
     private BuildPom build = new BuildPom();
     public Properties properties = new Properties();
@@ -94,5 +95,13 @@ public class Pom {
         } else {
             return null;
         }
+    }
+
+    public Dependency getParent() {
+        return parent;
+    }
+
+    public void setParent(Dependency parent) {
+        this.parent = parent;
     }
 }

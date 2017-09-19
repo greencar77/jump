@@ -32,6 +32,13 @@ public class ArtifactSolver {
         if (absoluteClass.startsWith("org.springframework.context.")) {
             return "org.springframework/spring-context/4.3.0.RELEASE";
         }
+        if (absoluteClass.startsWith("org.springframework.boot.autoconfigure.")) {
+            return "org.springframework.boot/spring-boot-autoconfigure/1.4.3.RELEASE";
+        }
+        //after other spring-boot artifacts
+        if (absoluteClass.startsWith("org.springframework.boot.")) {
+            return "org.springframework.boot/spring-boot/1.4.3.RELEASE";
+        }
         if (absoluteClass.startsWith("javax.ws.rs.")) {
             return "javax.ws.rs/jsr311-api/1.1.1";
         }
@@ -85,6 +92,9 @@ public class ArtifactSolver {
         }
         if (primaryArtifact.equals("org.hibernate/hibernate-core/4.3.0.Final") && preferenceConfig.getHibernate() != null) {
             return "org.hibernate/hibernate-core/" + preferenceConfig.getHibernate();
+        }
+        if (primaryArtifact.startsWith("org.springframework.boot") && preferenceConfig.isSpringBootInheritFromParent()) {
+            return primaryArtifact.substring(0, primaryArtifact.lastIndexOf("/"));
         }
 
         //based on class and artifact

@@ -42,7 +42,9 @@ public class PluginPom {
         sb.append(offset + "<plugin>" + Generator.LF);
         sb.append(offset + Generator.TAB + "<groupId>" + groupId + "</groupId>" + Generator.LF);
         sb.append(offset + Generator.TAB + "<artifactId>" + artifactId + "</artifactId>" + Generator.LF);
-        sb.append(offset + Generator.TAB + "<version>" + version + "</version>" + Generator.LF);
+        if (version != null) {
+            sb.append(offset + Generator.TAB + "<version>" + version + "</version>" + Generator.LF);
+        }
         if (configuration.length() > 0) {
             sb.append(offset + Generator.TAB + "<configuration>" + Generator.LF);
             sb.append(getConfiguration());

@@ -123,6 +123,13 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
         sb.append(generateContent(TAB, pom.getBuild()) + LF);
 
         sb.append(LF);
+        if (pom.getParent() != null) {
+            sb.append(TAB + "<parent>" + LF);
+            sb.append(TAB + TAB + "<groupId>" + pom.getParent().getGroupId() + "</groupId>" + LF);
+            sb.append(TAB + TAB + "<artifactId>" + pom.getParent().getArtifactId() + "</artifactId>" + LF);
+            sb.append(TAB + TAB + "<version>" + pom.getParent().getVersion() + "</version>" + LF);
+            sb.append(TAB + "</parent>" + LF);            
+        }
         sb.append(TAB + "<dependencies>" + LF);
         List<Dependency> list = new ArrayList<>(pom.getDependencies());
         Collections.sort(list, DEPENDENCIES_ALPHABETICALLY);
@@ -162,7 +169,9 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
         sb.append(TAB + TAB + "<dependency>" + LF);
         sb.append(TAB + TAB + TAB + "<groupId>" + parts[0] + "</groupId>" + LF);
         sb.append(TAB + TAB + TAB + "<artifactId>" + parts[1] + "</artifactId>" + LF);
-        sb.append(TAB + TAB + TAB + "<version>" + parts[2] + "</version>" + LF);
+        if (parts.length > 2) {
+            sb.append(TAB + TAB + TAB + "<version>" + parts[2] + "</version>" + LF);
+        }
         if (dependency.getScope() != DependencyScope.ANY) {
             sb.append(TAB + TAB + TAB + "<scope>" + dependency.getScope().getXmlTitle() + "</scope>" + LF);
         }

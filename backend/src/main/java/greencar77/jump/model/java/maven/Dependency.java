@@ -6,6 +6,10 @@ public class Dependency {
     
     private String name;
     private DependencyScope scope;
+    
+    private String groupId;
+    private String artifactId;
+    private String version;
 
     public Dependency(String name) {
         this(name, DependencyScope.COMPILE);
@@ -16,6 +20,13 @@ public class Dependency {
         Validate.notNull(name);
         this.name = name;
         this.scope = scope;
+
+        String parts[] = name.split("/");
+        groupId = parts[0];
+        artifactId = parts[1];
+        if (parts.length > 2) {
+            version = parts[2];
+        }
     }
     
     public String getName() {
@@ -33,6 +44,18 @@ public class Dependency {
     
     public String getFullName() {
         return name + "/" + scope.getXmlTitle();
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     /*

@@ -11,6 +11,9 @@
     <div class="params" ng-show="config.featureSpring">
         Configuration basis: <select ng-model="config.spring.configBasis" ng-options="x for x in springConfigBasisList"></select><br/>
     </div>
+    Spring Boot: <input type="checkbox" ng-model="config.featureSpringBoot" /><br/>
+    <div class="params" ng-show="config.featureSpringBoot">
+    </div>
     Hibernate: <input type="checkbox" ng-model="config.featureHibernate" /><br/>
         <div class="params" ng-show="config.featureHibernate">
             Version: <select ng-model="config.hibernate.version" ng-options="x.id as (x.name + ' (JPA ' + x.jpa + ')') for x in hibernateVersionList"></select><br/>

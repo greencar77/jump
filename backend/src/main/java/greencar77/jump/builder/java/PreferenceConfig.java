@@ -4,6 +4,7 @@ public class PreferenceConfig {
     private JaxRs jaxRs;
     private Jpa jpa;
     private String hibernate;
+    private boolean springBootInheritFromParent;
 
     public JaxRs getJaxRs() {
         return jaxRs;
@@ -27,5 +28,13 @@ public class PreferenceConfig {
 
     public void setHibernate(String hibernate) {
         this.hibernate = hibernate;
+    }
+
+    public boolean isSpringBootInheritFromParent() {
+        return springBootInheritFromParent;
+    }
+
+    public void setSpringBootInheritFromParent(boolean springBootInheritFromParent) {
+        this.springBootInheritFromParent = springBootInheritFromParent;
     }
 }

@@ -23,6 +23,7 @@ import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.MetaSpringContext;
 import greencar77.jump.model.java.classfile.Method;
 import greencar77.jump.model.java.classfile.TemplateClass;
+import greencar77.jump.model.java.maven.Dependency;
 import greencar77.jump.model.java.maven.DependencyScope;
 import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.spec.java.EntityManagerSetupStrategy;
@@ -65,6 +66,10 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
 
         if (getSpec().getAppGenerator() != null) {
             invoke(getSpec().getAppGenerator());
+        }
+        
+        if (getSpec().isFeatureSpringBoot()) {
+            setupSpringBoot();
         }
 
         addDirectDependencies();
@@ -163,6 +168,10 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
                 result.setJpa(Jpa.V2_1);
                 System.out.println("JPA preference: " + result.getJpa());
             }
+        }
+        
+        if (getSpec().isFeatureSpringBoot()) {
+            result.setSpringBootInheritFromParent(true);
         }
 
         return result;
@@ -535,5 +544,23 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         persistenceUnit.setName("pu1");
         
         return persistenceUnit;
+    }
+
+    protected void setupSpringBoot() {
+        Dependency parentDependency = new Dependency("org.springframework.boot/spring-boot-starter-parent/1.4.3.RELEASE");
+        model.getPom().setParent(parentDependency);
+
+        model.getPom().addDependencyRuntime("org.springframework.boot/spring-boot-starter");
+
+        model.getMainClass().annotations.add("@SpringBootApplication");
+        model.getMainClass().imports.add("org.springframework.boot.autoconfigure.SpringBootApplication");
+
+        addContent(model.getMainClass().getMethods().get(0),
+                "//#org.springframework.boot.SpringApplication",
+                "SpringApplication.run(" + model.getMainClass().className + ".class, args);"
+                );
+
+
+        model.getPom().getBuild().addPlugin("org.springframework.boot", "spring-boot-maven-plugin", null);
     }
 }

@@ -13,6 +13,8 @@ public class MavenProjSpec extends Spec {
     private UnitTests unitTests;
     private boolean featureSpring;
     private Spring spring;
+    private boolean featureSpringBoot;
+    private SpringBoot springBoot;
     private boolean featureMqRabbit;
     private boolean featureHibernate;
     private Hibernate hibernate;
@@ -128,5 +130,21 @@ public class MavenProjSpec extends Spec {
 
     public void setUnitTests(UnitTests unitTests) {
         this.unitTests = unitTests;
+    }
+
+    public boolean isFeatureSpringBoot() {
+        return featureSpringBoot;
+    }
+
+    public void setFeatureSpringBoot(boolean featureSpringBoot) {
+        this.featureSpringBoot = featureSpringBoot;
+    }
+
+    public SpringBoot getSpringBoot() {
+        return springBoot;
+    }
+
+    public void setSpringBoot(SpringBoot springBoot) {
+        this.springBoot = springBoot;
     }
 }
