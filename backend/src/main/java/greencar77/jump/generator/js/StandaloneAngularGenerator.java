@@ -21,6 +21,7 @@ import greencar77.jump.model.angular.controller.TemplateController;
 import greencar77.jump.model.angular.directive.Directive;
 import greencar77.jump.model.angular.html.Br;
 import greencar77.jump.model.angular.html.DomNode;
+import greencar77.jump.model.angular.html.FreeNode;
 import greencar77.jump.model.angular.html.HtmlFragment;
 import greencar77.jump.model.angular.html.PaletteHtmlFragment;
 import greencar77.jump.model.angular.html.TemplateHtmlFragment;
@@ -303,6 +304,8 @@ public class StandaloneAngularGenerator<T> extends Generator<AngularAppModel> {
         
         if (node instanceof Br) { //always treat as void, https://www.w3.org/TR/html51/syntax.html#void-elements
             sb.append(indent + "<" + node.getName() + getAttributes(node) + "/>" + LF);
+        } if (node instanceof FreeNode) {
+            sb.append(((FreeNode) node).getContent() + LF);
         } else {
             sb.append(indent + "<" + node.getName() + getAttributes(node) + ">");
             if (node.getValue() == null) {

@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import greencar77.jump.model.ClassType;
 import greencar77.jump.model.RawFile;
@@ -69,5 +68,9 @@ public class FileUtils {
     
     public static RawFile createRawFileFromTemplate(String templateName, String targetPath) {
         return new RawFile(targetPath, TEMPLATE_MANAGER.getFilledTemplate("templates/" + templateName, (Map<String, String>) null));
+    }
+    
+    public static String createContentFromTemplate(String templateName) {
+        return new String(TEMPLATE_MANAGER.getFilledTemplate("templates/" + templateName, (Map<String, String>) null));
     }
 }
