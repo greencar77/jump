@@ -1,4 +1,4 @@
-package greencar77.jump;
+package greencar77.jump.gen;
 
 import java.lang.reflect.Method;
 
@@ -7,7 +7,7 @@ import greencar77.jump.builder.java.PredefinedMavenProjBuilder;
 import greencar77.jump.builder.js.PredefinedAngularAppBuilder;
 import greencar77.jump.builder.webapp.PredefinedWebAppBuilder;
 
-public class AppSpecList {
+public class SpecList {
     public static void main(String[] args) {
         Class<?>[] classes = new Class<?>[] {
             PredefinedWebAppBuilder.class,

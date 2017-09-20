@@ -3,7 +3,7 @@
     <div ng-include="'views/root.html'"></div>
     <br/>
     AngularApp<br/>
-    Application generation method: <input ng-model="config.appGenerator" type="text"><br/>
+    Application generation method: <select ng-model="config.appGenerator" ng-options="x for x in appGenMethods"></select><br/>
     Bootstrap CSS: <input type="checkbox" ng-model="config.bootstrapCss" /><br/>
     Bootstrap UI: <input type="checkbox" ng-model="config.bootstrapUi" /><br/>
     <div class="params" ng-show="config.bootstrapUi">

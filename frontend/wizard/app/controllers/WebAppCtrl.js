@@ -1,6 +1,11 @@
 mod1.controller('WebAppCtrl', function($scope, $controller) {
     $controller('MavenProjCtrl', {$scope: $scope});
 
+    $scope.appGenMethods = $scope.appGenMethods.concat([
+        'buildAppSimple',
+        'buildAppSimpleSpring',
+    ]);
+
     $scope.targetContainerList = [
         'WILDFLY',
         'TOMCAT'

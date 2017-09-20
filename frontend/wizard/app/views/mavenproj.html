@@ -6,7 +6,7 @@
     groupId: <input ng-model="config.groupId" type="text"> artifactId: <input ng-model="config.artifactId" type="text"><br/>
     Root package: <input ng-model="config.rootPackage" type="text"><br/>
     Java version: <select ng-model="config.javaVersion" ng-options="x.id as x.name for x in javaVersionList"></select><br/>
-    Application generation method: <input ng-model="config.appGenerator" type="text"><br/>
+    Application generation method: <select ng-model="config.appGenerator" ng-options="x for x in appGenMethods"></select><br/>
     Spring: <input type="checkbox" ng-model="config.featureSpring" /><br/>
     <div class="params" ng-show="config.featureSpring">
         Configuration basis: <select ng-model="config.spring.configBasis" ng-options="x for x in springConfigBasisList"></select><br/>

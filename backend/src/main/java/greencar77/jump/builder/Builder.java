@@ -7,6 +7,7 @@ import greencar77.jump.model.Model;
 
 public abstract class Builder<S, M extends Model> {
     public static final String SPEC_METHOD_PREFIX = "spec";
+    public static final String APPLICATION_GEN_PREFIX = "buildApp";
     
     private S spec;
 

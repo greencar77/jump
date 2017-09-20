@@ -3,6 +3,12 @@ mod1.controller('AngularAppCtrl', function($scope, $controller) {
 
     $scope.config.level = 'AngularAppSpec';
 
+    $scope.appGenMethods = [
+        'buildAppTutti',
+        'buildAppFeatures',
+        'buildAppEmpty',
+    ];
+
     $scope.$watch('config.bootstrapUi', function() {
         if ($scope.config.bootstrapUi) {
             $scope.config.bootstrapUiSpec = new Object();

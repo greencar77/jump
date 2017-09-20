@@ -3,6 +3,11 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
 
     $scope.config.level = 'MavenProjSpec';
 
+    $scope.appGenMethods = [
+        'buildAppFeatures',
+        'buildAppSpring',
+    ];
+
     $scope.javaVersionList = [
         {id: 'V15', name: '1.5'},
         {id: 'V16', name: '1.6'},
