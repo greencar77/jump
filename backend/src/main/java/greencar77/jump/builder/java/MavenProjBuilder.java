@@ -55,7 +55,10 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         if (getSpec().getSpring() != null) {
             model.setConfigBasis(getSpec().getSpring().getConfigBasis());
         }
-        
+        if (getSpec().getSpringBoot() != null) {
+            model.setSpringBootVersion(getSpec().getSpringBoot().getVersion());
+        }
+
         //config project
         Pom pom = new Pom(getSpec().getGroupId(), getSpec().getArtifactId());
         model.setPom(pom);        
@@ -547,7 +550,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     }
 
     protected void setupSpringBoot() {
-        Dependency parentDependency = new Dependency("org.springframework.boot/spring-boot-starter-parent/1.4.3.RELEASE");
+        Dependency parentDependency = new Dependency("org.springframework.boot/spring-boot-starter-parent/" + model.getSpringBootVersion().getVersionString());
         model.getPom().setParent(parentDependency);
 
         model.getPom().addDependencyRuntime("org.springframework.boot/spring-boot-starter");

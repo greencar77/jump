@@ -13,6 +13,7 @@
     </div>
     Spring Boot: <input type="checkbox" ng-model="config.featureSpringBoot" /><br/>
     <div class="params" ng-show="config.featureSpringBoot">
+        Version: <select ng-model="config.springBoot.version" ng-options="x.id as x.name for x in springBootVersionList"></select><br/>
     </div>
     Hibernate: <input type="checkbox" ng-model="config.featureHibernate" /><br/>
         <div class="params" ng-show="config.featureHibernate">

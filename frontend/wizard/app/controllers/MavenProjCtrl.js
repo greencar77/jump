@@ -39,6 +39,12 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
         }
     });
 
+
+    $scope.springBootVersionList = [
+        {id: 'V1_4_7', name: '1.4.7'},
+        {id: 'V1_5_7', name: '1.5.7'},
+    ];
+
     $scope.$watch('config.featureSpringBoot', function() {
         if ($scope.config.featureSpringBoot) {
             $scope.config.springBoot = new Object();

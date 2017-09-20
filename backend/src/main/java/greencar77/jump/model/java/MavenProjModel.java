@@ -9,6 +9,7 @@ import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.MetaSpringContext;
 import greencar77.jump.model.java.maven.Pom;
 import greencar77.jump.spec.java.JavaVersion;
+import greencar77.jump.spec.java.SpringBootVersion;
 import greencar77.jump.spec.java.SpringConfigBasis;
 
 public class MavenProjModel extends Model {
@@ -23,6 +24,7 @@ public class MavenProjModel extends Model {
     private SpringConfigBasis configBasis;
     private PersistenceUnit persistenceUnit;
     private HibernateConfiguration hibernateConfiguration;
+    private SpringBootVersion springBootVersion;
 
     public Pom getPom() {
         return pom;
@@ -102,5 +104,13 @@ public class MavenProjModel extends Model {
 
     public void setPersistenceUnit(PersistenceUnit persistenceUnit) {
         this.persistenceUnit = persistenceUnit;
+    }
+
+    public SpringBootVersion getSpringBootVersion() {
+        return springBootVersion;
+    }
+
+    public void setSpringBootVersion(SpringBootVersion springBootVersion) {
+        this.springBootVersion = springBootVersion;
     }
 }
