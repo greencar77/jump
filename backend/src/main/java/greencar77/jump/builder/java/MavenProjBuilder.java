@@ -177,6 +177,10 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
             result.setSpringBootInheritFromParent(true);
         }
 
+        if (getSpec().isFeatureSpring()) {
+            result.setSpringVersion(getSpec().getSpring().getVersion().getVersionString());
+        }
+
         return result;
     }
 
@@ -554,6 +558,10 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         model.getPom().setParent(parentDependency);
 
         model.getPom().addDependencyRuntime("org.springframework.boot/spring-boot-starter");
+        
+        //without this maven-compiler-plugin:3.1:compile throws "class file for org.springframework.core.io.DefaultResourceLoader not found"
+        //spring-core is included in org.springframework.boot:spring-boot-starter, but it has "runtime" scope
+        model.getPom().addDependencyImported("org.springframework/spring-core" + "/" + getSpec().getSpring().getVersion().getVersionString());
 
         model.getMainClass().annotations.add("@SpringBootApplication");
         model.getMainClass().imports.add("org.springframework.boot.autoconfigure.SpringBootApplication");

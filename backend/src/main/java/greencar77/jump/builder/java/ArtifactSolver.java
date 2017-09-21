@@ -96,6 +96,9 @@ public class ArtifactSolver {
         if (primaryArtifact.startsWith("org.springframework.boot") && preferenceConfig.isSpringBootInheritFromParent()) {
             return primaryArtifact.substring(0, primaryArtifact.lastIndexOf("/"));
         }
+        if (primaryArtifact.startsWith("org.springframework/") && preferenceConfig.getSpringVersion() != null) {
+            return primaryArtifact.substring(0, primaryArtifact.lastIndexOf("/")) + "/" + preferenceConfig.getSpringVersion();
+        }
 
         //based on class and artifact
         //...

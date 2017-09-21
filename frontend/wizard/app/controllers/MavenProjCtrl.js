@@ -32,8 +32,13 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
     });
 
     $scope.springConfigBasisList = [
-        'XML',
-        'JAVA',
+        {id: 'XML', name: 'XML'},
+        {id: 'JAVA', name: 'Java'},
+    ];
+
+    $scope.springVersionList = [
+        {id: 'V4_3_0', name: '4.3.0'},
+        {id: 'V4_3_11', name: '4.3.11'},
     ];
 
     $scope.$watch('config.featureSpring', function() {
@@ -44,10 +49,9 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
         }
     });
 
-
     $scope.springBootVersionList = [
-        {id: 'V1_4_7', name: '1.4.7'},
-        {id: 'V1_5_7', name: '1.5.7'},
+        {id: 'V1_4_7', name: '1.4.7', spring: "4.3.9"},
+        {id: 'V1_5_7', name: '1.5.7', spring: "4.3.11"},
     ];
 
     $scope.$watch('config.featureSpringBoot', function() {

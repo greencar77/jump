@@ -9,11 +9,12 @@
     Application generation method: <select ng-model="config.appGenerator" ng-options="x for x in appGenMethods"></select><br/>
     Spring: <input type="checkbox" ng-model="config.featureSpring" /><br/>
     <div class="params" ng-show="config.featureSpring">
-        Configuration basis: <select ng-model="config.spring.configBasis" ng-options="x for x in springConfigBasisList"></select><br/>
+        Version: <select ng-model="config.spring.version" ng-options="x.id as x.name for x in springVersionList"></select><br/>
+        Configuration basis: <select ng-model="config.spring.configBasis" ng-options="x.id as x.name for x in springConfigBasisList"></select><br/>
     </div>
     Spring Boot: <input type="checkbox" ng-model="config.featureSpringBoot" /><br/>
     <div class="params" ng-show="config.featureSpringBoot">
-        Version: <select ng-model="config.springBoot.version" ng-options="x.id as x.name for x in springBootVersionList"></select><br/>
+        Version: <select ng-model="config.springBoot.version" ng-options="x.id as (x.name + ' (' + x.spring + ')') for x in springBootVersionList"></select><br/>
     </div>
     Hibernate: <input type="checkbox" ng-model="config.featureHibernate" /><br/>
         <div class="params" ng-show="config.featureHibernate">
