@@ -23,22 +23,17 @@ public class ArtifactSolver {
     }
 
     private String getArtifactByClass(String absoluteClass) {
+        String result;
+        
         if (absoluteClass.startsWith("java.")) {
             return JDK;
         }
-        if (absoluteClass.startsWith("org.springframework.web.servlet.")) {
-            return "org.springframework/spring-webmvc/4.3.0.RELEASE";
+
+        result = resolveSpring(absoluteClass);
+        if (result != null) {
+            return result;
         }
-        if (absoluteClass.startsWith("org.springframework.context.")) {
-            return "org.springframework/spring-context/4.3.0.RELEASE";
-        }
-        if (absoluteClass.startsWith("org.springframework.boot.autoconfigure.")) {
-            return "org.springframework.boot/spring-boot-autoconfigure/1.4.3.RELEASE";
-        }
-        //after other spring-boot artifacts
-        if (absoluteClass.startsWith("org.springframework.boot.")) {
-            return "org.springframework.boot/spring-boot/1.4.3.RELEASE";
-        }
+
         if (absoluteClass.startsWith("javax.ws.rs.")) {
             return "javax.ws.rs/jsr311-api/1.1.1";
         }
@@ -77,6 +72,30 @@ public class ArtifactSolver {
         
         return null;
     }
+    
+    private String resolveSpring(String absoluteClass) {
+        //Spring
+        if (absoluteClass.startsWith("org.springframework.web.servlet.")) {
+            return "org.springframework/spring-webmvc/4.3.0.RELEASE";
+        }
+        if (absoluteClass.startsWith("org.springframework.context.")) {
+            return "org.springframework/spring-context/4.3.0.RELEASE";
+        }
+        if (absoluteClass.startsWith("org.springframework.core.")) {
+            return "org.springframework/spring-core/4.3.0.RELEASE";
+        }
+
+        //SpringBoot
+        if (absoluteClass.startsWith("org.springframework.boot.autoconfigure.")) {
+            return "org.springframework.boot/spring-boot-autoconfigure/1.4.3.RELEASE";
+        }
+        //after other spring-boot artifacts
+        if (absoluteClass.startsWith("org.springframework.boot.")) {
+            return "org.springframework.boot/spring-boot/1.4.3.RELEASE";
+        }
+
+        return null;
+    }
 
     private String resolvePreferences(String absoluteClass, String primaryArtifact) {
         if (primaryArtifact == null || primaryArtifact.equals(JDK)) {
@@ -96,8 +115,12 @@ public class ArtifactSolver {
         if (primaryArtifact.startsWith("org.springframework.boot") && preferenceConfig.isSpringBootInheritFromParent()) {
             return primaryArtifact.substring(0, primaryArtifact.lastIndexOf("/"));
         }
-        if (primaryArtifact.startsWith("org.springframework/") && preferenceConfig.getSpringVersion() != null) {
-            return primaryArtifact.substring(0, primaryArtifact.lastIndexOf("/")) + "/" + preferenceConfig.getSpringVersion();
+        if (primaryArtifact.startsWith("org.springframework/")){
+            if (preferenceConfig.isSpringBootInheritFromParent()) {
+                return primaryArtifact.substring(0, primaryArtifact.lastIndexOf("/"));
+            } else if (preferenceConfig.getSpringVersion() != null) {
+                return primaryArtifact.substring(0, primaryArtifact.lastIndexOf("/")) + "/" + preferenceConfig.getSpringVersion();
+            }
         }
 
         //based on class and artifact

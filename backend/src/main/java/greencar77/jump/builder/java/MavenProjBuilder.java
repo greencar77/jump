@@ -16,6 +16,7 @@ import org.apache.commons.lang.Validate;
 
 import greencar77.jump.Utils;
 import greencar77.jump.builder.Builder;
+import greencar77.jump.builder.ValidationException;
 import greencar77.jump.model.java.HibernateConfiguration;
 import greencar77.jump.model.java.MavenProjModel;
 import greencar77.jump.model.java.PersistenceUnit;
@@ -26,6 +27,7 @@ import greencar77.jump.model.java.classfile.TemplateClass;
 import greencar77.jump.model.java.maven.Dependency;
 import greencar77.jump.model.java.maven.DependencyScope;
 import greencar77.jump.model.java.maven.Pom;
+import greencar77.jump.model.webapp.WebFramework;
 import greencar77.jump.spec.java.EntityManagerSetupStrategy;
 import greencar77.jump.spec.java.HibernateVersion;
 import greencar77.jump.spec.java.MavenProjSpec;
@@ -554,6 +556,8 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     }
 
     protected void setupSpringBoot() {
+        Validate.notNull(getSpec().getSpringBoot());
+
         Dependency parentDependency = new Dependency("org.springframework.boot/spring-boot-starter-parent/" + model.getSpringBootVersion().getVersionString());
         model.getPom().setParent(parentDependency);
 
@@ -561,7 +565,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         
         //without this maven-compiler-plugin:3.1:compile throws "class file for org.springframework.core.io.DefaultResourceLoader not found"
         //spring-core is included in org.springframework.boot:spring-boot-starter, but it has "runtime" scope
-        model.getPom().addDependencyImported("org.springframework/spring-core" + "/" + getSpec().getSpring().getVersion().getVersionString());
+        model.getPom().addDependencyImported("org.springframework/spring-core"); //version will be inherited from spring-boot parent
 
         model.getMainClass().annotations.add("@SpringBootApplication");
         model.getMainClass().imports.add("org.springframework.boot.autoconfigure.SpringBootApplication");
@@ -573,5 +577,20 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
 
 
         model.getPom().getBuild().addPlugin("org.springframework.boot", "spring-boot-maven-plugin", null);
+    }
+
+    @Override
+    protected void validate() {
+        super.validate();
+
+        if (getSpec().isFeatureSpringBoot()) {
+            if (!getSpec().isFeatureSpring()) {
+                throw new ValidationException("Spring is required for SpringBoot");
+            }
+            
+            if (!getSpec().getSpring().getVersion().getVersionString().equals(getSpec().getSpringBoot().getVersion().getSpring())) {
+                throw new ValidationException("Incompatible versions: SpringBoot requires " + getSpec().getSpringBoot().getVersion().getSpring() + " but user: " + getSpec().getSpring().getVersion().getVersionString());
+            }
+        }
     }
 }
