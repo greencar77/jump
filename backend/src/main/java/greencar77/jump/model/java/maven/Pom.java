@@ -57,7 +57,7 @@ public class Pom {
         Dependency dependency = getDependency(name);
         if (dependency == null) {
             Dependency newDependency = new Dependency(name, DependencyScope.PROVIDED); //the minimum required
-            dependencies.put(newDependency.getName(), newDependency);
+            dependencies.put(newDependency.getNameTriplet(), newDependency);
         } else {
             if (!dependency.getScope().isCompileAvailable()) {
                 dependency.setScope(DependencyScope.ANY);
@@ -69,7 +69,7 @@ public class Pom {
         Dependency dependency = getDependency(name);
         if (dependency == null) {
             Dependency newDependency = new Dependency(name, DependencyScope.RUNTIME); //the minimum required
-            dependencies.put(newDependency.getName(), newDependency);
+            dependencies.put(newDependency.getNameTriplet(), newDependency);
         } else {
             if (!dependency.getScope().isRuntimeAvailable()) {
                 dependency.setScope(DependencyScope.ANY);
@@ -81,7 +81,7 @@ public class Pom {
         Dependency dependency = getDependency(name);
         if (dependency == null) {
             Dependency newDependency = new Dependency(name, DependencyScope.TEST); //the minimum required
-            dependencies.put(newDependency.getName(), newDependency);
+            dependencies.put(newDependency.getNameTriplet(), newDependency);
         } else {
             if (!dependency.getScope().isTestAvailable()) {
                 dependency.setScope(DependencyScope.ANY);

@@ -3,23 +3,20 @@ package greencar77.jump.model.java.maven;
 import org.jsoup.helper.Validate;
 
 public class Dependency {
-    
-    private String name;
-    private DependencyScope scope;
+    public static final String SEPARATOR = "/";
     
     private String groupId;
     private String artifactId;
     private String version;
+    private DependencyScope scope;
 
     public Dependency(String name) {
         this(name, DependencyScope.COMPILE);
     }
 
     public Dependency(String name, DependencyScope scope) {
-        super();
         Validate.notNull(name);
-        this.name = name;
-        this.scope = scope;
+        Validate.notNull(scope);
 
         String parts[] = name.split("/");
         groupId = parts[0];
@@ -27,13 +24,11 @@ public class Dependency {
         if (parts.length > 2) {
             version = parts[2];
         }
+        this.scope = scope;
     }
     
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
+    public String getNameTriplet() {
+        return groupId + SEPARATOR + artifactId + (version == null? "" : SEPARATOR + version);
     }
     public DependencyScope getScope() {
         return scope;
@@ -43,7 +38,7 @@ public class Dependency {
     }
     
     public String getFullName() {
-        return name + "/" + scope.getXmlTitle();
+        return getNameTriplet() + SEPARATOR + scope.getXmlTitle();
     }
 
     public String getGroupId() {
@@ -57,26 +52,4 @@ public class Dependency {
     public String getVersion() {
         return version;
     }
-
-    /*
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object == null) {
-            return false;
-        }
-        if (object == this) {
-            return true;
-        }
-        if (!(object instanceof Dependency)) {
-            return false;
-        }
-
-        Dependency other = (Dependency) object;        
-        return this.name.equals(other.name);
-    }*/
 }

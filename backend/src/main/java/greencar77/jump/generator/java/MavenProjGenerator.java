@@ -163,14 +163,12 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
         return sb;        
     }
 
-
     private void outputDependency(StringBuilder sb, Dependency dependency) {
-        String parts[] = dependency.getName().split("/");
         sb.append(TAB + TAB + "<dependency>" + LF);
-        sb.append(TAB + TAB + TAB + "<groupId>" + parts[0] + "</groupId>" + LF);
-        sb.append(TAB + TAB + TAB + "<artifactId>" + parts[1] + "</artifactId>" + LF);
-        if (parts.length > 2) {
-            sb.append(TAB + TAB + TAB + "<version>" + parts[2] + "</version>" + LF);
+        sb.append(TAB + TAB + TAB + "<groupId>" + dependency.getGroupId() + "</groupId>" + LF);
+        sb.append(TAB + TAB + TAB + "<artifactId>" + dependency.getArtifactId() + "</artifactId>" + LF);
+        if (dependency.getVersion() != null) {
+            sb.append(TAB + TAB + TAB + "<version>" + dependency.getVersion() + "</version>" + LF);
         }
         if (dependency.getScope() != DependencyScope.ANY) {
             sb.append(TAB + TAB + TAB + "<scope>" + dependency.getScope().getXmlTitle() + "</scope>" + LF);

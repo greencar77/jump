@@ -27,7 +27,6 @@ import greencar77.jump.model.java.classfile.TemplateClass;
 import greencar77.jump.model.java.maven.Dependency;
 import greencar77.jump.model.java.maven.DependencyScope;
 import greencar77.jump.model.java.maven.Pom;
-import greencar77.jump.model.webapp.WebFramework;
 import greencar77.jump.spec.java.EntityManagerSetupStrategy;
 import greencar77.jump.spec.java.HibernateVersion;
 import greencar77.jump.spec.java.MavenProjSpec;
