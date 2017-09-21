@@ -53,39 +53,51 @@ public class Pom {
         this.packaging = packaging;
     }
     
-    public void addDependencyImported(String name) {
-        Dependency dependency = getDependency(name);
+    public void addDependencyImported(String nameTriplet, String className) {
+        Dependency dependency = getDependency(nameTriplet);
         if (dependency == null) {
-            Dependency newDependency = new Dependency(name, DependencyScope.PROVIDED); //the minimum required
-            dependencies.put(newDependency.getNameTriplet(), newDependency);
+            dependency = new Dependency(nameTriplet, DependencyScope.PROVIDED); //the minimum required
+            dependencies.put(dependency.getNameTriplet(), dependency);
         } else {
             if (!dependency.getScope().isCompileAvailable()) {
                 dependency.setScope(DependencyScope.ANY);
             } //else we already have what do we want
         }
+
+        if (className != null) {
+            dependency.getUsedClasses().add(className);
+        }
     }
     
-    public void addDependencyRuntime(String name) {
-        Dependency dependency = getDependency(name);
+    public void addDependencyRuntime(String nameTriplet, String className) {
+        Dependency dependency = getDependency(nameTriplet);
         if (dependency == null) {
-            Dependency newDependency = new Dependency(name, DependencyScope.RUNTIME); //the minimum required
-            dependencies.put(newDependency.getNameTriplet(), newDependency);
+            dependency = new Dependency(nameTriplet, DependencyScope.RUNTIME); //the minimum required
+            dependencies.put(dependency.getNameTriplet(), dependency);
         } else {
             if (!dependency.getScope().isRuntimeAvailable()) {
                 dependency.setScope(DependencyScope.ANY);
             } //else we already have what do we want
         }
+
+        if (className != null) {
+            dependency.getUsedClasses().add(className);
+        }
     }
     
-    public void addDependencyTesting(String name) {
-        Dependency dependency = getDependency(name);
+    public void addDependencyTesting(String nameTriplet, String className) {
+        Dependency dependency = getDependency(nameTriplet);
         if (dependency == null) {
-            Dependency newDependency = new Dependency(name, DependencyScope.TEST); //the minimum required
-            dependencies.put(newDependency.getNameTriplet(), newDependency);
+            dependency = new Dependency(nameTriplet, DependencyScope.TEST); //the minimum required
+            dependencies.put(dependency.getNameTriplet(), dependency);
         } else {
             if (!dependency.getScope().isTestAvailable()) {
                 dependency.setScope(DependencyScope.ANY);
             } //else we already have what do we want
+        }
+
+        if (className != null) {
+            dependency.getUsedClasses().add(className);
         }
     }
 

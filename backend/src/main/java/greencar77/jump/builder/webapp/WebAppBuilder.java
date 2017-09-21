@@ -130,7 +130,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
          */
         pom.getBuild().addPlugin("org.apache.maven.plugins", "maven-war-plugin", "2.6");
 
-        pom.addDependencyImported("org.jboss.resteasy/jaxrs-api/3.0.12.Final");
+        pom.addDependencyImported("org.jboss.resteasy/jaxrs-api/3.0.12.Final", null);
     }
 
     protected void setupWarJersey() {
@@ -143,14 +143,14 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         case V1:
             webDescriptor.registerServletThirdParty("com.sun.jersey.spi.container.servlet.ServletContainer", "jersey-servlet", "/rest/*", null);
             model.setServletMappingPrefix("/rest");
-            model.getPom().addDependencyRuntime("com.sun.jersey/jersey-servlet/" + getSpec().getJersey().getJerseyVersion());
+            model.getPom().addDependencyRuntime("com.sun.jersey/jersey-servlet/" + getSpec().getJersey().getJerseyVersion(), null);
             break;
         case V2:
             ServletWebDescriptor servlet = webDescriptor.registerServletThirdParty("org.glassfish.jersey.servlet.ServletContainer", "jersey-servlet", "/rest/*", null);
             model.setServletMappingPrefix("/rest");
-            model.getPom().addDependencyRuntime("org.glassfish.jersey.containers/jersey-container-servlet/" + getSpec().getJersey().getJerseyVersion());
+            model.getPom().addDependencyRuntime("org.glassfish.jersey.containers/jersey-container-servlet/" + getSpec().getJersey().getJerseyVersion(), null);
             servlet.initParams.put("jersey.config.server.provider.packages", "x.y");
-            model.getPom().addDependencyRuntime("javax.ws.rs/javax.ws.rs-api/2.0.1"); //otherwise you will get exception about missing class javax/ws/rs/ProcessingException during request execution
+            model.getPom().addDependencyRuntime("javax.ws.rs/javax.ws.rs-api/2.0.1", null); //otherwise you will get exception about missing class javax/ws/rs/ProcessingException during request execution
             break;
         default:
             throw new RuntimeException(getSpec().getJersey().getJerseyMajorVersion().name());
@@ -194,11 +194,11 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         if (getSpec().getWebFramework() == WebFramework.JERSEY) {
             switch (getSpec().getJersey().getJerseyMajorVersion()) {
             case V1:
-                model.getPom().addDependencyRuntime("com.sun.jersey/jersey-server/" + getSpec().getJersey().getJerseyVersion());
-                model.getPom().addDependencyRuntime("com.sun.jersey/jersey-bundle/" + getSpec().getJersey().getJerseyVersion());
+                model.getPom().addDependencyRuntime("com.sun.jersey/jersey-server/" + getSpec().getJersey().getJerseyVersion(), null);
+                model.getPom().addDependencyRuntime("com.sun.jersey/jersey-bundle/" + getSpec().getJersey().getJerseyVersion(), null);
                 break;
             case V2:
-                model.getPom().addDependencyRuntime("org.glassfish.jersey.core/jersey-server/" + getSpec().getJersey().getJerseyVersion());
+                model.getPom().addDependencyRuntime("org.glassfish.jersey.core/jersey-server/" + getSpec().getJersey().getJerseyVersion(), null);
                 break;
             default:
                 throw new RuntimeException(getSpec().getJersey().getJerseyMajorVersion().name());
@@ -250,7 +250,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         method.annotations.add("@Produces(MediaType.APPLICATION_JSON)");
         switch (getSpec().getJersey().getJerseyMajorVersion()) {
         case V1:
-            model.getPom().addDependencyRuntime("com.sun.jersey/jersey-json/" + getSpec().getJersey().getJerseyVersion());
+            model.getPom().addDependencyRuntime("com.sun.jersey/jersey-json/" + getSpec().getJersey().getJerseyVersion(), null);
             /*
              * otherwise
     aug. 08, 2017 4:05:39 PM com.sun.jersey.spi.container.ContainerResponse logException
@@ -260,7 +260,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
             break;
         case V2:
             //https://stackoverflow.com/questions/26207252/messagebodywriter-not-found-for-media-type-application-json
-            model.getPom().addDependencyRuntime("org.glassfish.jersey.media/jersey-media-json-jackson/" + getSpec().getJersey().getJerseyVersion());
+            model.getPom().addDependencyRuntime("org.glassfish.jersey.media/jersey-media-json-jackson/" + getSpec().getJersey().getJerseyVersion(), null);
             break;
         default:
             throw new RuntimeException(getSpec().getJersey().getJerseyMajorVersion().name());
@@ -300,7 +300,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         appInitializer.imports.add("org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer");
         //avoid compile error "cannot access ServletException"
         //https://stackoverflow.com/questions/25220468/spring-security-cannot-access-servletexception
-        model.getPom().addDependencyImported("javax.servlet/javax.servlet-api/3.0.1");
+        model.getPom().addDependencyImported("javax.servlet/javax.servlet-api/3.0.1", null);
         appInitializer.getBody().append(code(indent(TAB + TAB,
                 "@Override",
                 "protected Class[] getRootConfigClasses() {",
@@ -341,7 +341,7 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         controller.imports.add("org.springframework.web.bind.annotation.GetMapping");
         controller.imports.add("org.springframework.http.MediaType"); //TODO
         controller.imports.add("java.util.Arrays");
-        model.getPom().addDependencyRuntime("com.fasterxml.jackson.core/jackson-databind/2.7.5"); //without this response will be generated in XML
+        model.getPom().addDependencyRuntime("com.fasterxml.jackson.core/jackson-databind/2.7.5", null); //without this response will be generated in XML
         model.getLocalEndpoints().add("/user");
         model.getClassFiles().add(controller);
     }

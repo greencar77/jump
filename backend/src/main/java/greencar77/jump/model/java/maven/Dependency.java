@@ -1,6 +1,11 @@
 package greencar77.jump.model.java.maven;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.jsoup.helper.Validate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Dependency {
     public static final String SEPARATOR = "/";
@@ -9,6 +14,8 @@ public class Dependency {
     private String artifactId;
     private String version;
     private DependencyScope scope;
+
+    private Set<String> usedClasses = new TreeSet<>();
 
     public Dependency(String name) {
         this(name, DependencyScope.COMPILE);
@@ -27,6 +34,7 @@ public class Dependency {
         this.scope = scope;
     }
     
+    @JsonIgnore
     public String getNameTriplet() {
         return groupId + SEPARATOR + artifactId + (version == null? "" : SEPARATOR + version);
     }
@@ -37,6 +45,7 @@ public class Dependency {
         this.scope = scope;
     }
     
+    @JsonIgnore
     public String getFullName() {
         return getNameTriplet() + SEPARATOR + scope.getXmlTitle();
     }
@@ -51,5 +60,9 @@ public class Dependency {
 
     public String getVersion() {
         return version;
+    }
+
+    public Set<String> getUsedClasses() {
+        return usedClasses;
     }
 }

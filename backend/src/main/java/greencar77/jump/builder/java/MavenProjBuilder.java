@@ -118,7 +118,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
             String artifact = artifactSolver.getArtifact(absoluteClass);
             if (artifact != null) {
                 System.out.println(absoluteClass + ":" + artifact);
-                model.getPom().addDependencyImported(artifact);
+                model.getPom().addDependencyImported(artifact, absoluteClass);
             }
         }
 
@@ -135,7 +135,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
             String artifact = artifactSolver.getArtifact(absoluteClass);
             if (artifact != null) {
                 System.out.println(absoluteClass + ":" + artifact);
-                model.getPom().addDependencyTesting(artifact);
+                model.getPom().addDependencyTesting(artifact, absoluteClass);
             }
         }
         
@@ -147,7 +147,7 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
             String artifact = artifactSolver.getArtifact(absoluteClass);
             if (artifact != null) {
                 System.out.println(absoluteClass + ":" + artifact);
-                model.getPom().addDependencyRuntime(artifact);
+                model.getPom().addDependencyRuntime(artifact, absoluteClass);
             }
         }
         
@@ -560,11 +560,11 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         Dependency parentDependency = new Dependency("org.springframework.boot/spring-boot-starter-parent/" + model.getSpringBootVersion().getVersionString());
         model.getPom().setParent(parentDependency);
 
-        model.getPom().addDependencyRuntime("org.springframework.boot/spring-boot-starter");
+        model.getPom().addDependencyRuntime("org.springframework.boot/spring-boot-starter", null);
         
         //without this maven-compiler-plugin:3.1:compile throws "class file for org.springframework.core.io.DefaultResourceLoader not found"
         //spring-core is included in org.springframework.boot:spring-boot-starter, but it has "runtime" scope
-        model.getPom().addDependencyImported("org.springframework/spring-core"); //version will be inherited from spring-boot parent
+        model.getPom().addDependencyImported("org.springframework/spring-core", null); //version will be inherited from spring-boot parent
 
         model.getMainClass().annotations.add("@SpringBootApplication");
         model.getMainClass().imports.add("org.springframework.boot.autoconfigure.SpringBootApplication");

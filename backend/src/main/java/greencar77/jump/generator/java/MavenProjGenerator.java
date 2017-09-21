@@ -1,14 +1,18 @@
 package greencar77.jump.generator.java;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
 import org.apache.maven.cli.MavenCli;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import greencar77.jump.FileUtils;
 import greencar77.jump.generator.Generator;
@@ -67,7 +71,9 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
 
         byte[] pom = generatePom();        
         saveResource("pom.xml", pom);
-        
+
+        generateDependencyAnalysis();
+
         mavenBuild();
     }
 
@@ -328,5 +334,20 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
 
         saveResource("src/main/resources/" + context.getId() + ".xml", sb.toString().getBytes());
     }
+    
+    protected void generateDependencyAnalysis() {
+        List<Dependency> list = new ArrayList<>(model.getPom().getDependencies());
+        Collections.sort(list, DEPENDENCIES_ALPHABETICALLY);
 
+        DependencyList depList = new DependencyList();
+        depList.setDependencies(list);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            saveResource("dependencies.json", mapper.writeValueAsBytes(list));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
