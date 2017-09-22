@@ -24,13 +24,16 @@ import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.MetaSpringContext;
 import greencar77.jump.model.java.classfile.Method;
 import greencar77.jump.model.java.classfile.TemplateClass;
+import greencar77.jump.model.java.classfile.XmlSpringContextNamespace;
 import greencar77.jump.model.java.maven.Dependency;
 import greencar77.jump.model.java.maven.DependencyScope;
 import greencar77.jump.model.java.maven.Pom;
+import greencar77.jump.model.java.maven.XmlSpringContext;
 import greencar77.jump.spec.java.EntityManagerSetupStrategy;
 import greencar77.jump.spec.java.HibernateVersion;
 import greencar77.jump.spec.java.MavenProjSpec;
-import greencar77.jump.spec.java.SpringConfigBasis;
+import greencar77.jump.spec.java.BeanDefinition;
+import greencar77.jump.spec.java.BeanInstantiation;
 import greencar77.jump.spec.java.UnitTestsMajorVersion;
 
 public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjModel> {
@@ -51,11 +54,10 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
     protected MavenProjModel buildModel() {
         Validate.notNull(getSpec());
         
+        model.setSpec(getSpec());
         model.setProjectFolder(getSpec().getProjectName());
         model.setJavaVersion(getSpec().getJavaVersion());
-        if (getSpec().getSpring() != null) {
-            model.setConfigBasis(getSpec().getSpring().getConfigBasis());
-        }
+        
         if (getSpec().getSpringBoot() != null) {
             model.setSpringBootVersion(getSpec().getSpringBoot().getVersion());
         }
@@ -70,10 +72,6 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
 
         if (getSpec().getAppGenerator() != null) {
             invoke(getSpec().getAppGenerator());
-        }
-        
-        if (getSpec().isFeatureSpringBoot()) {
-            setupSpringBoot();
         }
 
         addDirectDependencies();
@@ -194,7 +192,11 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         model.setMainClass(mainClass);
 
         if (getSpec().isFeatureSpring()) {
-            buildAppSpring();
+            MetaSpringContext metaSpringContext = createSpringContext();
+            setupSpring(metaSpringContext);
+            if (getSpec().isFeatureSpringBoot()) {
+                setupSpringBoot();
+            }
         }
         if (getSpec().isFeatureExcel()) {
             appendExcel();
@@ -247,7 +249,44 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         }
     }
 
-    protected void buildAppSpring() {
+    protected void setupSpring(MetaSpringContext metaSpringContext) {
+        Method method;
+        
+        if (getSpec().getSpring().getBeanInstantiation().isRequireXml()) {
+            XmlSpringContext xmlSpringContext = new XmlSpringContext(metaSpringContext);
+            model.setXmlSpringContext(xmlSpringContext);
+        }
+
+        ClassFile springDemo = newClass(getSpec().getRootPackage(), "SpringDemo");
+        method = newMethod(springDemo, false, (String) null, "run", null);
+        if (getSpec().getSpring().getBeanInstantiation().isRequireJavaConfig()) {
+            //https://www.tutorialspoint.com/spring/spring_java_based_configuration.htm
+            ClassFile springConfigClass = createConfigClass(metaSpringContext);
+            addContent(method,
+                    "//#org.springframework.context.ApplicationContext",
+                    "//#org.springframework.context.annotation.AnnotationConfigApplicationContext",
+                    "ApplicationContext context = new AnnotationConfigApplicationContext(" + springConfigClass.className + ".class" + ");"
+                    );
+        } else if (getSpec().getSpring().getBeanInstantiation().isRequireXml()) {
+            if (getSpec().getSpring().getBeanDefinition() == BeanDefinition.ANNOTATED_CLASS) {
+                metaSpringContext.setComponentScanBasePackage(getSpec().getRootPackage());
+                model.getXmlSpringContext().addNamespace(XmlSpringContextNamespace.CONTEXT);
+            }
+            addContent(method,
+                    "//#org.springframework.context.ApplicationContext",
+                    "//#org.springframework.context.support.ClassPathXmlApplicationContext",
+                    "ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {\"" + metaSpringContext.getId() + ".xml\"});"
+                    );
+        } else {
+            throw new RuntimeException("No Spring config");
+        }
+
+        addContent(model.getMainClass().getMethods().get(0),
+                "new " + springDemo.className + "().run();"
+                );
+    }
+    
+    protected MetaSpringContext createSpringContext() {
         Method method;
 
         //bean class
@@ -259,47 +298,49 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         method = newMethod(beanTwo, false, "int", "getTen", null);
         addContent(method, "return 10;");
 
-        MetaSpringContext springContext = new MetaSpringContext("ctx")
+        MetaSpringContext result = new MetaSpringContext("ctx")
                 .registerBean(beanOne, "alphaBean")
                 .registerBean(beanTwo, "betaBean");
-        model.setSpringContext(springContext);
 
-        ClassFile springDemo = newClass(getSpec().getRootPackage(), "SpringDemo");
-        method = newMethod(springDemo, false, (String) null, "run", null);
-        if (getSpec().getSpring().getConfigBasis() == SpringConfigBasis.XML) {
-            addContent(method,
-                    "//#org.springframework.context.ApplicationContext",
-                    "//#org.springframework.context.support.ClassPathXmlApplicationContext",
-                    "ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {\"" + springContext.getId() + ".xml\"});"
-                    );
-        } else { //JAVA
-            //https://www.tutorialspoint.com/spring/spring_java_based_configuration.htm
-            ClassFile springConfigClass = createConfigClass(springContext);
-            addContent(method,
-                    "//#org.springframework.context.ApplicationContext",
-                    "//#org.springframework.context.annotation.AnnotationConfigApplicationContext",
-                    "ApplicationContext context = new AnnotationConfigApplicationContext(" + springConfigClass.className + ".class" + ");"
-                    );
+        if (getSpec().getSpring().getBeanDefinition() == BeanDefinition.ANNOTATED_CLASS) {
+            result.getBeans().stream().forEach(b -> {
+                addAnnotation(b.getClassFile(), "@Component", "org.springframework.stereotype.Component");
+            });
         }
 
-        addContent(model.getMainClass().getMethods().get(0),
-                "new " + springDemo.className + "().run();"
-                );
+        return result;
     }
 
     protected ClassFile createConfigClass(MetaSpringContext springContext) {
-        Validate.isTrue(getSpec().getSpring().getConfigBasis() == SpringConfigBasis.JAVA);
+        Validate.isTrue(getSpec().getSpring().getBeanInstantiation().isRequireJavaConfig());
 
         ClassFile springConfigClass = newClass(getSpec().getRootPackage(), "SpringConfig");
         addAnnotation(springConfigClass, "@Configuration", "org.springframework.context.annotation.Configuration");
-        springContext.getBeans().stream().forEach(b -> {
-            Method beanMethod = newMethod(springConfigClass, false, b.getClassFile(),
-                    Utils.toLowerCaseFirst(b.getClassFile().className), null);
-            addAnnotation(beanMethod, "@Bean", "org.springframework.context.annotation.Bean");
-            addContent(beanMethod,
-                    "return new " + b.getClassFile().className + "();"
-                    );
-        });
+        
+        switch (getSpec().getSpring().getBeanInstantiation()) {
+            case XML: throw new RuntimeException();
+            case JAVA_CONFIG:
+                if (getSpec().getSpring().getBeanDefinition() == BeanDefinition.CLASS) {
+                    springContext.getBeans().stream().forEach(b -> {
+                        Method beanMethod = newMethod(springConfigClass, false, b.getClassFile(),
+                                Utils.toLowerCaseFirst(b.getClassFile().className), null);
+                        addAnnotation(beanMethod, "@Bean", "org.springframework.context.annotation.Bean");
+                        addContent(beanMethod,
+                                "return new " + b.getClassFile().className + "();"
+                                );
+                    });
+                } else if (getSpec().getSpring().getBeanDefinition() == BeanDefinition.ANNOTATED_CLASS) {
+                    addAnnotation(springConfigClass, "@ComponentScan", "org.springframework.context.annotation.ComponentScan");
+                } else {
+                    throw new RuntimeException(getSpec().getSpring().getBeanDefinition().name());
+                }
+                break;
+            case JAVA_CONFIG_XML:
+                addAnnotation(springConfigClass, "@ImportResource(\"classpath:" + springContext.getId() + ".xml\")", "org.springframework.context.annotation.ImportResource");
+                break;
+            default: throw new RuntimeException(getSpec().getSpring().getBeanInstantiation().name());
+        }
+        
 
         return springConfigClass;
     }
@@ -566,6 +607,9 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
         //spring-core is included in org.springframework.boot:spring-boot-starter, but it has "runtime" scope
         model.getPom().addDependencyImported("org.springframework/spring-core", null); //version will be inherited from spring-boot parent
 
+        model.getPom().getBuild().addPlugin("org.springframework.boot", "spring-boot-maven-plugin", null);
+
+        //Spring invocation
         model.getMainClass().annotations.add("@SpringBootApplication");
         model.getMainClass().imports.add("org.springframework.boot.autoconfigure.SpringBootApplication");
 
@@ -573,9 +617,6 @@ public class MavenProjBuilder<S, M> extends Builder<MavenProjSpec, MavenProjMode
                 "//#org.springframework.boot.SpringApplication",
                 "SpringApplication.run(" + model.getMainClass().className + ".class, args);"
                 );
-
-
-        model.getPom().getBuild().addPlugin("org.springframework.boot", "spring-boot-maven-plugin", null);
     }
 
     @Override

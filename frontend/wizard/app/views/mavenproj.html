@@ -10,7 +10,8 @@
     Spring: <input type="checkbox" ng-model="config.featureSpring" /><br/>
     <div class="params" ng-show="config.featureSpring">
         Version: <select ng-model="config.spring.version" ng-options="x.id as x.name for x in springVersionList"></select><br/>
-        Configuration basis: <select ng-model="config.spring.configBasis" ng-options="x.id as x.name for x in springConfigBasisList"></select><br/>
+        Bean definition: <select ng-model="config.spring.beanDefinition" ng-options="x.id as x.name for x in beanDefinitionList"></select><br/>
+        Bean instantiation: <select ng-model="config.spring.beanInstantiation" ng-options="x.id as x.name for x in beanInstantiationList"></select><br/>
     </div>
     Spring Boot: <input type="checkbox" ng-model="config.featureSpringBoot" /><br/>
     <div class="params" ng-show="config.featureSpringBoot">

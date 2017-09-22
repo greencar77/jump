@@ -2,15 +2,8 @@ package greencar77.jump.spec.java;
 
 public class Spring {
     private SpringVersion version;
-    private SpringConfigBasis configBasis;
-
-    public SpringConfigBasis getConfigBasis() {
-        return configBasis;
-    }
-
-    public void setConfigBasis(SpringConfigBasis configBasis) {
-        this.configBasis = configBasis;
-    }
+    private BeanDefinition beanDefinition;
+    private BeanInstantiation beanInstantiation;
 
     public SpringVersion getVersion() {
         return version;
@@ -18,5 +11,21 @@ public class Spring {
 
     public void setVersion(SpringVersion version) {
         this.version = version;
+    }
+
+    public BeanDefinition getBeanDefinition() {
+        return beanDefinition;
+    }
+
+    public void setBeanDefinition(BeanDefinition beanDefinition) {
+        this.beanDefinition = beanDefinition;
+    }
+
+    public BeanInstantiation getBeanInstantiation() {
+        return beanInstantiation;
+    }
+
+    public void setBeanInstantiation(BeanInstantiation beanInstantiation) {
+        this.beanInstantiation = beanInstantiation;
     }
 }

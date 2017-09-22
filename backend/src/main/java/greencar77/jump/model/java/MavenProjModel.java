@@ -8,9 +8,10 @@ import greencar77.jump.model.RawFile;
 import greencar77.jump.model.java.classfile.ClassFile;
 import greencar77.jump.model.java.classfile.MetaSpringContext;
 import greencar77.jump.model.java.maven.Pom;
+import greencar77.jump.model.java.maven.XmlSpringContext;
 import greencar77.jump.spec.java.JavaVersion;
+import greencar77.jump.spec.java.MavenProjSpec;
 import greencar77.jump.spec.java.SpringBootVersion;
-import greencar77.jump.spec.java.SpringConfigBasis;
 
 public class MavenProjModel extends Model {
     private JavaVersion javaVersion;
@@ -20,11 +21,12 @@ public class MavenProjModel extends Model {
     private List<ClassFile> classFiles = new ArrayList<>();
     private List<ClassFile> testClassFiles = new ArrayList<>();
     private List<String> runtimeClass = new ArrayList<>(); //class names which will be needed only during deploy/runtime
-    private MetaSpringContext springContext;
-    private SpringConfigBasis configBasis;
     private PersistenceUnit persistenceUnit;
     private HibernateConfiguration hibernateConfiguration;
     private SpringBootVersion springBootVersion;
+    private XmlSpringContext xmlSpringContext;
+    
+    private MavenProjSpec spec;
 
     public Pom getPom() {
         return pom;
@@ -66,28 +68,12 @@ public class MavenProjModel extends Model {
         this.testClassFiles = testClassFiles;
     }
 
-    public MetaSpringContext getSpringContext() {
-        return springContext;
-    }
-
-    public void setSpringContext(MetaSpringContext springContext) {
-        this.springContext = springContext;
-    }
-
     public ClassFile getMainClass() {
         return mainClass;
     }
 
     public void setMainClass(ClassFile mainClass) {
         this.mainClass = mainClass;
-    }
-
-    public SpringConfigBasis getConfigBasis() {
-        return configBasis;
-    }
-
-    public void setConfigBasis(SpringConfigBasis configBasis) {
-        this.configBasis = configBasis;
     }
 
     public HibernateConfiguration getHibernateConfiguration() {
@@ -112,5 +98,21 @@ public class MavenProjModel extends Model {
 
     public void setSpringBootVersion(SpringBootVersion springBootVersion) {
         this.springBootVersion = springBootVersion;
+    }
+
+    public MavenProjSpec getSpec() {
+        return spec;
+    }
+
+    public void setSpec(MavenProjSpec spec) {
+        this.spec = spec;
+    }
+
+    public XmlSpringContext getXmlSpringContext() {
+        return xmlSpringContext;
+    }
+
+    public void setXmlSpringContext(XmlSpringContext xmlSpringContext) {
+        this.xmlSpringContext = xmlSpringContext;
     }
 }

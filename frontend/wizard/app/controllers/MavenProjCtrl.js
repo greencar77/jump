@@ -5,7 +5,6 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
 
     $scope.appGenMethods = [
         'buildAppFeatures',
-        'buildAppSpring',
     ];
 
     $scope.javaVersionList = [
@@ -31,9 +30,15 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
         }
     });
 
-    $scope.springConfigBasisList = [
+    $scope.beanDefinitionList = [
+        {id: 'CLASS', name: 'setup in XML or JavaConfig (@Bean)'},
+        {id: 'ANNOTATED_CLASS', name: 'Annotation-based (@Component annotation to the class (available for scanning))'},
+    ];
+
+    $scope.beanInstantiationList = [
         {id: 'XML', name: 'XML'},
-        {id: 'JAVA', name: 'Java'},
+        {id: 'JAVA_CONFIG', name: 'JavaConfig'},
+        {id: 'JAVA_CONFIG_XML', name: 'JavaConfig with XML'},
     ];
 
     $scope.springVersionList = [

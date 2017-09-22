@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
 import org.apache.maven.cli.MavenCli;
@@ -30,7 +29,7 @@ import greencar77.jump.model.java.maven.Dependency;
 import greencar77.jump.model.java.maven.DependencyScope;
 import greencar77.jump.model.java.maven.PluginPom;
 import greencar77.jump.model.java.maven.Pom;
-import greencar77.jump.spec.java.SpringConfigBasis;
+import greencar77.jump.model.java.maven.XmlSpringContext;
 
 public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     implements ClassGenerator {
@@ -57,7 +56,7 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
             saveResource(rawFile.getPath(), rawFile.getContent());
         }
         
-        if (model.getSpringContext() != null) {
+        if (model.getXmlSpringContext() != null) {
             generateSpringContext();
         }
         
@@ -306,33 +305,50 @@ public class MavenProjGenerator<M> extends Generator<MavenProjModel>
     }
 
     protected void generateSpringContext() {
-        if (model.getConfigBasis() != SpringConfigBasis.XML) {
+        XmlSpringContext xmlContext = model.getXmlSpringContext();
+        if (xmlContext == null) {
             return;
         }
 
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF);
         sb.append("<beans xmlns=\"http://www.springframework.org/schema/beans\"" + LF);
+        
+        //namespace aliases
         sb.append(TAB + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + LF);
+        xmlContext.getNamespaces().stream().forEach(ns -> {
+            sb.append(TAB + "xmlns:" + ns.getPrefix() + "=\"http://www.springframework.org/schema/" + ns.getPrefix() + "\"" + LF);
+        });
 
+        //namespace schemas
         sb.append(TAB + "xsi:schemaLocation=\"" + LF);
+        String xmlSchemaVersion = model.getSpec().getSpring().getVersion().getXmlSchemaVersion();
         sb.append(TAB + "http://www.springframework.org/schema/beans" + LF);
-        sb.append(TAB + "http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" + LF);
+        sb.append(TAB + "http://www.springframework.org/schema/beans/spring-beans-" + xmlSchemaVersion + ".xsd" + LF);
+        xmlContext.getNamespaces().stream().forEach(ns -> {
+            sb.append(TAB + "http://www.springframework.org/schema/" + ns.getPrefix() + LF);
+            sb.append(TAB + "http://www.springframework.org/schema/" + ns.getPrefix() + "/spring-" + ns.getPrefix() + "-" + xmlSchemaVersion + ".xsd" + LF);
+        });
 
-        sb.append(TAB + "\">" + LF);
+        sb.append(TAB + "\"" + LF);
+        sb.append(TAB + ">" + LF);
 
-        MetaSpringContext context = model.getSpringContext();
-        if (context.getBeans().size() > 0) {
-            for (MetaBean bean: context.getBeans()) {
-                sb.append(TAB + "<bean id=\"")
-                .append(bean.getName())
-                .append("\" class=\"").append(bean.getClassFile().getFullName())
-                .append("\" />" + LF);
+        if (xmlContext.getMetaSpringContext().getComponentScanBasePackage() != null) {
+            sb.append(TAB + "<context:component-scan base-package=\"" + xmlContext.getMetaSpringContext().getComponentScanBasePackage() + "\"/>" + LF);
+        } else {
+            MetaSpringContext context = xmlContext.getMetaSpringContext();
+            if (context.getBeans().size() > 0) {
+                for (MetaBean bean: context.getBeans()) {
+                    sb.append(TAB + "<bean id=\"")
+                    .append(bean.getName())
+                    .append("\" class=\"").append(bean.getClassFile().getFullName())
+                    .append("\" />" + LF);
+                }
             }
         }
         sb.append("</beans>" + LF);
 
-        saveResource("src/main/resources/" + context.getId() + ".xml", sb.toString().getBytes());
+        saveResource("src/main/resources/" + xmlContext.getMetaSpringContext().getId() + ".xml", sb.toString().getBytes());
     }
     
     protected void generateDependencyAnalysis() {

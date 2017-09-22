@@ -81,6 +81,9 @@ public class ArtifactSolver {
         if (absoluteClass.startsWith("org.springframework.context.")) {
             return "org.springframework/spring-context/4.3.0.RELEASE";
         }
+        if (absoluteClass.startsWith("org.springframework.stereotype.")) {
+            return "org.springframework/spring-context/4.3.0.RELEASE";
+        }
         if (absoluteClass.startsWith("org.springframework.core.")) {
             return "org.springframework/spring-core/4.3.0.RELEASE";
         }
