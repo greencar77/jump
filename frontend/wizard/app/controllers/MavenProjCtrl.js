@@ -43,6 +43,7 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
 
     $scope.springVersionList = [
         {id: 'V4_3_0', name: '4.3.0'},
+        {id: 'V4_3_4', name: '4.3.4'},
         {id: 'V4_3_11', name: '4.3.11'},
     ];
 
@@ -55,6 +56,7 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
     });
 
     $scope.springBootVersionList = [
+        {id: 'V1_4_2', name: '1.4.2', spring: "4.3.4"},
         {id: 'V1_4_7', name: '1.4.7', spring: "4.3.9"},
         {id: 'V1_5_7', name: '1.5.7', spring: "4.3.11"},
     ];
@@ -87,4 +89,12 @@ mod1.controller('MavenProjCtrl', function($scope, $controller) {
         {id: 'SPRING', name: 'By Spring'},
         {id: 'EJB', name: 'By EJB'},
         ]
+
+    $scope.$watch('config.featureRedis', function() {
+        if ($scope.config.featureRedis) {
+            $scope.config.redis = new Object();
+        } else {
+            delete $scope.config.redis;
+        }
+    });
 });

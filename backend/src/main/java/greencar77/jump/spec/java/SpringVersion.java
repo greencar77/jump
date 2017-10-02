@@ -2,6 +2,7 @@ package greencar77.jump.spec.java;
 
 public enum SpringVersion implements VersionProvider {
     V4_3_0("4.3.0.RELEASE", "4.3"),
+    V4_3_4("4.3.4.RELEASE", "4.3"),
     V4_3_11("4.3.11.RELEASE", "4.3");
 
     private String versionString;

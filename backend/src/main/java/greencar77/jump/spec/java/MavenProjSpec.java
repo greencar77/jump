@@ -19,6 +19,8 @@ public class MavenProjSpec extends Spec {
     private boolean featureHibernate;
     private Hibernate hibernate;
     private boolean invokeCli;
+    private boolean featureRedis;
+    private Redis redis;
 
     public String getRootPackage() {
         return rootPackage;
@@ -146,5 +148,21 @@ public class MavenProjSpec extends Spec {
 
     public void setSpringBoot(SpringBoot springBoot) {
         this.springBoot = springBoot;
+    }
+
+    public boolean isFeatureRedis() {
+        return featureRedis;
+    }
+
+    public void setFeatureRedis(boolean featureRedis) {
+        this.featureRedis = featureRedis;
+    }
+
+    public Redis getRedis() {
+        return redis;
+    }
+
+    public void setRedis(Redis redis) {
+        this.redis = redis;
     }
 }

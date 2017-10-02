@@ -28,6 +28,9 @@
     <div class="params" ng-show="config.featureUnitTests">
         Major Version: <select ng-model="config.unitTests.majorVersion" ng-options="x.id as x.name for x in unitTestsMajorVersionList"></select><br/>
     </div>
+    Redis: <input type="checkbox" ng-model="config.featureRedis" /><br/>
+    <div class="params" ng-show="config.featureRedis">
+    </div>
     <div class="params">
         Invocation:<br/>
         IDE - Eclipse: <input type="checkbox" ng-model="config.invokeEclipse" /><br/>

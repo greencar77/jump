@@ -15,7 +15,7 @@ import greencar77.jump.spec.webapp.WebAppSpec;
 
 public class AppFromFile {
     
-    private static final String PATH = "c:\\github\\jump\\";
+    private static final String PATH = "c:\\github\\greencar77\\jump\\";
     private static final String BUFFER_PATH = PATH + "buffer\\config.txt";
 
     public static void main(String[] args) {

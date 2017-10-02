@@ -1,6 +1,7 @@
 package greencar77.jump.spec.java;
 
 public enum SpringBootVersion implements VersionProvider {
+    V1_4_2("1.4.2.RELEASE", "4.3.4.RELEASE"),
     V1_4_7("1.4.7.RELEASE", "4.3.9.RELEASE"),
     V1_5_7("1.5.7.RELEASE", "4.3.11.RELEASE");
     
