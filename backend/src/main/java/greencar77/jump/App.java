@@ -24,7 +24,7 @@ public class App {
 
         //demo
         //predefinedWebApp("webappTomcatAuth");
-        predefinedWebApp("webappAngular");
+        predefinedWebApp("webappAngularWildfly");
         
         //predefinedStandalone("tutti");
         //predefinedPlunker("inlineTemplating");

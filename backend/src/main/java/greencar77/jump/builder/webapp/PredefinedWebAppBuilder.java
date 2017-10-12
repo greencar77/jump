@@ -117,6 +117,30 @@ public class PredefinedWebAppBuilder extends WebAppBuilder<WebAppSpec, WebAppMod
         
         return model;
     }
+    
+    public WebAppModel specWebappAngularWildfly() {
+        WebAppSpec spec = new WebAppSpec();
+        spec.setProjectName("webappAngularWildfly");
+        spec.setGroupId("x.y");
+        spec.setArtifactId("webappAngularWildfly");
+        spec.setRootPackage(spec.getGroupId());
+        
+        spec.setTargetContainer(Container.WILDFLY);
+        spec.setServlet3Support(false);
+        spec.setWebFramework(WebFramework.RESTEASY);
+        spec.setAppGenerator("buildAppSimple");
+
+        setSpec(spec);
+
+        build();
+        
+        //Angular app
+        AngularAppModel subModel = angularAppBuilder.specTutti();
+        subModel.setRoot(false);
+        model.setAngularApp(subModel);
+        
+        return model;
+    }
 
     public WebAppModel specSpring4RestTomcat() {
         //http://viralpatel.net/blogs/spring-4-mvc-rest-example-json/

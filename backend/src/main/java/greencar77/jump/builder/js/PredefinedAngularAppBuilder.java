@@ -9,6 +9,7 @@ import greencar77.jump.model.angular.html.TemplateHtmlFragment;
 import greencar77.jump.model.js.AngularAppModel;
 import greencar77.jump.model.js.AngularVersion;
 import greencar77.jump.spec.js.AngularAppSpec;
+import greencar77.jump.spec.js.BootstrapUi;
 
 /**
  * Contains hard-coded recipes (Spec object is not used) *
@@ -26,6 +27,10 @@ public class PredefinedAngularAppBuilder extends AngularAppBuilder implements Pr
 
     public AngularAppModel specTutti() {
         AngularAppSpec spec = new AngularAppSpec();
+        BootstrapUi bootstrapUi = new BootstrapUi();
+        bootstrapUi.setVersion("0.12.0");
+        spec.setBootstrapUi(true);
+        spec.setBootstrapUiSpec(bootstrapUi);
 
         setSpec(spec);
 

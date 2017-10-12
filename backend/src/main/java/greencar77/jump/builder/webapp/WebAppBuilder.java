@@ -67,7 +67,9 @@ public class WebAppBuilder<S extends MavenProjSpec, M> extends MavenProjBuilder<
         pom.properties.put("maven.compiler.source", getSpec().getJavaVersion().getId());
 
         model.setTargetContainer(getSpec().getTargetContainer());
-        model.setJerseyVersion(getSpec().getJersey().getJerseyVersion());
+        if (getSpec().getJersey() != null) {
+            model.setJerseyVersion(getSpec().getJersey().getJerseyVersion());
+        }
         model.setWebFramework(getSpec().getWebFramework());
 
         if (getSpec().isAuthenticate()) {
@@ -240,7 +242,27 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         props.put("package", getSpec().getRootPackage());
         ClassFile userClass = new TemplateClass(getSpec().getRootPackage(), "User", "java/webapp/UserPojo.java", props);
         model.getClassFiles().add(userClass);
-        
+
+        if (getSpec().getJersey() != null) {
+            switch (getSpec().getJersey().getJerseyMajorVersion()) {
+            case V1:
+                model.getPom().addDependencyRuntime("com.sun.jersey/jersey-json/" + getSpec().getJersey().getJerseyVersion(), null);
+                /*
+                 * otherwise
+        aug. 08, 2017 4:05:39 PM com.sun.jersey.spi.container.ContainerResponse logException
+        SEVERE: Mapped exception to response: 500 (Internal Server Error)
+        javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A message body writer for Java class com.x.y.User, and Java type class com.x.y.User, and MIME media type application/json was not found.
+                 */
+                break;
+            case V2:
+                //https://stackoverflow.com/questions/26207252/messagebodywriter-not-found-for-media-type-application-json
+                model.getPom().addDependencyRuntime("org.glassfish.jersey.media/jersey-media-json-jackson/" + getSpec().getJersey().getJerseyVersion(), null);
+                break;
+            default:
+                throw new RuntimeException(getSpec().getJersey().getJerseyMajorVersion().name());
+            }
+        }
+
         RestClassFile restClass = new RestClassFile(getSpec().getRootPackage(), "Alpha");
         restClass.setPath("/user");
         model.getLocalEndpoints().add("/user");
@@ -248,23 +270,6 @@ http://stackoverflow.com/questions/5351948/webxml-attribute-is-required-error-in
         method.annotations.add("@GET");
         restClass.imports.add("javax.ws.rs.GET");
         method.annotations.add("@Produces(MediaType.APPLICATION_JSON)");
-        switch (getSpec().getJersey().getJerseyMajorVersion()) {
-        case V1:
-            model.getPom().addDependencyRuntime("com.sun.jersey/jersey-json/" + getSpec().getJersey().getJerseyVersion(), null);
-            /*
-             * otherwise
-    aug. 08, 2017 4:05:39 PM com.sun.jersey.spi.container.ContainerResponse logException
-    SEVERE: Mapped exception to response: 500 (Internal Server Error)
-    javax.ws.rs.WebApplicationException: com.sun.jersey.api.MessageException: A message body writer for Java class com.x.y.User, and Java type class com.x.y.User, and MIME media type application/json was not found.
-             */
-            break;
-        case V2:
-            //https://stackoverflow.com/questions/26207252/messagebodywriter-not-found-for-media-type-application-json
-            model.getPom().addDependencyRuntime("org.glassfish.jersey.media/jersey-media-json-jackson/" + getSpec().getJersey().getJerseyVersion(), null);
-            break;
-        default:
-            throw new RuntimeException(getSpec().getJersey().getJerseyMajorVersion().name());
-        }
         restClass.imports.add("javax.ws.rs.Produces");
         restClass.imports.add("javax.ws.rs.core.MediaType");
         method.getContent().append(code(indent(TAB + TAB,

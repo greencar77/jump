@@ -203,7 +203,7 @@ public class AngularAppBuilder extends Builder<AngularAppSpec, AngularAppModel> 
         DomNode tabRoot = tabPage.getHtmlFragment().getRootNode();
         
         int majorVersion = Integer.valueOf(getSpec().getBootstrapUiSpec().getVersion().substring(0, getSpec().getBootstrapUiSpec().getVersion().indexOf(".")));
-        if (majorVersion >=2 ) {
+        if (majorVersion >= 2) {
             tabRoot.add(new MiscNode("uib-tabset", null, null, "active=\"active\"")
                     .add(new MiscNode("uib-tab", null, null, "heading=\"Head1\""))
                     .add(new MiscNode("uib-tab", null, null, "heading=\"Head2\""))
